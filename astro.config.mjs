@@ -1,6 +1,9 @@
 import { defineConfig, envField } from 'astro/config';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
+import { loadEnv } from 'vite';
+
+const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 
 export default defineConfig({
   env: {
@@ -12,8 +15,8 @@ export default defineConfig({
   },
   integrations: [
     sanity({
-      projectId: process.env.PUBLIC_SANITY_PROJECT_ID,
-      dataset: process.env.PUBLIC_SANITY_DATASET ?? 'production',
+      projectId: env.PUBLIC_SANITY_PROJECT_ID,
+      dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
       apiVersion: '2026-05-01',
       useCdn: false,
       studioBasePath: '/admin',

@@ -1,0 +1,23 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  price: number;
+  description?: string;
+  imageUrl?: string;
+  productUrl: string;
+}
+
+const { id, name, price, description, imageUrl, productUrl } = Astro.props;
+---
+<button
+  class="snipcart-add-item"
+  data-item-id={id}
+  data-item-price={price}
+  data-item-url={productUrl}
+  data-item-name={name}
+  data-item-description={description}
+  data-item-image={imageUrl}
+>
+  Add to Cart
+</button>

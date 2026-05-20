@@ -8,5 +8,14 @@
       "cache": true
     }
   },
-  "nxCloudId": "6a0e3ef1bcae6ba5796a4164"
+  "nxCloudId": "6a0e3ef1bcae6ba5796a4164",
+  "analytics": true,
+  "namedInputs": {
+    "sharedGlobals": [
+      "{workspaceRoot}/.github/workflows/ci.yml"
+    ],
+    "default": [
+      "sharedGlobals"
+    ]
+  }
 }

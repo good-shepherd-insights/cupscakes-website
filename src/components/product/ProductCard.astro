@@ -1,0 +1,26 @@
+---
+interface Props {
+  name: string;
+  price: number;
+  description?: string;
+  imageUrl?: string;
+  isLcp?: boolean;
+}
+
+const { name, price, description, imageUrl, isLcp = false } = Astro.props;
+---
+<article>
+  {imageUrl && (
+    <img
+      src={imageUrl}
+      alt={name}
+      loading={isLcp ? "eager" : "lazy"}
+      fetchpriority={isLcp ? "high" : "auto"}
+      decoding={isLcp ? "sync" : "async"}
+    />
+  )}
+  <h2>{name}</h2>
+  <p>{price}</p>
+  {description && <p>{description}</p>}
+  <slot name="action" />
+</article>

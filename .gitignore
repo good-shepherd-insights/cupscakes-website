@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.env.local
+*.local
+
+
+
+.nx/cache
+.nx/workspace-data

@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProductCard from '../components/product/ProductCard.astro';
+import AddToCartButton from '../components/snipcart/AddToCartButton.astro';
+import { getAllProducts } from '../lib/sanity/queries/products';
+import { urlFor } from '../lib/sanity/image';
+import { IMAGE_WIDTHS } from '../lib/constants';
+import { routes } from '../lib/routes';
+
+const products = await getAllProducts();
+---
+<Layout title="Cupcakes — Shop">
+  <h1>Products</h1>
+  {products.length === 0 && (
+    <p>No products yet — <a href="/admin">add one in Studio</a>.</p>
+  )}
+  {products.map((product, index) => {
+    // Cast to any is required because Product.image is 'unknown' per strict zero-import rules in src/types/
+    const imageUrl = product.image ? urlFor(product.image as any).width(IMAGE_WIDTHS.card).url() : undefined;
+    const productUrl = routes.product(product.slug.current);
+    return (
+      <ProductCard
+        name={product.name}
+        price={product.price}
+        description={product.description}
+        imageUrl={imageUrl}
+        isLcp={index === 0}
+      >
+        <AddToCartButton
+          slot="action"
+          id={product._id}
+          name={product.name}
+          price={product.price}
+          description={product.description}
+          imageUrl={imageUrl}
+          productUrl={productUrl}
+        />
+      </ProductCard>
+    );
+  })}
+</Layout>

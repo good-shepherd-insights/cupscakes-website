@@ -27,4 +27,10 @@ export default defineConfig({
     }),
     react(),
   ],
+  vite: {
+    define: {
+      'process.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.PUBLIC_SANITY_PROJECT_ID),
+      'process.env.PUBLIC_SANITY_DATASET': JSON.stringify(env.PUBLIC_SANITY_DATASET ?? 'production'),
+    },
+  },
 });

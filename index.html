@@ -1,0 +1,1696 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cups &amp; Cakes — Home</title>
+
+    <!-- Tailwind CSS v4 (browser build, on-the-fly compiler) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- Inter font (Medium 500 used for the navbar) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      Tailwind v4 theme tokens — only reusable design tokens live here.
+      Colors, font, and Figma MCP asset URLs become Tailwind utilities
+      (e.g. `text-brand-blue`, `bg-cups-icon`, `font-sans`).
+      No fixed-pixel layout tokens — sizing is fluid via Tailwind primitives
+      (type scale, spacing scale, and breakpoint variants) on each element.
+    -->
+    <style type="text/tailwindcss">
+      @theme {
+        /* Brand palette */
+        --color-brand-blue: #87cefa;
+        --color-brand-blue-dark: #4aa6dc;
+        --color-brand-pink: #eb9cf9;
+        --color-brand-border: #a0a0a0;
+
+        /* Cupcake-flavor palette (Figma 3311:1475/1476/1477).
+           Each tone is reused later in the page (e.g. the chocolate label
+           card at 3311:1697-1702 reuses #9d570d), so they're promoted to
+           tokens per context.md §0. */
+        --color-flavor-chocolate: #9d570d;
+        --color-flavor-butter-pecan: #fcb840;
+        --color-flavor-carrot: #f59a00;
+
+        /* Typography */
+        --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+        /* Figma MCP asset URLs (signed, ~7-day expiry) */
+        --background-image-cups-icon: url("https://www.figma.com/api/mcp/asset/ed5742dc-b3d8-478a-809d-24818530b4bb");
+        --background-image-heart-group: url("https://www.figma.com/api/mcp/asset/8a7393a4-04a3-4b0c-b250-b5eada5df08d");
+        --background-image-cart-icon: url("https://www.figma.com/api/mcp/asset/139e7e9c-4279-47b0-a7e1-e96a042865c8");
+
+        /* Hero (Figma 3311:1437)
+           NOTE: The Figma MCP returns two related assets per masked image:
+           a small SVG (the mask/placeholder, usually a few hundred bytes)
+           and the real photographic asset (multi-MB JPG/PNG). In the React
+           reference, the placeholder is used for `maskImage` and the real
+           asset for `<img src>`. Always pick the latter for `background-image`,
+           otherwise the hero looks empty (300×150 grey SVG placeholder). */
+        --background-image-hero-cupcakes: url("https://www.figma.com/api/mcp/asset/d63c95c8-afa3-4115-abed-b15a9d669478");
+        --background-image-hero-scroll: url("https://www.figma.com/api/mcp/asset/70f420a3-ac95-471b-8e71-95869fcb6a45");
+        --background-image-hero-logo: url("https://www.figma.com/api/mcp/asset/9de14cc6-0e5b-47cf-a7af-9238752814a7");
+
+        /* Cupcake-flavor icon (Figma 3311:1573-1605, Groups 22-30).
+           Figma exports nine separate groups but they're all the same
+           cupcake glyph visually, so we register one asset and reuse it. */
+        --background-image-flavor: url("https://www.figma.com/api/mcp/asset/c353688f-21b1-44dd-bd10-2af4da651396");
+
+        /* Our Story section (Figma 3311:1652, Mask Group 15) */
+        --background-image-path-19: url("https://www.figma.com/api/mcp/asset/dd94494b-9a16-49e2-88c7-1fc8067c678f");
+        --background-image-story-photo: url("https://www.figma.com/api/mcp/asset/997aaccf-e0a5-48fe-9a70-672cdd07e9e7");
+        --background-image-story-mask-1: url("https://www.figma.com/api/mcp/asset/df4dfbe3-d662-4141-8953-0cfdfcbbfaff");
+        --background-image-story-mask-2: url("https://www.figma.com/api/mcp/asset/02c65b7e-4d00-4fe1-8de0-d8e15e1b9c84");
+        --background-image-story-logo: url("https://www.figma.com/api/mcp/asset/5673b26c-4811-40f6-8d6f-7628a757dca3");
+
+        /* Cupcake carousel cards (Figma 3311:1475/1476/1477 + Mask
+           Groups 5/6/7 with photo 3311:1513/1517/1521 and mask
+           3311:1514/1518/1522). The Figma file currently reuses the same
+           photo + mask for all three cards; the photo URL lives on each
+           card's <img src> (per-flavor in the component), so only the
+           shared mask is registered as a theme token (used by the
+           cupcake-photo @utility below). */
+        --background-image-cupcake-mask: url("https://www.figma.com/api/mcp/asset/49600d43-6588-4e4f-ae1e-ff1eebd8a7d4");
+
+        /* Personal Cakes section (Figma 3311:1478 blue card + 3311:1715
+           cake photo + 3311:1703 big decorative ampersand logo +
+           3311:1617/1618 small ampersand glyphs flanking the heading). */
+        --background-image-personal-cake: url("https://www.figma.com/api/mcp/asset/1cafca12-8c37-4e45-a866-6705fdb68582");
+        --background-image-personal-cakes-logo: url("https://www.figma.com/api/mcp/asset/f6c8501c-a863-40a4-a322-88b45be50d2c");
+        --background-image-personal-cakes-amp: url("https://www.figma.com/api/mcp/asset/5ca4fc1f-1772-4337-a6eb-0aad5c1d41db");
+
+        /* CUPCAKES banner ampersand glyphs (Figma 3311:1473/1474 "big" and
+           3311:1468/1472 "small"). Each asset is reused twice (one on each
+           side of the headline), so per context.md §0 they're promoted to
+           tokens and consumed via `bg-banner-amp-big` / `bg-banner-amp-small`. */
+        --background-image-banner-amp-big: url("https://www.figma.com/api/mcp/asset/0760aa1d-490a-439f-84b7-2e3f1789811b");
+        --background-image-banner-amp-small: url("https://www.figma.com/api/mcp/asset/7b8f9f4d-7361-44d8-a7b0-5cbd14d0dac6");
+      }
+
+      /*
+        Navbar utilities — pure Tailwind primitives, no math.
+        Sizes use Tailwind's type scale, picked to land within a few px of
+        Figma at desktop while scaling down via responsive breakpoints.
+        Figma reference: nav text 28px ≈ text-3xl (30px) at xl; logo 46px
+        ≈ text-5xl (48px) at xl.
+      */
+      @utility nav-link {
+        @apply relative inline-block text-center font-semibold text-brand-blue no-underline whitespace-nowrap;
+        @apply text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl leading-relaxed;
+        @apply transition-[color,transform] duration-150 ease-out;
+        @apply hover:text-brand-blue-dark hover:-translate-y-px;
+        @apply focus-visible:text-brand-blue-dark focus-visible:-translate-y-px focus-visible:outline-hidden;
+        @apply after:content-[''] after:absolute after:inset-x-[12%] after:-bottom-1 after:h-0.5 after:rounded-full after:bg-current after:origin-center after:scale-x-0 after:transition-transform after:duration-200 after:ease-out;
+        @apply hover:after:scale-x-100 focus-visible:after:scale-x-100;
+      }
+
+      @utility nav-icon {
+        @apply inline-block bg-no-repeat bg-contain bg-center;
+        @apply transition-[transform,opacity,filter] duration-150 ease-out;
+        @apply hover:scale-105 hover:brightness-90;
+        @apply focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden;
+      }
+
+      /* Cupcake carousel — white pill ORDER NOW button on each card. */
+      @utility cupcake-cta {
+        @apply inline-flex items-center justify-center;
+        @apply bg-white text-brand-pink font-medium no-underline;
+        @apply border border-brand-border rounded-sm;
+        @apply text-xs sm:text-sm md:text-base lg:text-lg;
+        @apply h-8 sm:h-10 md:h-12 lg:h-14;
+        @apply w-32 sm:w-36 md:w-40 lg:w-44;
+        @apply transition-[transform,filter] duration-150 ease-out;
+        @apply hover:brightness-95 hover:-translate-y-px;
+        @apply focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden;
+      }
+
+      /* Cupcake carousel — big OTHER OPTIONS pill below the three cards
+         (Figma 3311:1612 / 3311:1607 white rect + 3311:1608 brand-blue
+         label). Figma renders 569×189 with Inter Medium 55px text; we
+         lock the 569/189 ≈ 3:1 aspect ratio and step the type + width
+         cap across breakpoints. */
+      @utility cupcake-other-options {
+        @apply inline-flex items-center justify-center;
+        @apply bg-white text-brand-blue font-medium no-underline text-center;
+        @apply border border-brand-border rounded-md;
+        @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+        @apply w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl;
+        @apply aspect-[569/189];
+        @apply px-6 sm:px-8 md:px-10;
+        @apply transition-[transform,filter] duration-150 ease-out;
+        @apply hover:brightness-95 hover:-translate-y-px;
+        @apply focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden;
+      }
+    </style>
+
+    <!--
+      Plain-CSS escape hatch (per context.md §3 narrow exception).
+      CSS `mask-image` is genuinely outside Tailwind v4's primitive coverage:
+      there is no first-class mask utility and the only way to express it in
+      a `@utility` block is via forbidden arbitrary values. Per context.md
+      "only @theme and @utility live in <style type=\"text/tailwindcss\">";
+      effects Tailwind can't express live here in a normal <style> block
+      instead. The classes still consume `@theme`-declared CSS variables
+      (--background-image-story-mask-*, --background-image-cupcake-mask).
+    -->
+    <style>
+      /* Our Story — soft masked photo overlay at 5% opacity. */
+      .story-photo {
+        mask-image: var(--background-image-story-mask-1),
+          var(--background-image-story-mask-2);
+        -webkit-mask-image: var(--background-image-story-mask-1),
+          var(--background-image-story-mask-2);
+        mask-repeat: no-repeat, no-repeat;
+        -webkit-mask-repeat: no-repeat, no-repeat;
+        mask-size: contain, contain;
+        -webkit-mask-size: contain, contain;
+        mask-position: center, center;
+        -webkit-mask-position: center, center;
+      }
+
+      /* Cupcake carousel — cupcake-silhouette mask cropping each card photo. */
+      .cupcake-photo {
+        mask-image: var(--background-image-cupcake-mask);
+        -webkit-mask-image: var(--background-image-cupcake-mask);
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+        mask-position: center;
+        -webkit-mask-position: center;
+        mask-size: contain;
+        -webkit-mask-size: contain;
+      }
+    </style>
+  </head>
+
+  <body class="m-0 p-0 bg-white font-sans antialiased">
+    <!-- =========================================
+         NAVBAR — used as a custom element <nav-bar>.
+         Custom elements must contain a hyphen (HTML spec), so we use <nav-bar>.
+         Renders into Light DOM (no Shadow DOM) so Tailwind v4's browser
+         build scans its utility classes and the @theme / @utility rules
+         from <head> apply. Attribute hooks let pages override link
+         targets without editing JS.
+         ========================================= -->
+    <nav-bar
+      home-href="#top"
+      who-href="#who-we-are"
+      order-href="#order"
+      favorites-href="#favorites"
+      cart-href="#cart"
+    ></nav-bar>
+
+    <main id="top">
+      <!--
+        Hero section — Figma node 3311:1437 "Mask Group 1".
+        Composes the cupcake background photo, centered headline, and CTA.
+        Follows the same web-component pattern as <nav-bar>.
+      -->
+      <hero-section
+        order-href="#order"
+        headline="FRESH. SIMPLE. WHOLE."
+        cta-label="ORDER NOW"
+      ></hero-section>
+
+      <!--
+        Small banner — Figma node 3311:1431 ("Rectangle 1") + nine glyph
+        groups (3311:1573-1605). Brand-blue band carrying the cupcake-
+        flavor icons; sits directly under the hero photo. Its own
+        independent <small-banner> component so other pages can reuse it
+        without pulling in the hero.
+      -->
+      <small-banner></small-banner>
+
+      <our-story></our-story>
+
+      <!--
+        CUPCAKES banner — Figma node 3311:1455 (Rectangle 2 brand-blue band)
+        + 3311:1461 ("CUPCAKES" headline) + four decorative ampersand logos
+        (3311:1473, 3311:1468, 3311:1472, 3311:1474). Sits directly under
+        the Our Story section and introduces the cupcake product grid.
+      -->
+      <cupcakes-banner headline="CUPCAKES"></cupcakes-banner>
+
+      <!--
+        Cupcake carousel — Figma 3311:1475/1476/1477 (three product cards)
+        + 3311:1479 (caption) + masked photo / name / description / price
+        / ORDER NOW button per card. Three flavors hard-coded in the
+        component: Chocolate, Butter Pecan, Carrot. The section is exposed
+        as the `#order` anchor so the navbar / hero ORDER NOW links scroll
+        here.
+      -->
+      <cupcake-carousel
+        caption="Soft, sweet, and baked to delicate perfection!"
+        order-href="#order"
+        other-options-href="#cupcakes"
+        other-options-label="OTHER OPTIONS"
+      ></cupcake-carousel>
+
+      <!--
+        Personal Cakes section — Figma 3311:1613 (PERSONAL CAKES heading)
+        + 3311:1483 (caption) + 3311:1478 (big blue card holding the
+        cake photo + decorative ampersand logo + "Choose your flavor!"
+        headline + $25 price) + two flavor pills (3311:1702 Chocolate,
+        3311:1714 Vanilla). Sits directly under the cupcake carousel.
+        Exposed as the `#personal-cakes` anchor so the cupcake carousel's
+        OTHER OPTIONS button (and external links) can scroll here.
+      -->
+      <personal-cakes
+        heading="PERSONAL CAKES"
+        caption="Small in size but big in bringing joy to each bite!"
+        flavor-headline="Choose your flavor!"
+        price="$25"
+        chocolate-href="#order"
+        chocolate-label="Chocolate"
+        vanilla-href="#order"
+        vanilla-label="Vanilla"
+      ></personal-cakes>
+
+      <!--
+        Follow Us section — Figma 3311:1627 ("FOLLOW US:" pink heading at
+        Inter Regular 135px) + 3311:1626 (Group 47, two-icon social row:
+        3311:1625 Facebook glyph + 3311:1624 Instagram glyph). Sits
+        directly above the brand-blue footer band.
+      -->
+      <follow-us
+        heading="FOLLOW US:"
+        facebook-href="https://facebook.com/"
+        instagram-href="https://instagram.com/"
+      ></follow-us>
+    </main>
+
+    <!--
+      Footer — Figma 3311:1456 (Rectangle 37, brand-blue 1920×280 band) +
+      3311:1635/1631/1639 (WHO WE ARE / ORDER NOW / BACK TO TOP nav row,
+      separated by 3311:1643/1644 vertical dividers) + 3311:1670
+      (copyright line) + 3311:1669 (small ampersand logo, bottom-right).
+      Tag `<page-footer>` is hyphenated (HTML spec); HTML's own `<footer>`
+      is reserved as a normal element, so a hyphenated alias is required.
+    -->
+    <page-footer
+      who-href="#who-we-are"
+      order-href="#order"
+      top-href="#top"
+      copyright="Copyright @cups&amp;cakes. All Rights Reserved."
+    ></page-footer>
+
+    <!--
+      Custom element definition.
+      Best-practice notes:
+      - Class extends HTMLElement, registered with customElements.define().
+      - Light DOM (this.innerHTML) is used intentionally so Tailwind's browser
+        build sees the utility classes and applies them. Shadow DOM would
+        require either re-importing the global stylesheet or duplicating
+        utility CSS inside the shadow root.
+        Ref: https://web.dev/articles/custom-elements-v1 — "Light DOM".
+      - Idempotent connectedCallback: render only when empty, so moving the
+        node in the DOM doesn't blow away user state.
+      - Observed attributes drive declarative href configuration.
+    -->
+    <script>
+      class Navbar extends HTMLElement {
+        static get observedAttributes() {
+          return [
+            "home-href",
+            "who-href",
+            "order-href",
+            "favorites-href",
+            "cart-href",
+          ];
+        }
+
+        connectedCallback() {
+          if (!this.isConnected) return;
+          // Render once. Subsequent attribute changes patch the existing DOM.
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return; // not yet rendered
+          const selectorByAttr = {
+            "home-href": '[data-role="home"]',
+            "who-href": '[data-role="who"]',
+            "order-href": '[data-role="order"]',
+            "favorites-href": '[data-role="favorites"]',
+            "cart-href": '[data-role="cart"]',
+          };
+          const el = this.querySelector(selectorByAttr[name]);
+          if (el) el.setAttribute("href", newValue || "#");
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const homeHref = this.#attr("home-href", "#top");
+          const whoHref = this.#attr("who-href", "#who-we-are");
+          const orderHref = this.#attr("order-href", "#order");
+          const favoritesHref = this.#attr("favorites-href", "#favorites");
+          const cartHref = this.#attr("cart-href", "#cart");
+
+          this.innerHTML = `
+            <header
+              class="sticky top-0 z-50 w-full bg-white border-b border-brand-border
+                     h-14 sm:h-16 md:h-20 lg:h-24 xl:h-32"
+              data-node-id="3311:1430"
+              data-name="Navbar / Rectangle 1"
+            >
+              <div class="flex h-full w-full items-center justify-between px-3 sm:px-4 md:px-6 lg:px-10">
+                <!-- Logo lockup: CUPS [icon] CAKES. -->
+                <a
+                  data-role="home"
+                  href="${homeHref}"
+                  class="inline-flex items-center gap-1.5 sm:gap-2 md:gap-2.5
+                         font-semibold text-brand-blue no-underline whitespace-nowrap
+                         text-base sm:text-lg md:text-xl lg:text-2xl xl:text-4xl
+                         leading-relaxed
+                         transition-opacity duration-150 hover:opacity-90 focus-visible:opacity-90 focus-visible:outline-hidden"
+                  data-node-id="3311:1569"
+                  data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_13-17"
+                  aria-label="Cups & Cakes — home"
+                >
+                  <span data-node-id="3311:1557">CUPS</span>
+                  <span
+                    class="inline-block bg-cups-icon bg-no-repeat bg-contain bg-center shrink-0
+                           h-[1.2em] aspect-[75.694/55.796]"
+                    data-node-id="3311:1568"
+                    data-name="Group 21"
+                    role="img"
+                    aria-label=""
+                  ></span>
+                  <span data-node-id="3311:1561">CAKES</span>
+                </a>
+
+                <!-- Right cluster: text links + heart + cart. -->
+                <nav
+                  class="flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-10"
+                  aria-label="Primary"
+                >
+                  <a
+                    data-role="who"
+                    href="${whoHref}"
+                    class="nav-link hidden md:inline-block"
+                    data-node-id="3311:1674"
+                  >WHO WE ARE</a>
+
+                  <a
+                    data-role="order"
+                    href="${orderHref}"
+                    class="nav-link hidden md:inline-block"
+                    data-node-id="3311:1678"
+                  >ORDER NOW</a>
+
+                  <a
+                    data-role="favorites"
+                    href="${favoritesHref}"
+                    class="nav-icon bg-heart-group h-4 sm:h-5 md:h-5 lg:h-6 aspect-[111.961/36]"
+                    data-node-id="3311:1689"
+                    data-name="Group 49"
+                    aria-label="Account / favorites"
+                  ></a>
+
+                  <a
+                    data-role="cart"
+                    href="${cartHref}"
+                    class="nav-icon bg-cart-icon h-5 sm:h-6 md:h-7 lg:h-8 aspect-[41.479/46.541]"
+                    data-node-id="3311:1695"
+                    data-name="C&C_CART_ICON"
+                    aria-label="Shopping cart"
+                  ></a>
+                </nav>
+              </div>
+            </header>
+          `;
+        }
+      }
+
+      // Guard against double-definition (HMR, multiple imports).
+      // Custom element names must contain a hyphen per the HTML spec.
+      if (!customElements.get("nav-bar")) {
+        customElements.define("nav-bar", Navbar);
+      }
+
+      /*
+        Hero — Figma 3311:1437 (Mask Group 1) + 3311:1446 (headline)
+                + 3311:1450/1451 (CTA) + 3311:1444 (scroll indicator).
+        The brand-blue flavor band that used to live here has been
+        extracted to <small-banner>; the hero now ends at the photo
+        section, keeping responsibilities tight.
+        Same component pattern as Navbar: Light DOM, idempotent, observed
+        attributes, data-role-based attribute patching.
+      */
+      class Hero extends HTMLElement {
+        static get observedAttributes() {
+          return ["headline", "cta-label", "order-href"];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          if (name === "order-href") {
+            const el = this.querySelector('[data-role="order"]');
+            if (el) el.setAttribute("href", newValue || "#");
+          } else if (name === "headline") {
+            const el = this.querySelector('[data-role="headline"]');
+            if (el) el.textContent = newValue || "";
+          } else if (name === "cta-label") {
+            const el = this.querySelector('[data-role="cta-label"]');
+            if (el) el.textContent = newValue || "";
+          }
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const headline = this.#attr("headline", "FRESH. SIMPLE. WHOLE.");
+          const ctaLabel = this.#attr("cta-label", "ORDER NOW");
+          const orderHref = this.#attr("order-href", "#order");
+
+          this.innerHTML = `
+            <!-- Hero photo + overlay. Aspect-ratio holds the 1920×960 shape. -->
+            <section
+              class="relative w-full bg-hero-cupcakes bg-cover bg-center aspect-[1920/960]
+                     flex flex-col items-center justify-center"
+              data-node-id="3311:1437"
+              data-name="Mask Group 1"
+            >
+              <!-- Soft pink tint overlay (Figma 3311:1445, brand-pink @ 20%).
+                   Sits above the photo, below the content. -->
+              <div
+                class="absolute inset-0 bg-brand-pink/20 pointer-events-none"
+                data-node-id="3311:1445"
+                data-name="Rectangle 4 (tint)"
+                aria-hidden="true"
+              ></div>
+
+              <!-- Cupcake logo glyph above the headline (Figma 3311:1460).
+                   Native ratio ~117/86. -->
+              <span
+                class="relative bg-hero-logo bg-no-repeat bg-contain bg-center
+                       h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20 aspect-[117/86]
+                       mb-4 sm:mb-5 md:mb-6 drop-shadow-md"
+                data-node-id="3311:1460"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_14"
+                role="img"
+                aria-label="Cups & Cakes"
+              ></span>
+
+              <!-- Headline. Figma: Inter Medium 90px white, letter-spacing normal.
+                   Reference paints ~56px under scale(0.625); text-5xl/text-6xl
+                   land closest at lg/xl. -->
+              <h1
+                data-role="headline"
+                class="relative text-white font-medium text-center
+                       text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
+                       leading-tight drop-shadow-md
+                       m-0 px-4"
+                data-node-id="3311:1446"
+              ></h1>
+
+              <!-- CTA button. Figma: 366×101 blue/border, white Inter Medium 40px. -->
+              <a
+                data-role="order"
+                href="${orderHref}"
+                class="relative mt-6 sm:mt-8 md:mt-10 lg:mt-12
+                       inline-flex items-center justify-center
+                       bg-brand-blue text-white font-medium no-underline
+                       border border-brand-border
+                       h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20
+                       w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80
+                       text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+                       transition-[transform,filter] duration-150 ease-out
+                       hover:brightness-110 hover:-translate-y-px
+                       focus-visible:brightness-110 focus-visible:-translate-y-px focus-visible:outline-hidden"
+                data-node-id="3311:1450"
+                data-name="Rectangle 5 + ORDER NOW"
+                aria-label="Order cupcakes now"
+              ><span data-role="cta-label"></span></a>
+
+              <!-- Scroll-indicator decoration (Group 3). Native ratio 137:18.
+                   Positioned at the bottom of the hero, centered. -->
+              <span
+                class="absolute bottom-3 sm:bottom-4 md:bottom-5 lg:bottom-6
+                       left-1/2 -translate-x-1/2
+                       bg-hero-scroll bg-no-repeat bg-contain bg-center
+                       w-20 sm:w-24 md:w-28 lg:w-32 aspect-[137/18]
+                       opacity-90"
+                data-node-id="3311:1444"
+                data-name="Group 3"
+                role="img"
+                aria-label="Scroll for more"
+              ></span>
+            </section>
+          `;
+
+          // Inject user-controlled text after innerHTML so attribute values
+          // are never interpolated as HTML (textContent escapes everything).
+          const h1 = this.querySelector('[data-role="headline"]');
+          if (h1) h1.textContent = headline;
+          const ctaSpan = this.querySelector('[data-role="cta-label"]');
+          if (ctaSpan) ctaSpan.textContent = ctaLabel;
+        }
+      }
+
+      if (!customElements.get("hero-section")) {
+        customElements.define("hero-section", Hero);
+      }
+
+      /*
+        SmallBanner — Figma 3311:1431 ("Rectangle 1", brand-blue band)
+          with nine flavor glyphs (3311:1573-1605, Groups 22-30).
+        Standalone strip that can sit under any section. No configurable
+        text or links yet; icons are decorative and tagged with
+        `data-flavor` so future hover/order interactions can hook in.
+        Same Light-DOM / idempotent-render pattern as the other components.
+      */
+      class SmallBanner extends HTMLElement {
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        #render() {
+          // The Figma file ships nine identical cupcake glyphs (Groups
+          // 22-30 / nodes 3311:1573-1605); the same SVG (bg-flavor) is
+          // reused nine times to avoid importing duplicates.
+          const icons = Array.from({ length: 9 }, (_, i) => `
+              <span class="bg-flavor bg-no-repeat bg-contain bg-center h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20 aspect-[118/110] shrink-0"
+                    data-flavor="${i + 1}"
+                    role="img" aria-label="Cupcake flavor ${i + 1}"></span>`)
+            .join("");
+
+          this.innerHTML = `
+            <section
+              class="w-full bg-brand-blue border-y border-brand-border
+                     h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32
+                     flex items-center justify-between
+                     px-3 sm:px-4 md:px-6 lg:px-10"
+              data-node-id="3311:1431"
+              data-name="Rectangle 1 (flavor band)"
+              aria-label="Cupcake flavors"
+            >${icons}
+            </section>
+          `;
+        }
+      }
+
+      if (!customElements.get("small-banner")) {
+        customElements.define("small-banner", SmallBanner);
+      }
+
+      /*
+        OurStory — Figma 3311:1652 (Mask Group 15) "Our Story" section.
+        Composition (back-to-front):
+          - Path 19 vector background (pink shape, Figma node 3311:1645)
+          - Masked photo overlay at 5% opacity (Figma node 3311:1650)
+          - Decorative cupcake ampersand logo (Figma node 3311:1661)
+          - "OUR STORY" heading (Figma node 3311:1653)
+          - Three-paragraph body copy (Figma node 3311:1657)
+        Same Light-DOM / idempotent-render pattern as the other components.
+        Observed attributes let pages override the heading and the three
+        body paragraphs without editing JS — mirrors the Hero component's
+        attribute-driven API.
+        Section is exposed as the `#who-we-are` anchor so the navbar's
+        WHO WE ARE link scrolls here.
+      */
+      class OurStory extends HTMLElement {
+        static get observedAttributes() {
+          return ["heading", "paragraph-1", "paragraph-2", "paragraph-3"];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          const selectorByAttr = {
+            "heading": '[data-role="heading"]',
+            "paragraph-1": '[data-role="p1"]',
+            "paragraph-2": '[data-role="p2"]',
+            "paragraph-3": '[data-role="p3"]',
+          };
+          const el = this.querySelector(selectorByAttr[name]);
+          if (el) el.textContent = newValue || "";
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const heading = this.#attr("heading", "OUR STORY");
+          const p1 = this.#attr(
+            "paragraph-1",
+            "After more than four decades as a registered nurse, during one quiet afternoon, a few baking videos on YouTube opened the door to something new."
+          );
+          const p2 = this.#attr(
+            "paragraph-2",
+            "What began as a simple interest soon became a passion she poured herself into\u2014learning, practicing, and perfecting her craft. Her eye for detail, shaped by years of knitting and sewing, naturally found its place in every swirl of frosting and every finished cupcake."
+          );
+          const p3 = this.#attr(
+            "paragraph-3",
+            "Today, she blends that lifelong craftsmanship with her love for baking, creating something truly special to share with others."
+          );
+
+          this.innerHTML = `
+            <!--
+              Our Story section (Figma 3311:1652, Mask Group 15).
+              Layered from back to front:
+                Path 19 vector background → masked photo overlay → decorative
+                ampersand logo → heading + body copy.
+              The section is the page's #who-we-are landmark and is
+              labelled by its <h2> so screen readers announce "Our Story".
+              Layout is now a real responsive flow (per context.md §4
+              step 2 / §5): breakpoint padding sizes the section, the
+              heading and body flow centered inside a max-w container,
+              and the three decorative layers (vector shape, masked
+              photo, cupcake logo) sit absolutely behind the content.
+            -->
+            <section
+              id="who-we-are"
+              aria-labelledby="our-story-heading"
+              class="relative w-full overflow-hidden
+                     px-4 sm:px-6 md:px-10 lg:px-14
+                     py-16 sm:py-20 md:py-28 lg:py-36 xl:py-44"
+              data-node-id="3311:1652"
+              data-name="Mask Group 15"
+            >
+              <!-- Path 19 — the vector shape background (pink). Decorative. -->
+              <div
+                class="absolute inset-0 -z-30"
+                aria-hidden="true"
+                data-node-id="3311:1645"
+                data-name="Path 19"
+              >
+                <img
+                  alt=""
+                  aria-hidden="true"
+                  class="block size-full object-cover"
+                  src="https://www.figma.com/api/mcp/asset/dd94494b-9a16-49e2-88c7-1fc8067c678f"
+                />
+              </div>
+
+              <!-- Mask Group 15 — masked photo overlay at 5% opacity. Decorative. -->
+              <div
+                class="story-photo absolute inset-0 -z-20 opacity-5 pointer-events-none"
+                aria-hidden="true"
+                data-node-id="3311:1650"
+                data-name="2025_HOLIDAY_CUPCAKES_002"
+              >
+                <img
+                  alt=""
+                  aria-hidden="true"
+                  class="block size-full object-cover pointer-events-none"
+                  src="https://www.figma.com/api/mcp/asset/997aaccf-e0a5-48fe-9a70-672cdd07e9e7"
+                />
+              </div>
+
+              <!-- Decorative cupcake ampersand logo behind the text.
+                   Figma node 3311:1661. Centered behind the foreground
+                   stack so it anchors visually at every viewport size. -->
+              <img
+                alt=""
+                aria-hidden="true"
+                src="https://www.figma.com/api/mcp/asset/5673b26c-4811-40f6-8d6f-7628a757dca3"
+                class="absolute inset-0 m-auto -z-10
+                       w-2/3 max-w-3xl aspect-[929/864]
+                       object-contain pointer-events-none opacity-90"
+                data-node-id="3311:1661"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16"
+              />
+
+              <!-- Foreground content: heading + three body paragraphs.
+                   Wrapper uses position: relative (no z-index needed
+                   since the decorative layers above all use -z-*).
+                   Inner column caps text width with max-w-3xl. -->
+              <div
+                class="relative mx-auto max-w-3xl flex flex-col items-center
+                       gap-6 sm:gap-8 md:gap-10 lg:gap-12"
+              >
+                <h2
+                  id="our-story-heading"
+                  data-role="heading"
+                  class="m-0 text-center text-white font-normal leading-normal
+                         text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl
+                         drop-shadow-lg"
+                  data-node-id="3311:1653"
+                ></h2>
+
+                <div
+                  class="text-center text-white font-normal leading-snug drop-shadow-md
+                         text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+                         flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-10"
+                  data-node-id="3311:1657"
+                >
+                  <p data-role="p1" class="m-0"></p>
+                  <p data-role="p2" class="m-0"></p>
+                  <p data-role="p3" class="m-0"></p>
+                </div>
+              </div>
+            </section>
+          `;
+
+          // textContent injection escapes any HTML in attribute values, so the
+          // component is safe to drive from user-controlled data.
+          this.querySelector('[data-role="heading"]').textContent = heading;
+          this.querySelector('[data-role="p1"]').textContent = p1;
+          this.querySelector('[data-role="p2"]').textContent = p2;
+          this.querySelector('[data-role="p3"]').textContent = p3;
+        }
+      }
+
+      if (!customElements.get("our-story")) {
+        customElements.define("our-story", OurStory);
+      }
+
+      /*
+        CupcakesBanner — Figma 3311:1455 ("Rectangle 2" brand-blue band)
+        + 3311:1461 ("CUPCAKES" headline, Inter Regular 110px white) +
+        four decorative ampersand logos:
+          - 3311:1473 / 3311:1474 (big amps flanking the band)
+          - 3311:1468 / 3311:1472 (small amps between big amps and the
+            headline)
+        Figma rect: x=0 y=2667 1920×225, aspect 1920/225.
+        The headline is announced by screen readers; all four ampersand
+        logos are purely decorative and marked aria-hidden.
+        Same Light-DOM / idempotent-render pattern as the other components.
+      */
+      class CupcakesBanner extends HTMLElement {
+        static get observedAttributes() {
+          return ["headline"];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          if (name === "headline") {
+            const el = this.querySelector('[data-role="headline"]');
+            if (el) el.textContent = newValue || "";
+          }
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const headline = this.#attr("headline", "CUPCAKES");
+
+          this.innerHTML = `
+            <!--
+              CUPCAKES banner section.
+              Brand-blue band with top/bottom border, height steps mirror the
+              sibling <small-banner> (Figma 3311:1431) so the two flavor/title
+              bands feel like a family. Layout is a normal flex row:
+                [big amp] [small amp] ["CUPCAKES" headline] [small amp] [big amp]
+              with the heading taking the available space (\`flex-1\`) and the
+              decorative glyphs sized by height + intrinsic aspect ratio (the
+              Figma assets are 241.302 × 224.46 and 117.423 × 86.55).
+              All four amps are decorative and aria-hidden.
+            -->
+            <section
+              class="w-full bg-brand-blue border-y border-brand-border
+                     h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32
+                     flex items-center justify-center
+                     gap-3 sm:gap-4 md:gap-6 lg:gap-10
+                     px-3 sm:px-4 md:px-6 lg:px-10"
+              aria-label="Cupcakes"
+              data-node-id="3311:1455"
+              data-name="Rectangle 2"
+            >
+              <!-- Big ampersand logo (left). Figma 241.302 × 224.46. Hugs the
+                   band's full height; width follows from aspect ratio. -->
+              <span
+                aria-hidden="true"
+                class="bg-banner-amp-big bg-no-repeat bg-contain bg-center
+                       h-full aspect-[241/224] shrink-0 pointer-events-none"
+                data-node-id="3311:1473"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16 (left)"
+              ></span>
+
+              <!-- Small ampersand glyph (left). Figma 117.423 × 86.55. Sized
+                   to about a third of the band height to echo Figma's
+                   86.55/225 ≈ 38% ratio. -->
+              <span
+                aria-hidden="true"
+                class="bg-banner-amp-small bg-no-repeat bg-contain bg-center
+                       h-1/3 aspect-[117/86] shrink-0 pointer-events-none"
+                data-node-id="3311:1472"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (left)"
+              ></span>
+
+              <!-- Headline "CUPCAKES". Figma: Inter Regular 110px white,
+                   centered. Painted size after the reference's 0.625 scale
+                   is ~69px ≈ text-6xl (60); we step the responsive scale
+                   down at smaller breakpoints. \`flex-1\` lets it take the
+                   space between the two amps; \`min-w-0\` keeps it shrinkable. -->
+              <h2
+                data-role="headline"
+                class="flex-1 min-w-0 m-0 text-center text-white font-normal
+                       leading-none whitespace-nowrap drop-shadow-lg
+                       text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+                data-node-id="3311:1461"
+              ></h2>
+
+              <!-- Small ampersand glyph (right). -->
+              <span
+                aria-hidden="true"
+                class="bg-banner-amp-small bg-no-repeat bg-contain bg-center
+                       h-1/3 aspect-[117/86] shrink-0 pointer-events-none"
+                data-node-id="3311:1468"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (right)"
+              ></span>
+
+              <!-- Big ampersand logo (right). -->
+              <span
+                aria-hidden="true"
+                class="bg-banner-amp-big bg-no-repeat bg-contain bg-center
+                       h-full aspect-[241/224] shrink-0 pointer-events-none"
+                data-node-id="3311:1474"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16 (right)"
+              ></span>
+            </section>
+          `;
+
+          // textContent escapes any HTML in attribute values — safe to drive
+          // from user-controlled data.
+          this.querySelector('[data-role="headline"]').textContent = headline;
+        }
+      }
+
+      if (!customElements.get("cupcakes-banner")) {
+        customElements.define("cupcakes-banner", CupcakesBanner);
+      }
+
+      /*
+        CupcakeCarousel — Figma 3311:1475/1476/1477 (three product cards)
+        + 3311:1479 (caption) + 3311:1612 ("OTHER OPTIONS" button).
+        Three hard-coded flavor cards (Chocolate, Butter Pecan, Carrot)
+        rendered into a responsive grid. Each card shows: masked cupcake
+        photo, flavor name, description, price, and an ORDER NOW pill.
+        Below the grid sits a single OTHER OPTIONS pill that links out to
+        the broader cupcake menu.
+        Caption, the per-card ORDER NOW destinations, and the OTHER
+        OPTIONS link/label are attribute-driven so pages can override
+        them without editing JS.
+        Same Light-DOM / idempotent-render pattern as the other components.
+        The outer <section> is exposed as the `#order` anchor so the navbar
+        and hero ORDER NOW links scroll here.
+      */
+      class CupcakeCarousel extends HTMLElement {
+        static get observedAttributes() {
+          return [
+            "caption",
+            "order-href",
+            "other-options-href",
+            "other-options-label",
+          ];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          if (name === "caption") {
+            const el = this.querySelector('[data-role="caption"]');
+            if (el) el.textContent = newValue || "";
+          } else if (name === "order-href") {
+            this.querySelectorAll('[data-role="order"]').forEach((a) =>
+              a.setAttribute("href", newValue || "#")
+            );
+          } else if (name === "other-options-href") {
+            const el = this.querySelector('[data-role="other-options"]');
+            if (el) el.setAttribute("href", newValue || "#");
+          } else if (name === "other-options-label") {
+            const el = this.querySelector(
+              '[data-role="other-options-label"]'
+            );
+            if (el) el.textContent = newValue || "";
+          }
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const caption = this.#attr(
+            "caption",
+            "Soft, sweet, and baked to delicate perfection!"
+          );
+          const orderHref = this.#attr("order-href", "#order");
+          const otherOptionsHref = this.#attr(
+            "other-options-href",
+            "#cupcakes"
+          );
+          const otherOptionsLabel = this.#attr(
+            "other-options-label",
+            "OTHER OPTIONS"
+          );
+
+          // Per-card data. `bg` maps to the @theme flavor tokens defined
+          // above (--color-flavor-*). Figma node IDs are retained for
+          // traceability (cards 3311:1475/1476/1477, photo nodes
+          // 3311:1513/1517/1521 — each card has its own photo node even
+          // though the current Figma export reuses the same asset URL).
+          // Names use Figma's title-case (3311:1544/1548/1552), not all-caps.
+          const flavors = [
+            {
+              key: "chocolate",
+              name: "Chocolate",
+              bg: "bg-flavor-chocolate",
+              nodeCard: "3311:1477",
+              nodePhoto: "3311:1521",
+              photoSrc:
+                "https://www.figma.com/api/mcp/asset/5f4882fa-2535-4834-b139-9ef1b2ab265e",
+            },
+            {
+              key: "butter-pecan",
+              name: "Butter Pecan",
+              bg: "bg-flavor-butter-pecan",
+              nodeCard: "3311:1476",
+              nodePhoto: "3311:1517",
+              photoSrc:
+                "https://www.figma.com/api/mcp/asset/5f4882fa-2535-4834-b139-9ef1b2ab265e",
+            },
+            {
+              key: "carrot",
+              name: "Carrot",
+              bg: "bg-flavor-carrot",
+              nodeCard: "3311:1475",
+              nodePhoto: "3311:1513",
+              photoSrc:
+                "https://www.figma.com/api/mcp/asset/5f4882fa-2535-4834-b139-9ef1b2ab265e",
+            },
+          ];
+
+          // Shared copy across all three cards (Figma renders the same
+          // description + price block under each cupcake).
+          const description =
+            "Sweetened just right and topped with cream cheese frosting.";
+          const price = "$3.25 each";
+          const orderLabel = "ORDER NOW";
+
+          const cards = flavors
+            .map(
+              (f) => `
+              <article
+                class="flex flex-col items-center text-center text-white
+                       ${f.bg} border border-brand-border
+                       rounded-2xl sm:rounded-3xl
+                       p-6 sm:p-8 md:p-10
+                       gap-4 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-10"
+                data-node-id="${f.nodeCard}"
+                data-flavor="${f.key}"
+              >
+                <!-- Masked cupcake photo. Each card has its own Figma
+                     photo node (3311:1513/1517/1521); today the export
+                     reuses one URL across all three. Aspect 7/6 (≈Figma
+                     mask 413×357) keeps the silhouette in its native
+                     landscape crop instead of forcing a square. -->
+                <div class="w-full max-w-xs aspect-[7/6]"
+                     aria-hidden="true"
+                     data-node-id="${f.nodePhoto}">
+                  <img
+                    class="cupcake-photo"
+                    alt=""
+                    aria-hidden="true"
+                    src="${f.photoSrc}"
+                  />
+                </div>
+
+                <!-- Flavor name. \`whitespace-nowrap\` keeps multi-word
+                     names like "Butter Pecan" on a single line. -->
+                <h3
+                  data-role="flavor-name"
+                  class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
+                         drop-shadow-md font-medium leading-none m-0
+                         whitespace-nowrap"
+                ></h3>
+
+                <p
+                  data-role="description"
+                  class="text-sm sm:text-base md:text-lg lg:text-xl
+                         font-medium leading-snug max-w-sm m-0"
+                ></p>
+
+                <p
+                  data-role="price"
+                  class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl
+                         font-medium leading-none drop-shadow-sm m-0"
+                ></p>
+
+                <a
+                  data-role="order"
+                  href="${orderHref}"
+                  class="cupcake-cta"
+                  aria-label="Order ${f.name} cupcakes now"
+                ><span data-role="order-label"></span></a>
+              </article>
+            `
+            )
+            .join("");
+
+          this.innerHTML = `
+            <section
+              id="order"
+              aria-labelledby="cupcake-carousel-caption"
+              class="w-full bg-white
+                     px-4 sm:px-6 md:px-10 lg:px-14
+                     py-8 sm:py-12 md:py-16 lg:py-20"
+              data-name="Cupcake carousel"
+            >
+              <div class="mx-auto max-w-screen-2xl flex flex-col items-center
+                          gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+                <!-- Caption above the grid (Figma 3311:1479). -->
+                <h2
+                  id="cupcake-carousel-caption"
+                  data-role="caption"
+                  class="m-0 text-center text-brand-pink font-medium leading-tight
+                         text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+                  data-node-id="3311:1479"
+                ></h2>
+
+                <!-- Responsive grid: stack on mobile, 2-up on tablet,
+                     3-up on desktop. -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+                            gap-6 sm:gap-8 md:gap-10 w-full">${cards}</div>
+
+                <!-- OTHER OPTIONS button (Figma 3311:1612). Sits below
+                     the three product cards and links out to the broader
+                     cupcake menu / catalog. -->
+                <a
+                  data-role="other-options"
+                  href="${otherOptionsHref}"
+                  class="cupcake-other-options"
+                  data-node-id="3311:1612"
+                  data-name="OTHER OPTIONS button"
+                ><span data-role="other-options-label"></span></a>
+              </div>
+            </section>
+          `;
+
+          // textContent injection after innerHTML keeps the component safe
+          // from HTML in attribute values (per context.md). Caption uses
+          // the attribute value; per-card text uses the shared/flavor data.
+          const captionEl = this.querySelector('[data-role="caption"]');
+          if (captionEl) captionEl.textContent = caption;
+
+          const nameEls = this.querySelectorAll('[data-role="flavor-name"]');
+          nameEls.forEach((el, i) => {
+            el.textContent = flavors[i].name;
+          });
+          this.querySelectorAll('[data-role="description"]').forEach((el) => {
+            el.textContent = description;
+          });
+          this.querySelectorAll('[data-role="price"]').forEach((el) => {
+            el.textContent = price;
+          });
+          this.querySelectorAll('[data-role="order-label"]').forEach((el) => {
+            el.textContent = orderLabel;
+          });
+
+          const otherOptionsEl = this.querySelector(
+            '[data-role="other-options-label"]'
+          );
+          if (otherOptionsEl) otherOptionsEl.textContent = otherOptionsLabel;
+        }
+      }
+
+      if (!customElements.get("cupcake-carousel")) {
+        customElements.define("cupcake-carousel", CupcakeCarousel);
+      }
+
+      /*
+        PersonalCakes — Figma 3311:1613 "PERSONAL CAKES" heading +
+        3311:1617/1618 small amp glyphs flanking the heading +
+        3311:1483 brand-pink caption + 3311:1478 big brand-blue rounded
+        card. The card composes (back-to-front): 3311:1703 decorative
+        ampersand logo, 3311:1704/1720 "Choose your flavor!" headline,
+        3311:1715 personal cake photo, and 3311:1716 "$25" price. Below
+        the card sits a flex row of two flavor pills (3311:1697/1702
+        Chocolate, 3311:1709/1714 Vanilla).
+        Same Light-DOM / idempotent-render pattern as the other
+        components. The outer <section> is exposed as the
+        \`#personal-cakes\` anchor so the cupcake-carousel's OTHER
+        OPTIONS button (and external links) can scroll here.
+      */
+      class PersonalCakes extends HTMLElement {
+        static get observedAttributes() {
+          return [
+            "heading",
+            "caption",
+            "flavor-headline",
+            "price",
+            "chocolate-href",
+            "chocolate-label",
+            "vanilla-href",
+            "vanilla-label",
+          ];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          const textTargets = {
+            "heading": '[data-role="heading"]',
+            "caption": '[data-role="caption"]',
+            "flavor-headline": '[data-role="flavor-headline"]',
+            "price": '[data-role="price"]',
+            "chocolate-label": '[data-role="chocolate-label"]',
+            "vanilla-label": '[data-role="vanilla-label"]',
+          };
+          const hrefTargets = {
+            "chocolate-href": '[data-role="chocolate"]',
+            "vanilla-href": '[data-role="vanilla"]',
+          };
+          if (textTargets[name]) {
+            const el = this.querySelector(textTargets[name]);
+            if (el) el.textContent = newValue || "";
+          } else if (hrefTargets[name]) {
+            const el = this.querySelector(hrefTargets[name]);
+            if (el) el.setAttribute("href", newValue || "#");
+          }
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const heading = this.#attr("heading", "PERSONAL CAKES");
+          const caption = this.#attr(
+            "caption",
+            "Small in size but big in bringing joy to each bite!"
+          );
+          const flavorHeadline = this.#attr(
+            "flavor-headline",
+            "Choose your flavor!"
+          );
+          const price = this.#attr("price", "$25");
+          const chocolateHref = this.#attr("chocolate-href", "#order");
+          const chocolateLabel = this.#attr("chocolate-label", "Chocolate");
+          const vanillaHref = this.#attr("vanilla-href", "#order");
+          const vanillaLabel = this.#attr("vanilla-label", "Vanilla");
+
+          this.innerHTML = `
+            <section
+              id="personal-cakes"
+              aria-labelledby="personal-cakes-heading"
+              class="w-full bg-white
+                     px-4 sm:px-6 md:px-10 lg:px-14
+                     py-8 sm:py-12 md:py-16 lg:py-20"
+              data-node-id="3311:1456"
+              data-name="Personal cakes"
+            >
+              <div class="mx-auto max-w-screen-2xl flex flex-col items-center
+                          gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+                <!-- Heading row: small amp + "PERSONAL CAKES" + small amp
+                     (Figma 3311:1613/1617/1618). The amp glyphs are
+                     decorative; the visible name is announced by the h2. -->
+                <div class="flex items-center justify-center
+                            gap-3 sm:gap-4 md:gap-6 lg:gap-10 w-full">
+                  <img
+                    alt=""
+                    aria-hidden="true"
+                    src="https://www.figma.com/api/mcp/asset/5ca4fc1f-1772-4337-a6eb-0aad5c1d41db"
+                    class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
+                           object-contain shrink-0 pointer-events-none"
+                    data-node-id="3311:1617"
+                    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (left)"
+                  />
+                  <h2
+                    id="personal-cakes-heading"
+                    data-role="heading"
+                    class="m-0 text-center text-brand-blue font-normal
+                           leading-none whitespace-nowrap
+                           text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+                    data-node-id="3311:1613"
+                  ></h2>
+                  <img
+                    alt=""
+                    aria-hidden="true"
+                    src="https://www.figma.com/api/mcp/asset/5ca4fc1f-1772-4337-a6eb-0aad5c1d41db"
+                    class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
+                           object-contain shrink-0 pointer-events-none"
+                    data-node-id="3311:1618"
+                    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (right)"
+                  />
+                </div>
+
+                <!-- Pink caption under the heading (Figma 3311:1483). -->
+                <p
+                  data-role="caption"
+                  class="m-0 text-center text-brand-pink font-medium leading-tight
+                         text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+                  data-node-id="3311:1483"
+                ></p>
+
+                <!-- Big brand-blue rounded card (Figma 3311:1478).
+                     Real responsive grid (per context.md §4 step 2 / §5):
+                     a header row holds the "Choose your flavor!" headline
+                     spanning the full card width; under it, a 3-column
+                     row on md+ holds [Chocolate pill] [photo + $25 price]
+                     [Vanilla pill]. On mobile (single column), the photo +
+                     price stack between the two pills via order-* utilities.
+                     The decorative ampersand (Figma 3311:1703) is layered
+                     absolutely behind every foreground element with -z-0. -->
+                <div
+                  class="relative w-full bg-brand-blue border border-brand-border
+                         rounded-2xl sm:rounded-3xl overflow-hidden
+                         px-6 sm:px-10 md:px-14 lg:px-20
+                         py-10 sm:py-12 md:py-16 lg:py-20"
+                  data-node-id="3311:1478"
+                  data-name="Personal cakes card"
+                >
+                  <!-- Decorative ampersand (Figma 3311:1703). Sits behind
+                       every other layer; aria-hidden. -->
+                  <img
+                    alt=""
+                    aria-hidden="true"
+                    src="https://www.figma.com/api/mcp/asset/f6c8501c-a863-40a4-a322-88b45be50d2c"
+                    class="absolute inset-0 m-auto -z-0
+                           w-3/4 max-w-3xl aspect-[1100/1023]
+                           object-contain pointer-events-none opacity-90"
+                    data-node-id="3311:1703"
+                    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (decorative)"
+                  />
+
+                  <!-- Foreground grid. The relative wrapper lifts above the
+                       absolutely-positioned decorative layer (which uses
+                       -z-0). -->
+                  <div
+                    class="relative grid grid-cols-1 md:grid-cols-3
+                           gap-6 sm:gap-8 md:gap-10 lg:gap-12
+                           items-center"
+                  >
+                    <!-- "Choose your flavor!" headline (Figma 3311:1704).
+                         Spans the full grid width at the top. -->
+                    <h3
+                      data-role="flavor-headline"
+                      class="md:col-span-3 order-1
+                             m-0 text-center text-white font-medium
+                             leading-none drop-shadow-md
+                             text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+                      data-node-id="3311:1704"
+                    ></h3>
+
+                    <!-- Chocolate pill (Figma 3311:1702). Left column on
+                         md+, second item on mobile (after headline). -->
+                    <a
+                      data-role="chocolate"
+                      href="${chocolateHref}"
+                      class="order-3 md:order-2
+                             inline-flex items-center justify-center
+                             w-full max-w-xs mx-auto md:mx-0
+                             py-3 sm:py-4 md:py-5 lg:py-6
+                             px-6 sm:px-8 md:px-10
+                             bg-white text-flavor-chocolate font-medium no-underline text-center
+                             border border-brand-border rounded-md
+                             text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+                             transition-[transform,filter] duration-150 ease-out
+                             hover:brightness-95 hover:-translate-y-px
+                             focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+                      data-node-id="3311:1702"
+                      data-name="Chocolate flavor pill"
+                    ><span data-role="chocolate-label"></span></a>
+
+                    <!-- Center stack: cake photo + $25 price. On mobile
+                         this appears between the two pills; on md+ it's
+                         the middle column. -->
+                    <div class="order-2 md:order-3 flex flex-col items-center
+                                gap-4 sm:gap-6 md:gap-8">
+                      <img
+                        alt=""
+                        aria-hidden="true"
+                        src="https://www.figma.com/api/mcp/asset/1cafca12-8c37-4e45-a866-6705fdb68582"
+                        class="w-full max-w-md aspect-[815/638]
+                               object-contain drop-shadow-lg pointer-events-none"
+                        data-node-id="3311:1715"
+                        data-name="C&C_PERSONAL_CAKE_PINK_003"
+                      />
+                      <p
+                        data-role="price"
+                        class="m-0 text-center text-white font-normal leading-none drop-shadow-md
+                               text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
+                        data-node-id="3311:1716"
+                      ></p>
+                    </div>
+
+                    <!-- Vanilla pill (Figma 3311:1714). Right column on
+                         md+, last item on mobile. -->
+                    <a
+                      data-role="vanilla"
+                      href="${vanillaHref}"
+                      class="order-4
+                             inline-flex items-center justify-center
+                             w-full max-w-xs mx-auto md:mx-0
+                             py-3 sm:py-4 md:py-5 lg:py-6
+                             px-6 sm:px-8 md:px-10
+                             bg-white text-brand-pink font-medium no-underline text-center
+                             border border-brand-border rounded-md
+                             text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+                             transition-[transform,filter] duration-150 ease-out
+                             hover:brightness-95 hover:-translate-y-px
+                             focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+                      data-node-id="3311:1714"
+                      data-name="Vanilla flavor pill"
+                    ><span data-role="vanilla-label"></span></a>
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+
+          // textContent injection after innerHTML keeps attribute values
+          // safe from HTML interpretation (per context.md).
+          this.querySelector('[data-role="heading"]').textContent = heading;
+          this.querySelector('[data-role="caption"]').textContent = caption;
+          this.querySelector('[data-role="flavor-headline"]').textContent =
+            flavorHeadline;
+          this.querySelector('[data-role="price"]').textContent = price;
+          this.querySelector('[data-role="chocolate-label"]').textContent =
+            chocolateLabel;
+          this.querySelector('[data-role="vanilla-label"]').textContent =
+            vanillaLabel;
+        }
+      }
+
+      if (!customElements.get("personal-cakes")) {
+        customElements.define("personal-cakes", PersonalCakes);
+      }
+
+      /*
+        FollowUs — Figma 3311:1627 ("FOLLOW US:" pink heading) +
+        3311:1626 (Group 47, two-icon social row: 3311:1625 Facebook
+        path glyph + 3311:1624 Instagram path glyph).
+        Figma reference:
+          Heading 3311:1627 — x=0 y=6097 1920×163, Inter Regular 135px
+            color #eb9cf9 (brand-pink), centered.
+          Icon group 3311:1626 — x=780 y=6392.25 360.7×141.5, centered
+            on page. Facebook (3311:1625) is the left icon, Instagram
+            (3311:1624) is the right icon.
+        Same Light-DOM / idempotent-render pattern as the rest of the
+        page; href attributes drive the two outbound links.
+      */
+      class FollowUs extends HTMLElement {
+        static get observedAttributes() {
+          return ["heading", "facebook-href", "instagram-href"];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          if (name === "heading") {
+            const el = this.querySelector('[data-role="heading"]');
+            if (el) el.textContent = newValue || "";
+          } else if (name === "facebook-href") {
+            const el = this.querySelector('[data-role="facebook"]');
+            if (el) el.setAttribute("href", newValue || "#");
+          } else if (name === "instagram-href") {
+            const el = this.querySelector('[data-role="instagram"]');
+            if (el) el.setAttribute("href", newValue || "#");
+          }
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const heading = this.#attr("heading", "FOLLOW US:");
+          const facebookHref = this.#attr("facebook-href", "#");
+          const instagramHref = this.#attr("instagram-href", "#");
+
+          this.innerHTML = `
+            <section
+              aria-labelledby="follow-us-heading"
+              class="w-full bg-white
+                     px-4 sm:px-6 md:px-10 lg:px-14
+                     py-10 sm:py-14 md:py-20 lg:py-24"
+              data-node-id="3311:1627"
+              data-name="Follow us"
+            >
+              <div class="mx-auto max-w-screen-2xl flex flex-col items-center
+                          gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+                <!-- "FOLLOW US:" heading. Figma renders it at Inter
+                     Regular 135px brand-pink, centered across the full
+                     1920px page. -->
+                <h2
+                  id="follow-us-heading"
+                  data-role="heading"
+                  class="m-0 text-center text-brand-pink font-normal
+                         leading-none whitespace-nowrap
+                         text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl"
+                  data-node-id="3311:1627"
+                ></h2>
+
+                <!-- Social row (Figma 3311:1626). Two icons side-by-side
+                     with the same height; left = Facebook (3311:1625),
+                     right = Instagram (3311:1624). Each is rendered as a
+                     focusable <a> wrapping the asset <img>; hover/focus
+                     animation mirrors the navbar icons. -->
+                <div
+                  class="flex items-center justify-center
+                         gap-10 sm:gap-12 md:gap-16 lg:gap-20"
+                  data-node-id="3311:1626"
+                  data-name="Group 47"
+                >
+                  <a
+                    data-role="facebook"
+                    href="${facebookHref}"
+                    class="inline-flex items-center justify-center shrink-0
+                           h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 aspect-square
+                           transition-[transform,filter] duration-150 ease-out
+                           hover:scale-105 hover:brightness-90
+                           focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden"
+                    aria-label="Follow us on Facebook"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-node-id="3311:1625"
+                    data-name="Path 18 (Facebook)"
+                  >
+                    <img
+                      alt=""
+                      aria-hidden="true"
+                      class="block size-full object-contain pointer-events-none"
+                      src="https://www.figma.com/api/mcp/asset/66a2565f-6015-48af-a7a3-e6b6d42cf102"
+                    />
+                  </a>
+                  <a
+                    data-role="instagram"
+                    href="${instagramHref}"
+                    class="inline-flex items-center justify-center shrink-0
+                           h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 aspect-square
+                           transition-[transform,filter] duration-150 ease-out
+                           hover:scale-105 hover:brightness-90
+                           focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden"
+                    aria-label="Follow us on Instagram"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-node-id="3311:1624"
+                    data-name="Group 46 (Instagram)"
+                  >
+                    <img
+                      alt=""
+                      aria-hidden="true"
+                      class="block size-full object-contain pointer-events-none"
+                      src="https://www.figma.com/api/mcp/asset/e0ac137f-766b-4fcc-b240-3d82b195d810"
+                    />
+                  </a>
+                </div>
+              </div>
+            </section>
+          `;
+
+          this.querySelector('[data-role="heading"]').textContent = heading;
+        }
+      }
+
+      if (!customElements.get("follow-us")) {
+        customElements.define("follow-us", FollowUs);
+      }
+
+      /*
+        Footer — Figma 3311:1456 (Rectangle 37, brand-blue band) +
+        3311:1635/1631/1639 (WHO WE ARE / ORDER NOW / BACK TO TOP nav
+        links, Inter 28px white-ish, x at 423/794/1155, y=6778) +
+        3311:1643/1644 (5×78 vertical dividers between links at x=780
+        and x=1141) + 3311:1670 (copyright line at y=6886) + 3311:1669
+        (small ampersand logo at x=1701.6 y=6871, 161×50).
+        Figma rect: x=0 y=6698 1920×280, bg #87cefa (brand-blue),
+        border #707070 (close to brand-border #a0a0a0 token; reuse).
+        Same Light-DOM / idempotent-render pattern.
+        Registered as `<page-footer>` — hyphenated alias for the
+        page-level footer (HTML's own `<footer>` cannot be used as a
+        custom-element tag and one-word custom tags violate the HTML spec).
+      */
+      class Footer extends HTMLElement {
+        static get observedAttributes() {
+          return ["who-href", "order-href", "top-href", "copyright"];
+        }
+
+        connectedCallback() {
+          if (this.childElementCount === 0) this.#render();
+        }
+
+        attributeChangedCallback(name, _oldValue, newValue) {
+          if (this.childElementCount === 0) return;
+          const hrefTargets = {
+            "who-href": '[data-role="who"]',
+            "order-href": '[data-role="order"]',
+            "top-href": '[data-role="top"]',
+          };
+          if (hrefTargets[name]) {
+            const el = this.querySelector(hrefTargets[name]);
+            if (el) el.setAttribute("href", newValue || "#");
+          } else if (name === "copyright") {
+            const el = this.querySelector('[data-role="copyright"]');
+            if (el) el.textContent = newValue || "";
+          }
+        }
+
+        #attr(name, fallback) {
+          return this.getAttribute(name) || fallback;
+        }
+
+        #render() {
+          const whoHref = this.#attr("who-href", "#who-we-are");
+          const orderHref = this.#attr("order-href", "#order");
+          const topHref = this.#attr("top-href", "#top");
+          const copyright = this.#attr(
+            "copyright",
+            "Copyright @cups&cakes. All Rights Reserved."
+          );
+
+          this.innerHTML = `
+            <footer
+              class="relative w-full bg-brand-blue border-t border-brand-border
+                     min-h-32 sm:min-h-36 md:min-h-40 lg:min-h-44 xl:min-h-48
+                     flex flex-col items-center justify-center
+                     gap-3 sm:gap-4 md:gap-5 lg:gap-6
+                     px-4 sm:px-6 md:px-10 lg:px-14
+                     py-6 sm:py-8 md:py-10 lg:py-12"
+              data-node-id="3311:1456"
+              data-name="Rectangle 37 (footer)"
+              aria-label="Site footer"
+            >
+              <!-- Nav row: WHO WE ARE | ORDER NOW | BACK TO TOP.
+                   Figma uses 5×78 vertical dividers between the links
+                   (3311:1643 between WHO/ORDER, 3311:1644 between
+                   ORDER/TOP). We model them as full-height white bars
+                   with a fixed width and a height that scales with the
+                   surrounding text. -->
+              <nav
+                class="flex items-center justify-center
+                       gap-4 sm:gap-6 md:gap-8 lg:gap-12"
+                aria-label="Footer"
+              >
+                <a
+                  data-role="who"
+                  href="${whoHref}"
+                  class="text-white font-medium no-underline whitespace-nowrap
+                         text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl
+                         transition-[transform,filter] duration-150 ease-out
+                         hover:brightness-90 hover:-translate-y-px
+                         focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
+                  data-node-id="3311:1635"
+                >WHO WE ARE</a>
+                <span
+                  aria-hidden="true"
+                  class="inline-block bg-white shrink-0 w-px sm:w-0.5
+                         h-5 sm:h-6 md:h-8 lg:h-10 xl:h-12
+                         rounded-full"
+                  data-node-id="3311:1643"
+                  data-name="Rectangle 38 (divider)"
+                ></span>
+                <a
+                  data-role="order"
+                  href="${orderHref}"
+                  class="text-white font-medium no-underline whitespace-nowrap
+                         text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl
+                         transition-[transform,filter] duration-150 ease-out
+                         hover:brightness-90 hover:-translate-y-px
+                         focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
+                  data-node-id="3311:1631"
+                >ORDER NOW</a>
+                <span
+                  aria-hidden="true"
+                  class="inline-block bg-white shrink-0 w-px sm:w-0.5
+                         h-5 sm:h-6 md:h-8 lg:h-10 xl:h-12
+                         rounded-full"
+                  data-node-id="3311:1644"
+                  data-name="Rectangle 39 (divider)"
+                ></span>
+                <a
+                  data-role="top"
+                  href="${topHref}"
+                  class="text-white font-medium no-underline whitespace-nowrap
+                         text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl
+                         transition-[transform,filter] duration-150 ease-out
+                         hover:brightness-90 hover:-translate-y-px
+                         focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
+                  data-node-id="3311:1639"
+                >BACK TO TOP</a>
+              </nav>
+
+              <!-- Copyright + bottom-right ampersand logo row.
+                   The copyright sits centered on the page; the small
+                   ampersand glyph (Figma 3311:1669) is absolutely
+                   positioned to the bottom-right of the band so it
+                   doesn't push the copyright off-center. -->
+              <p
+                data-role="copyright"
+                class="m-0 text-center text-white font-normal
+                       text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl"
+                data-node-id="3311:1670"
+              ></p>
+
+              <img
+                alt=""
+                aria-hidden="true"
+                src="https://www.figma.com/api/mcp/asset/af686d30-3dd3-4e54-a66c-fd6699fcd795"
+                class="absolute right-4 sm:right-6 md:right-10 lg:right-14
+                       bottom-3 sm:bottom-4 md:bottom-5 lg:bottom-6
+                       h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14
+                       aspect-[161/50] object-contain pointer-events-none
+                       opacity-90"
+                data-node-id="3311:1669"
+                data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_17 (footer mark)"
+              />
+            </footer>
+          `;
+
+          this.querySelector('[data-role="copyright"]').textContent = copyright;
+        }
+      }
+
+      if (!customElements.get("page-footer")) {
+        customElements.define("page-footer", Footer);
+      }
+    </script>
+  </body>
+</html>

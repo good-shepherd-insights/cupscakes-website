@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cups &amp; Cakes — Home</title>
+
+    <!-- Tailwind CSS v4 (browser build, on-the-fly compiler) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- Inter font (Medium 500 used for the navbar) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      Tailwind v4 theme tokens.
+      Anything declared in @theme becomes a utility — e.g. `--color-brand-blue`
+      produces `text-brand-blue`, `bg-brand-blue`, `border-brand-blue`, etc.
+      Asset URLs from the Figma MCP are signed and valid ~7 days; declared
+      here as background-image tokens so they become `bg-cups-icon`,
+      `bg-heart-group`, `bg-cart-icon` utilities.
+    -->
+    <style type="text/tailwindcss">
+      @theme {
+        /* Brand palette */
+        --color-brand-blue: #87cefa;
+        --color-brand-blue-dark: #4aa6dc;
+        --color-brand-border: #707070;
+
+        /* Typography */
+        --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+        /* Figma MCP asset URLs */
+        --background-image-cups-icon: url("https://www.figma.com/api/mcp/asset/ed5742dc-b3d8-478a-809d-24818530b4bb");
+        --background-image-heart-group: url("https://www.figma.com/api/mcp/asset/8a7393a4-04a3-4b0c-b250-b5eada5df08d");
+        --background-image-cart-icon: url("https://www.figma.com/api/mcp/asset/139e7e9c-4279-47b0-a7e1-e96a042865c8");
+
+        /* Our Story background photo (Figma 3311:1652, Mask Group 15). */
+        --background-image-our-story-bg: url("https://www.figma.com/api/mcp/asset/1c28fe54-0ee2-4401-a51e-e5fe53d9dda8");
+
+        /* Our Story decorative cupcake logo (Figma 3311:1661). */
+        --background-image-story-logo: url("https://www.figma.com/api/mcp/asset/a3ef2bdc-6a76-4a15-9de2-05472eeeb40c");
+      }
+
+      /*
+        Reusable navbar utilities — v4 @utility pattern.
+        Both `nav-link` and `nav-icon` keep hover/focus visual states without
+        any layout-affecting changes (no width/height/padding shifts).
+      */
+      @utility nav-link {
+        @apply text-center font-medium text-brand-blue text-[28px] leading-normal no-underline;
+        @apply transition-[color,transform] duration-[180ms] ease-out;
+        @apply hover:text-brand-blue-dark hover:-translate-y-px;
+        @apply focus-visible:text-brand-blue-dark focus-visible:-translate-y-px focus-visible:outline-hidden;
+        @apply after:content-[''] after:absolute after:inset-x-[12%] after:-bottom-[6px] after:h-[3px] after:bg-current after:rounded-[2px] after:origin-center after:scale-x-0 after:transition-transform after:duration-[220ms] after:ease-out;
+        @apply hover:after:scale-x-100 focus-visible:after:scale-x-100;
+      }
+
+      @utility nav-icon {
+        @apply bg-no-repeat bg-contain bg-center;
+        @apply transition-[transform,opacity,filter] duration-[180ms] ease-out;
+        @apply hover:scale-[1.08] hover:brightness-[0.92];
+        @apply focus-visible:scale-[1.08] focus-visible:brightness-[0.92] focus-visible:outline-hidden;
+      }
+    </style>
+  </head>
+
+  <body class="m-0 p-0 bg-white font-sans overflow-x-hidden">
+    <!-- Responsive viewport wrapper.
+         Width: full viewport. Height is derived from the scale factor via JS so
+         the document's scroll height matches the visually-scaled canvas. -->
+    <div id="viewport" class="relative w-screen overflow-hidden">
+      <!-- Fixed-size design canvas. Scaled from top-left via the `--scale`
+           CSS variable set by JS at runtime so all Figma coordinates remain
+           pixel-perfect. -->
+      <div
+        id="designCanvas"
+        class="relative w-[1920px] h-[6978px] bg-white origin-top-left scale-[var(--scale,1)]"
+        data-node-id="3311:1429"
+        data-name="HOME PAGE – 4"
+      >
+        <!-- =========================================
+             NAVBAR — Figma node 3311:1430 (Rectangle 1)
+             Bar: 1920 × 156, white background, 1px solid #707070 border
+             ========================================= -->
+        <header
+          class="absolute left-0 top-0 w-[1920px] h-[156px] bg-white border border-brand-border"
+          data-node-id="3311:1430"
+          data-name="Navbar / Rectangle 1"
+        >
+          <!-- Logo lockup: CUPS [icon] CAKES — node 3311:1569 -->
+          <div
+            class="absolute left-[57.88px] top-[48.42px] w-[398.8px] h-[58.63px]"
+            data-node-id="3311:1569"
+            data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_13-17"
+          >
+            <!-- "CUPS" — node 3311:1557 -->
+            <span
+              class="absolute left-0 top-[0.01px] whitespace-nowrap font-medium text-brand-blue text-[46px] leading-normal tracking-[2.3px]"
+              data-node-id="3311:1557"
+              >CUPS</span
+            >
+
+            <!-- Cupcake icon between CUPS and CAKES — node 3311:1568 -->
+            <div
+              class="absolute left-[144.37px] top-[2.84px] w-[75.694px] h-[55.796px] bg-cups-icon bg-no-repeat bg-contain bg-center"
+              data-node-id="3311:1568"
+              data-name="Group 21"
+              role="img"
+              aria-label="Cups & Cakes cupcake mark"
+            ></div>
+
+            <!-- "CAKES" — node 3311:1561 -->
+            <span
+              class="absolute left-[235.8px] top-0 whitespace-nowrap font-medium text-brand-blue text-[46px] leading-normal tracking-[2.3px]"
+              data-node-id="3311:1561"
+              >CAKES</span
+            >
+          </div>
+
+          <!-- "WHO WE ARE" link — node 3311:1674 -->
+          <a
+            href="#who-we-are"
+            class="nav-link absolute left-[1042.605px] top-[61px] w-[186px]"
+            data-node-id="3311:1674"
+            >WHO WE ARE</a
+          >
+
+          <!-- "ORDER NOW" link — node 3311:1678
+               Figma width was 172px which forces a line break at 28px Inter Medium;
+               widened to match the WHO WE ARE width (186px) so it stays on one line.
+               Also kept whitespace-nowrap as belt-and-braces. -->
+          <a
+            href="#order"
+            class="nav-link absolute left-[1362.605px] top-[61px] w-[186px] whitespace-nowrap"
+            data-node-id="3311:1678"
+            >ORDER NOW</a
+          >
+
+          <!-- Heart / social cluster (Group 49) — node 3311:1689 -->
+          <a
+            href="#favorites"
+            class="nav-icon absolute left-[1617.43px] top-[60px] w-[111.961px] h-[36px] bg-heart-group"
+            data-node-id="3311:1689"
+            data-name="Group 49"
+            aria-label="Account / favorites"
+          ></a>
+
+          <!-- Cart icon — node 3311:1695 -->
+          <a
+            href="#cart"
+            class="nav-icon absolute left-[1809.81px] top-[55.23px] w-[41.479px] h-[46.541px] bg-cart-icon"
+            data-node-id="3311:1695"
+            data-name="C&C_CART_ICON"
+            aria-label="Shopping cart"
+          ></a>
+        </header>
+
+        <!-- =========================================
+             OUR STORY — Figma node 3311:1652 (Mask Group 15)
+             y=1252, full-width 1920, height 1415.
+             Background photo with overlay, decorative logo, heading, body text.
+             ========================================= -->
+        <!-- Path 19 overlay (3311:1645) — full section area. -->
+        <div
+          class="absolute left-[0.2px] top-[1252px] w-[1919.81px] h-[1415.13px]"
+          data-node-id="3311:1645"
+          data-name="Path 19"
+        >
+          <img alt="" class="absolute block inset-0 max-w-none size-full" src="https://www.figma.com/api/mcp/asset/9f2ec483-dd99-4dac-92b7-5362f4a2392f" />
+        </div>
+
+        <!-- Mask Group 15 — background photo (3311:1652). -->
+        <div
+          class="absolute left-[0.2px] top-[1252px] w-[1919.81px] h-[1415.13px]"
+          data-node-id="3311:1652"
+          data-name="Mask Group 15"
+        >
+          <!-- Mask Group 2 (3311:1651) — inner mask container. -->
+          <div class="absolute left-0 top-[1252px] w-[1920px] h-[2107px]" data-node-id="3311:1651" data-name="Mask Group 2">
+            <!-- Rectangle 6 (3311:1649) — mask background. -->
+            <div class="absolute left-0 top-[1252px] w-[1920px] h-[2107px]" data-node-id="3311:1649" data-name="Rectangle 6"></div>
+            <!-- Photo asset (3311:1650) — 2025_HOLIDAY_CUPCAKES_002. -->
+            <div
+              class="absolute left-[-619px] top-[1252px] w-[3158px] h-[2105px] opacity-5"
+              data-node-id="3311:1650"
+              data-name="2025_HOLIDAY_CUPCAKES_002"
+            >
+              <img alt="" class="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src="https://www.figma.com/api/mcp/asset/a9c1ecc2-ab64-4be0-8063-76d522fb113a" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative cupcake logo (3311:1661) — behind the text. -->
+        <div
+          class="absolute left-[495.29px] top-[1527.29px] w-[929.42px] h-[864.55px]"
+          data-node-id="3311:1661"
+          data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16"
+        >
+          <img alt="" class="absolute block inset-0 max-w-none size-full" src="https://www.figma.com/api/mcp/asset/a3ef2bdc-6a76-4a15-9de2-05472eeeb40c" />
+        </div>
+
+        <!-- "OUR STORY" heading (3311:1653). -->
+        <h2
+          class="absolute left-[512px] top-[1418px] w-[894px] h-[157px] whitespace-nowrap font-medium leading-tight not-italic text-center text-white text-[130px]"
+          data-node-id="3311:1653"
+        >OUR STORY</h2>
+
+        <!-- Body text (3311:1657). -->
+        <div
+          class="absolute left-[512px] top-[1648px] w-[896px] text-white font-normal whitespace-pre-wrap text-[45px] leading-[60px] not-italic"
+          data-node-id="3311:1657"
+        >
+          <p class="mb-0">After more than four decades as a registered nurse, during one quiet afternoon, a few baking videos on YouTube opened the door to something new. </p>
+          <p class="mb-0">What began as a simple interest soon became a passion she poured herself into—learning, practicing, and perfecting her craft. Her eye for detail, shaped by years of knitting and sewing, naturally found its place in every swirl of frosting and every finished cupcake.</p>
+          <p>Today, she blends that lifelong craftsmanship with her love for baking, creating something truly special to share with others.</p>
+        </div>
+
+        <!-- =========================================
+             OUR STORY — Figma node 3311:1652 (Mask Group 15)
+             Spans y=1252 to y=2667, ~1415px tall at 1920px wide.
+             Background photo + overlay + decorative logo + text.
+             ========================================= -->
+        <!-- Path 19 overlay (3311:1645) — full-width section background. -->
+        <div
+          class="absolute left-[0.2px] top-[1252px] w-[1919.81px] h-[1415.13px]"
+          data-node-id="3311:1645"
+          data-name="Path 19"
+        >
+          <img
+            alt=""
+            class="absolute block inset-0 max-w-none size-full"
+            src="https://www.figma.com/api/mcp/asset/9f2ec483-dd99-4dac-92b7-5362f4a2392f"
+          />
+        </div>
+
+        <!-- Mask Group 15 (3311:1652) — background photo container. -->
+        <div
+          class="absolute left-[0.2px] top-[1252px] w-[1919.81px] h-[1415.13px]"
+          data-node-id="3311:1652"
+          data-name="Mask Group 15"
+        >
+          <!-- Mask Group 2 (3311:1651) — inner mask. -->
+          <div
+            class="absolute left-0 top-[1252px] w-[1920px] h-[2107px]"
+            data-node-id="3311:1651"
+            data-name="Mask Group 2"
+          >
+            <!-- Photo asset (3311:1650) — 2025_HOLIDAY_CUPCAKES_002. -->
+            <div
+              class="absolute left-[-619px] top-[1252px] w-[3158px] h-[2105px] opacity-5"
+              data-node-id="3311:1650"
+              data-name="2025_HOLIDAY_CUPCAKES_002"
+            >
+              <img
+                alt=""
+                class="absolute inset-0 max-w-none object-cover pointer-events-none size-full"
+                src="https://www.figma.com/api/mcp/asset/a9c1ecc2-ab64-4be0-8063-76d522fb113a"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative cupcake logo (3311:1661) — behind the text. -->
+        <div
+          class="absolute left-[495.29px] top-[1527.29px] w-[929.42px] h-[864.55px]"
+          data-node-id="3311:1661"
+          data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16"
+        >
+          <img
+            alt=""
+            class="absolute block inset-0 max-w-none size-full"
+            src="https://www.figma.com/api/mcp/asset/a3ef2bdc-6a76-4a15-9de2-05472eeeb40c"
+          />
+        </div>
+
+        <!-- "OUR STORY" heading (3311:1653) — Inter Medium ~130px, white, centered. -->
+        <h2
+          class="absolute left-[512px] top-[1418px] w-[894px] whitespace-nowrap font-medium text-center text-white text-[130px]"
+          data-node-id="3311:1653"
+        >OUR STORY</h2>
+
+        <!-- Body text (3311:1657) — Inter Regular ~45px, white. -->
+        <div
+          class="absolute left-[512px] top-[1648px] w-[896px] text-white font-normal whitespace-pre-wrap text-[45px] leading-[60px]"
+          data-node-id="3311:1657"
+        >
+          <p class="m-0">After more than four decades as a registered nurse, during one quiet afternoon, a few baking videos on YouTube opened the door to something new. </p>
+          <p class="m-0">What began as a simple interest soon became a passion she poured herself into—learning, practicing, and perfecting her craft. Her eye for detail, shaped by years of knitting and sewing, naturally found its place in every swirl of frosting and every finished cupcake.</p>
+          <p class="m-0">Today, she blends that lifelong craftsmanship with her love for baking, creating something truly special to share with others.</p>
+        </div>
+
+        <!-- Page body intentionally left empty for now.
+             Next steps will progressively build the rest of HOME PAGE – 4 below this navbar. -->
+      </div>
+    </div>
+
+    <script>
+      // Responsive scaling: keep the 1920px design pixel-perfect and scale
+      // the whole canvas with CSS transform so it fits any viewport — both
+      // smaller (phones, tablets, smaller laptops) and larger (4K) cleanly.
+      (function () {
+        var DESIGN_WIDTH = 1920;
+        var canvas = document.getElementById("designCanvas");
+        var viewport = document.getElementById("viewport");
+
+        function fit() {
+          var vw = window.innerWidth;
+          var scale = vw / DESIGN_WIDTH; // scales up (>1) and down (<1)
+          canvas.style.setProperty("--scale", String(scale));
+
+          // Match the wrapper height to the *scaled* canvas height so the
+          // document scrolls naturally and there is no empty space below.
+          var designHeight = canvas.offsetHeight; // unscaled height in px
+          viewport.style.height = designHeight * scale + "px";
+        }
+
+        // Run once now, again after fonts/images load (offsetHeight may change),
+        // and on every viewport resize.
+        fit();
+        window.addEventListener("resize", fit);
+        window.addEventListener("load", fit);
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(fit);
+        }
+      })();
+    </script>
+  </body>
+</html>

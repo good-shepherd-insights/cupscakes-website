@@ -43,9 +43,9 @@
         --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
         /* Figma MCP asset URLs (signed, ~7-day expiry) */
-        --background-image-cups-icon: url("https://www.figma.com/api/mcp/asset/ed5742dc-b3d8-478a-809d-24818530b4bb");
-        --background-image-heart-group: url("https://www.figma.com/api/mcp/asset/8a7393a4-04a3-4b0c-b250-b5eada5df08d");
-        --background-image-cart-icon: url("https://www.figma.com/api/mcp/asset/139e7e9c-4279-47b0-a7e1-e96a042865c8");
+        --background-image-cups-icon: url("public/assets/cups-icon.svg");
+        --background-image-heart-group: url("public/assets/heart-group.svg");
+        --background-image-cart-icon: url("public/assets/cart-icon.svg");
 
         /* Hero (Figma 3311:1437)
            NOTE: The Figma MCP returns two related assets per masked image:
@@ -54,21 +54,21 @@
            reference, the placeholder is used for `maskImage` and the real
            asset for `<img src>`. Always pick the latter for `background-image`,
            otherwise the hero looks empty (300×150 grey SVG placeholder). */
-        --background-image-hero-cupcakes: url("https://www.figma.com/api/mcp/asset/d63c95c8-afa3-4115-abed-b15a9d669478");
-        --background-image-hero-scroll: url("https://www.figma.com/api/mcp/asset/70f420a3-ac95-471b-8e71-95869fcb6a45");
-        --background-image-hero-logo: url("https://www.figma.com/api/mcp/asset/9de14cc6-0e5b-47cf-a7af-9238752814a7");
+        --background-image-hero-cupcakes: url("public/assets/hero-cupcakes.jpg");
+        --background-image-hero-scroll: url("public/assets/hero-scroll.svg");
+        --background-image-hero-logo: url("public/assets/hero-logo.svg");
 
         /* Cupcake-flavor icon (Figma 3311:1573-1605, Groups 22-30).
            Figma exports nine separate groups but they're all the same
            cupcake glyph visually, so we register one asset and reuse it. */
-        --background-image-flavor: url("https://www.figma.com/api/mcp/asset/c353688f-21b1-44dd-bd10-2af4da651396");
+        --background-image-flavor: url("public/assets/flavor.svg");
 
         /* Our Story section (Figma 3311:1652, Mask Group 15) */
-        --background-image-path-19: url("https://www.figma.com/api/mcp/asset/dd94494b-9a16-49e2-88c7-1fc8067c678f");
-        --background-image-story-photo: url("https://www.figma.com/api/mcp/asset/997aaccf-e0a5-48fe-9a70-672cdd07e9e7");
-        --background-image-story-mask-1: url("https://www.figma.com/api/mcp/asset/df4dfbe3-d662-4141-8953-0cfdfcbbfaff");
-        --background-image-story-mask-2: url("https://www.figma.com/api/mcp/asset/02c65b7e-4d00-4fe1-8de0-d8e15e1b9c84");
-        --background-image-story-logo: url("https://www.figma.com/api/mcp/asset/5673b26c-4811-40f6-8d6f-7628a757dca3");
+        --background-image-path-19: url("public/assets/path-19.svg");
+        --background-image-story-photo: url("public/assets/story-photo.jpg");
+        --background-image-story-mask-1: url("public/assets/story-mask-1.svg");
+        --background-image-story-mask-2: url("public/assets/story-mask-2.svg");
+        --background-image-story-logo: url("public/assets/story-logo.svg");
 
         /* Cupcake carousel cards (Figma 3311:1475/1476/1477 + Mask
            Groups 5/6/7 with photo 3311:1513/1517/1521 and mask
@@ -77,21 +77,21 @@
            card's <img src> (per-flavor in the component), so only the
            shared mask is registered as a theme token (used by the
            cupcake-photo @utility below). */
-        --background-image-cupcake-mask: url("https://www.figma.com/api/mcp/asset/49600d43-6588-4e4f-ae1e-ff1eebd8a7d4");
+        --background-image-cupcake-mask: url("public/assets/cupcake-mask.svg");
 
         /* Personal Cakes section (Figma 3311:1478 blue card + 3311:1715
            cake photo + 3311:1703 big decorative ampersand logo +
            3311:1617/1618 small ampersand glyphs flanking the heading). */
-        --background-image-personal-cake: url("https://www.figma.com/api/mcp/asset/1cafca12-8c37-4e45-a866-6705fdb68582");
-        --background-image-personal-cakes-logo: url("https://www.figma.com/api/mcp/asset/f6c8501c-a863-40a4-a322-88b45be50d2c");
-        --background-image-personal-cakes-amp: url("https://www.figma.com/api/mcp/asset/5ca4fc1f-1772-4337-a6eb-0aad5c1d41db");
+        --background-image-personal-cake: url("public/assets/personal-cake.png");
+        --background-image-personal-cakes-logo: url("public/assets/personal-cakes-logo.svg");
+        --background-image-personal-cakes-amp: url("public/assets/personal-cakes-amp.svg");
 
         /* CUPCAKES banner ampersand glyphs (Figma 3311:1473/1474 "big" and
            3311:1468/1472 "small"). Each asset is reused twice (one on each
            side of the headline), so per context.md §0 they're promoted to
            tokens and consumed via `bg-banner-amp-big` / `bg-banner-amp-small`. */
-        --background-image-banner-amp-big: url("https://www.figma.com/api/mcp/asset/0760aa1d-490a-439f-84b7-2e3f1789811b");
-        --background-image-banner-amp-small: url("https://www.figma.com/api/mcp/asset/7b8f9f4d-7361-44d8-a7b0-5cbd14d0dac6");
+        --background-image-banner-amp-big: url("public/assets/banner-amp-big.svg");
+        --background-image-banner-amp-small: url("public/assets/banner-amp-small.svg");
       }
 
       /*
@@ -698,7 +698,7 @@
                   alt=""
                   aria-hidden="true"
                   class="block size-full object-cover"
-                  src="https://www.figma.com/api/mcp/asset/dd94494b-9a16-49e2-88c7-1fc8067c678f"
+                  src="public/assets/path-19.svg"
                 />
               </div>
 
@@ -713,7 +713,7 @@
                   alt=""
                   aria-hidden="true"
                   class="block size-full object-cover pointer-events-none"
-                  src="https://www.figma.com/api/mcp/asset/997aaccf-e0a5-48fe-9a70-672cdd07e9e7"
+                  src="public/assets/story-photo.jpg"
                 />
               </div>
 
@@ -723,7 +723,7 @@
               <img
                 alt=""
                 aria-hidden="true"
-                src="https://www.figma.com/api/mcp/asset/5673b26c-4811-40f6-8d6f-7628a757dca3"
+                src="public/assets/story-logo.svg"
                 class="absolute inset-0 m-auto -z-10
                        w-2/3 max-w-3xl aspect-[929/864]
                        object-contain pointer-events-none opacity-90"
@@ -979,7 +979,7 @@
               nodeCard: "3311:1477",
               nodePhoto: "3311:1521",
               photoSrc:
-                "https://www.figma.com/api/mcp/asset/5f4882fa-2535-4834-b139-9ef1b2ab265e",
+                "public/assets/cupcake-photo.png",
             },
             {
               key: "butter-pecan",
@@ -988,7 +988,7 @@
               nodeCard: "3311:1476",
               nodePhoto: "3311:1517",
               photoSrc:
-                "https://www.figma.com/api/mcp/asset/5f4882fa-2535-4834-b139-9ef1b2ab265e",
+                "public/assets/cupcake-photo.png",
             },
             {
               key: "carrot",
@@ -997,7 +997,7 @@
               nodeCard: "3311:1475",
               nodePhoto: "3311:1513",
               photoSrc:
-                "https://www.figma.com/api/mcp/asset/5f4882fa-2535-4834-b139-9ef1b2ab265e",
+                "public/assets/cupcake-photo.png",
             },
           ];
 
@@ -1233,7 +1233,7 @@
                   <img
                     alt=""
                     aria-hidden="true"
-                    src="https://www.figma.com/api/mcp/asset/5ca4fc1f-1772-4337-a6eb-0aad5c1d41db"
+                    src="public/assets/personal-cakes-amp.svg"
                     class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
                            object-contain shrink-0 pointer-events-none"
                     data-node-id="3311:1617"
@@ -1250,7 +1250,7 @@
                   <img
                     alt=""
                     aria-hidden="true"
-                    src="https://www.figma.com/api/mcp/asset/5ca4fc1f-1772-4337-a6eb-0aad5c1d41db"
+                    src="public/assets/personal-cakes-amp.svg"
                     class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
                            object-contain shrink-0 pointer-events-none"
                     data-node-id="3311:1618"
@@ -1288,7 +1288,7 @@
                   <img
                     alt=""
                     aria-hidden="true"
-                    src="https://www.figma.com/api/mcp/asset/f6c8501c-a863-40a4-a322-88b45be50d2c"
+                    src="public/assets/personal-cakes-logo.svg"
                     class="absolute inset-0 m-auto -z-0
                            w-3/4 max-w-3xl aspect-[1100/1023]
                            object-contain pointer-events-none opacity-90"
@@ -1343,7 +1343,7 @@
                       <img
                         alt=""
                         aria-hidden="true"
-                        src="https://www.figma.com/api/mcp/asset/1cafca12-8c37-4e45-a866-6705fdb68582"
+                        src="public/assets/personal-cake.png"
                         class="w-full max-w-md aspect-[815/638]
                                object-contain drop-shadow-lg pointer-events-none"
                         data-node-id="3311:1715"
@@ -1497,7 +1497,7 @@
                       alt=""
                       aria-hidden="true"
                       class="block size-full object-contain pointer-events-none"
-                      src="https://www.figma.com/api/mcp/asset/66a2565f-6015-48af-a7a3-e6b6d42cf102"
+                      src="public/assets/facebook.svg"
                     />
                   </a>
                   <a
@@ -1518,7 +1518,7 @@
                       alt=""
                       aria-hidden="true"
                       class="block size-full object-contain pointer-events-none"
-                      src="https://www.figma.com/api/mcp/asset/e0ac137f-766b-4fcc-b240-3d82b195d810"
+                      src="public/assets/instagram.svg"
                     />
                   </a>
                 </div>
@@ -1672,7 +1672,7 @@
               <img
                 alt=""
                 aria-hidden="true"
-                src="https://www.figma.com/api/mcp/asset/af686d30-3dd3-4e54-a66c-fd6699fcd795"
+                src="public/assets/footer-mark.svg"
                 class="absolute right-4 sm:right-6 md:right-10 lg:right-14
                        bottom-3 sm:bottom-4 md:bottom-5 lg:bottom-6
                        h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14

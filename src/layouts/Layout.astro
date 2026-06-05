@@ -1,7 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import Snipcart from '../components/snipcart/Snipcart.astro';
-import CartButton from '../components/snipcart/CartButton.astro';
+import '../styles/global.css';
 
 interface Props {
   title?: string;
@@ -14,16 +14,17 @@ const { title = 'Cupcakes' } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    {/* Inter font (matches the prototype's --font-sans token). */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <ClientRouter />
   </head>
-  <body>
-    <nav>
-      <a href="/">Home</a>
-      <CartButton />
-    </nav>
-    <main>
-      <slot />
-    </main>
+  <body class="m-0 p-0 bg-white font-sans antialiased">
+    <slot />
     <Snipcart />
   </body>
 </html>

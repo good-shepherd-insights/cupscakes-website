@@ -1,41 +1,92 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import ProductCard from '../components/product/ProductCard.astro';
-import AddToCartButton from '../components/snipcart/AddToCartButton.astro';
-import { getAllProducts } from '../lib/sanity/queries/products';
-import { urlFor } from '../lib/sanity/image';
-import { IMAGE_WIDTHS } from '../lib/constants';
-import { routes } from '../lib/routes';
+import Navbar from '../components/home/Navbar.astro';
+import Hero from '../components/home/Hero.astro';
+import SmallBanner from '../components/home/SmallBanner.astro';
+import OurStory from '../components/home/OurStory.astro';
+import CupcakesBanner from '../components/home/CupcakesBanner.astro';
+import CupcakeCarousel from '../components/home/CupcakeCarousel.astro';
+import PersonalCakes from '../components/home/PersonalCakes.astro';
+import FollowUs from '../components/home/FollowUs.astro';
+import Footer from '../components/home/Footer.astro';
 
-const products = await getAllProducts();
----
-<Layout title="Cupcakes — Shop">
-  <h1>Products</h1>
-  {products.length === 0 && (
-    <p>No products yet — <a href="/admin">add one in Studio</a>.</p>
-  )}
-  {products.map((product, index) => {
-    // Cast to any is required because Product.image is 'unknown' per strict zero-import rules in src/types/
-    const imageUrl = product.image ? urlFor(product.image as any).width(IMAGE_WIDTHS.card).url() : undefined;
-    const productUrl = routes.product(product.slug.current);
-    return (
-      <ProductCard
-        name={product.name}
-        price={product.price}
-        description={product.description}
-        imageUrl={imageUrl}
-        isLcp={index === 0}
-      >
-        <AddToCartButton
-          slot="action"
-          id={product._id}
-          name={product.name}
-          price={product.price}
-          description={product.description}
-          imageUrl={imageUrl}
-          productUrl={productUrl}
-        />
-      </ProductCard>
+// Load the whole home collection and index by section discriminator.
+// Each component's Props are required, so the JSON under
+// src/content/home/ is the single source of truth for marketing copy.
+const entries = await getCollection('home');
+const bySection = new Map(entries.map((e) => [e.data.section, e]));
+
+function requireSection<S extends string>(section: S) {
+  const entry = bySection.get(section);
+  if (!entry) {
+    throw new Error(
+      `Missing home content entry for section "${section}". Add src/content/home/${section}.json.`
     );
-  })}
+  }
+  if (entry.data.section !== section) {
+    throw new Error(
+      `home content entry id mismatch: expected section "${section}" but got "${entry.data.section}".`
+    );
+  }
+  return entry.data as Extract<typeof entry.data, { section: S }>;
+}
+
+const navbar = requireSection('navbar');
+const hero = requireSection('hero');
+const ourStory = requireSection('our-story');
+const cupcakesBanner = requireSection('cupcakes-banner');
+const cupcakeCarousel = requireSection('cupcake-carousel');
+const personalCakes = requireSection('personal-cakes');
+const followUs = requireSection('follow-us');
+const footer = requireSection('footer');
+---
+<Layout title="Cups & Cakes">
+  <Navbar
+    homeHref={navbar.homeHref}
+    whoHref={navbar.whoHref}
+    orderHref={navbar.orderHref}
+    favoritesHref={navbar.favoritesHref}
+    cartHref={navbar.cartHref}
+  />
+  <Hero
+    headline={hero.headline}
+    ctaLabel={hero.ctaLabel}
+    orderHref={hero.orderHref}
+  />
+  <SmallBanner />
+  <OurStory
+    heading={ourStory.heading}
+    paragraph1={ourStory.paragraph1}
+    paragraph2={ourStory.paragraph2}
+    paragraph3={ourStory.paragraph3}
+  />
+  <CupcakesBanner headline={cupcakesBanner.headline} />
+  <CupcakeCarousel
+    caption={cupcakeCarousel.caption}
+    orderHref={cupcakeCarousel.orderHref}
+    otherOptionsHref={cupcakeCarousel.otherOptionsHref}
+    otherOptionsLabel={cupcakeCarousel.otherOptionsLabel}
+  />
+  <PersonalCakes
+    heading={personalCakes.heading}
+    caption={personalCakes.caption}
+    flavorHeadline={personalCakes.flavorHeadline}
+    price={personalCakes.price}
+    chocolateHref={personalCakes.chocolateHref}
+    chocolateLabel={personalCakes.chocolateLabel}
+    vanillaHref={personalCakes.vanillaHref}
+    vanillaLabel={personalCakes.vanillaLabel}
+  />
+  <FollowUs
+    heading={followUs.heading}
+    facebookHref={followUs.facebookHref}
+    instagramHref={followUs.instagramHref}
+  />
+  <Footer
+    whoHref={footer.whoHref}
+    orderHref={footer.orderHref}
+    topHref={footer.topHref}
+    copyright={footer.copyright}
+  />
 </Layout>

@@ -1,0 +1,124 @@
+---
+interface Props {
+  caption: string;
+  orderHref: string;
+  otherOptionsHref: string;
+  otherOptionsLabel: string;
+}
+
+const { caption, orderHref, otherOptionsHref, otherOptionsLabel } = Astro.props;
+
+// Each card's full class string is a literal so Tailwind's content
+// scanner can statically see `bg-flavor-chocolate`,
+// `bg-flavor-butter-pecan`, and `bg-flavor-carrot` and emit them into
+// the production CSS. Concatenating the bg token at runtime would risk
+// the class being purged.
+const CARD_CLASS_BASE = `flex flex-col items-center text-center text-white
+                        border border-brand-border
+                        rounded-2xl sm:rounded-3xl
+                        p-6 sm:p-8 md:p-10
+                        gap-4 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-10`;
+
+const flavors = [
+  {
+    key: "chocolate",
+    name: "Chocolate",
+    cardClass: `bg-flavor-chocolate ${CARD_CLASS_BASE}`,
+    nodeCard: "3311:1477",
+    nodePhoto: "3311:1521",
+    photoSrc: "/assets/cupcake-photo.png",
+  },
+  {
+    key: "butter-pecan",
+    name: "Butter Pecan",
+    cardClass: `bg-flavor-butter-pecan ${CARD_CLASS_BASE}`,
+    nodeCard: "3311:1476",
+    nodePhoto: "3311:1517",
+    photoSrc: "/assets/cupcake-photo.png",
+  },
+  {
+    key: "carrot",
+    name: "Carrot",
+    cardClass: `bg-flavor-carrot ${CARD_CLASS_BASE}`,
+    nodeCard: "3311:1475",
+    nodePhoto: "3311:1513",
+    photoSrc: "/assets/cupcake-photo.png",
+  },
+];
+
+const description = "Sweetened just right and topped with cream cheese frosting.";
+const price = "$3.25 each";
+const orderLabel = "ORDER NOW";
+---
+
+<section
+  id="order"
+  aria-labelledby="cupcake-carousel-caption"
+  class="w-full bg-white
+         px-4 sm:px-6 md:px-10 lg:px-14
+         py-8 sm:py-12 md:py-16 lg:py-20"
+  data-name="Cupcake carousel"
+>
+  <div class="mx-auto max-w-screen-2xl flex flex-col items-center
+              gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+    <h2
+      id="cupcake-carousel-caption"
+      class="m-0 text-center text-brand-pink font-medium leading-tight
+             text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl"
+      data-node-id="3311:1479"
+    >{caption}</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+                gap-6 sm:gap-8 md:gap-10 w-full">
+      {flavors.map((f) => (
+        <article
+          class={f.cardClass}
+          data-node-id={f.nodeCard}
+          data-flavor={f.key}
+        >
+          <div
+            class="w-full max-w-xs aspect-[7/6]"
+            aria-hidden="true"
+            data-node-id={f.nodePhoto}
+          >
+            <img
+              class="cupcake-photo"
+              alt=""
+              aria-hidden="true"
+              src={f.photoSrc}
+            />
+          </div>
+
+          <h3
+            class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
+                   drop-shadow-md font-medium leading-none m-0
+                   whitespace-nowrap"
+          >{f.name}</h3>
+
+          <p
+            class="text-sm sm:text-base md:text-lg lg:text-xl
+                   font-medium leading-snug max-w-sm m-0"
+          >{description}</p>
+
+          <p
+            class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl
+                   font-medium leading-none drop-shadow-sm m-0"
+          >{price}</p>
+
+          <a
+            href={orderHref}
+            class="cupcake-cta"
+            aria-label={`Order ${f.name} cupcakes now`}
+          ><span>{orderLabel}</span></a>
+        </article>
+      ))}
+    </div>
+
+    <a
+      href={otherOptionsHref}
+      class="cupcake-other-options"
+      data-node-id="3311:1612"
+      data-name="OTHER OPTIONS button"
+    ><span>{otherOptionsLabel}</span></a>
+  </div>
+</section>

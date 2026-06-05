@@ -1,0 +1,11 @@
+{
+  "section": "personal-cakes",
+  "heading": "PERSONAL CAKES",
+  "caption": "Small in size but big in bringing joy to each bite!",
+  "flavorHeadline": "Choose your flavor!",
+  "price": "$25",
+  "chocolateHref": "#order",
+  "chocolateLabel": "Chocolate",
+  "vanillaHref": "#order",
+  "vanillaLabel": "Vanilla"
+}

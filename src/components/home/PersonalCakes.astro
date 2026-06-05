@@ -1,0 +1,157 @@
+---
+interface Props {
+  heading: string;
+  caption: string;
+  flavorHeadline: string;
+  price: string;
+  chocolateHref: string;
+  chocolateLabel: string;
+  vanillaHref: string;
+  vanillaLabel: string;
+}
+
+const {
+  heading,
+  caption,
+  flavorHeadline,
+  price,
+  chocolateHref,
+  chocolateLabel,
+  vanillaHref,
+  vanillaLabel,
+} = Astro.props;
+---
+
+<section
+  id="personal-cakes"
+  aria-labelledby="personal-cakes-heading"
+  class="w-full bg-white
+         px-4 sm:px-6 md:px-10 lg:px-14
+         py-8 sm:py-12 md:py-16 lg:py-20"
+  data-node-id="3311:1456"
+  data-name="Personal cakes"
+>
+  <div class="mx-auto max-w-screen-2xl flex flex-col items-center
+              gap-8 sm:gap-10 md:gap-12 lg:gap-16">
+    <div class="flex items-center justify-center
+                gap-3 sm:gap-4 md:gap-6 lg:gap-10 w-full">
+      <img
+        alt=""
+        aria-hidden="true"
+        src="/assets/personal-cakes-amp.svg"
+        class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
+               object-contain shrink-0 pointer-events-none"
+        data-node-id="3311:1617"
+        data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (left)"
+      />
+      <h2
+        id="personal-cakes-heading"
+        class="m-0 text-center text-brand-blue font-normal
+               leading-none whitespace-nowrap
+               text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+        data-node-id="3311:1613"
+      >{heading}</h2>
+      <img
+        alt=""
+        aria-hidden="true"
+        src="/assets/personal-cakes-amp.svg"
+        class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
+               object-contain shrink-0 pointer-events-none"
+        data-node-id="3311:1618"
+        data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (right)"
+      />
+    </div>
+
+    <p
+      class="m-0 text-center text-brand-pink font-medium leading-tight
+             text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+      data-node-id="3311:1483"
+    >{caption}</p>
+
+    <div
+      class="relative w-full bg-brand-blue border border-brand-border
+             rounded-2xl sm:rounded-3xl overflow-hidden
+             px-6 sm:px-10 md:px-14 lg:px-20
+             py-10 sm:py-12 md:py-16 lg:py-20"
+      data-node-id="3311:1478"
+      data-name="Personal cakes card"
+    >
+      <img
+        alt=""
+        aria-hidden="true"
+        src="/assets/personal-cakes-logo.svg"
+        class="absolute inset-0 m-auto -z-0
+               w-3/4 max-w-3xl aspect-[1100/1023]
+               object-contain pointer-events-none opacity-90"
+        data-node-id="3311:1703"
+        data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (decorative)"
+      />
+
+      <div
+        class="relative grid grid-cols-1 md:grid-cols-3
+               gap-6 sm:gap-8 md:gap-10 lg:gap-12
+               items-center"
+      >
+        <h3
+          class="md:col-span-3 order-1
+                 m-0 text-center text-white font-medium
+                 leading-none drop-shadow-md
+                 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+          data-node-id="3311:1704"
+        >{flavorHeadline}</h3>
+
+        <a
+          href={chocolateHref}
+          class="order-3 md:order-2
+                 inline-flex items-center justify-center
+                 w-full max-w-xs mx-auto md:mx-0
+                 py-3 sm:py-4 md:py-5 lg:py-6
+                 px-6 sm:px-8 md:px-10
+                 bg-white text-flavor-chocolate font-medium no-underline text-center
+                 border border-brand-border rounded-md
+                 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+                 transition-[transform,filter] duration-150 ease-out
+                 hover:brightness-95 hover:-translate-y-px
+                 focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+          data-node-id="3311:1702"
+          data-name="Chocolate flavor pill"
+        ><span>{chocolateLabel}</span></a>
+
+        <div class="order-2 md:order-3 flex flex-col items-center
+                    gap-4 sm:gap-6 md:gap-8">
+          <img
+            alt=""
+            aria-hidden="true"
+            src="/assets/personal-cake.png"
+            class="w-full max-w-md aspect-[815/638]
+                   object-contain drop-shadow-lg pointer-events-none"
+            data-node-id="3311:1715"
+            data-name="C&C_PERSONAL_CAKE_PINK_003"
+          />
+          <p
+            class="m-0 text-center text-white font-normal leading-none drop-shadow-md
+                   text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
+            data-node-id="3311:1716"
+          >{price}</p>
+        </div>
+
+        <a
+          href={vanillaHref}
+          class="order-4
+                 inline-flex items-center justify-center
+                 w-full max-w-xs mx-auto md:mx-0
+                 py-3 sm:py-4 md:py-5 lg:py-6
+                 px-6 sm:px-8 md:px-10
+                 bg-white text-brand-pink font-medium no-underline text-center
+                 border border-brand-border rounded-md
+                 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+                 transition-[transform,filter] duration-150 ease-out
+                 hover:brightness-95 hover:-translate-y-px
+                 focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+          data-node-id="3311:1714"
+          data-name="Vanilla flavor pill"
+        ><span>{vanillaLabel}</span></a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,91 @@
+---
+interface Props {
+  whoHref: string;
+  orderHref: string;
+  topHref: string;
+  copyright: string;
+}
+
+const { whoHref, orderHref, topHref, copyright } = Astro.props;
+---
+
+<footer
+  class="relative w-full bg-brand-blue border-t border-brand-border
+         min-h-32 sm:min-h-36 md:min-h-40 lg:min-h-44 xl:min-h-48
+         flex flex-col items-center justify-center
+         gap-3 sm:gap-4 md:gap-5 lg:gap-6
+         px-4 sm:px-6 md:px-10 lg:px-14
+         py-6 sm:py-8 md:py-10 lg:py-12"
+  data-node-id="3311:1456"
+  data-name="Rectangle 37 (footer)"
+  aria-label="Site footer"
+>
+  <nav
+    class="flex items-center justify-center
+           gap-4 sm:gap-6 md:gap-8 lg:gap-12"
+    aria-label="Footer"
+  >
+    <a
+      href={whoHref}
+      class="text-white font-medium no-underline whitespace-nowrap
+             text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl
+             transition-[transform,filter] duration-150 ease-out
+             hover:brightness-90 hover:-translate-y-px
+             focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
+      data-node-id="3311:1635"
+    >WHO WE ARE</a>
+    <span
+      aria-hidden="true"
+      class="inline-block bg-white shrink-0 w-px sm:w-0.5
+             h-5 sm:h-6 md:h-8 lg:h-10 xl:h-12
+             rounded-full"
+      data-node-id="3311:1643"
+      data-name="Rectangle 38 (divider)"
+    ></span>
+    <a
+      href={orderHref}
+      class="text-white font-medium no-underline whitespace-nowrap
+             text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl
+             transition-[transform,filter] duration-150 ease-out
+             hover:brightness-90 hover:-translate-y-px
+             focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
+      data-node-id="3311:1631"
+    >ORDER NOW</a>
+    <span
+      aria-hidden="true"
+      class="inline-block bg-white shrink-0 w-px sm:w-0.5
+             h-5 sm:h-6 md:h-8 lg:h-10 xl:h-12
+             rounded-full"
+      data-node-id="3311:1644"
+      data-name="Rectangle 39 (divider)"
+    ></span>
+    <a
+      href={topHref}
+      class="text-white font-medium no-underline whitespace-nowrap
+             text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl
+             transition-[transform,filter] duration-150 ease-out
+             hover:brightness-90 hover:-translate-y-px
+             focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
+      data-node-id="3311:1639"
+    >BACK TO TOP</a>
+  </nav>
+
+  <p
+    class="m-0 text-center text-white font-normal
+           text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl"
+    data-node-id="3311:1670"
+  >{copyright}</p>
+
+  <img
+    alt=""
+    aria-hidden="true"
+    src="/assets/footer-mark.svg"
+    class="absolute right-4 sm:right-6 md:right-10 lg:right-14
+           bottom-3 sm:bottom-4 md:bottom-5 lg:bottom-6
+           h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14
+           aspect-[161/50] object-contain pointer-events-none
+           opacity-90"
+    data-node-id="3311:1669"
+    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_17 (footer mark)"
+  />
+</footer>

@@ -1,0 +1,57 @@
+---
+interface Props {
+  headline: string;
+}
+
+const { headline } = Astro.props;
+---
+
+<section
+  class="w-full bg-brand-blue border-y border-brand-border
+         h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32
+         flex items-center justify-center
+         gap-3 sm:gap-4 md:gap-6 lg:gap-10
+         px-3 sm:px-4 md:px-6 lg:px-10"
+  aria-label="Cupcakes"
+  data-node-id="3311:1455"
+  data-name="Rectangle 2"
+>
+  <span
+    aria-hidden="true"
+    class="bg-banner-amp-big bg-no-repeat bg-contain bg-center
+           h-full aspect-[241/224] shrink-0 pointer-events-none"
+    data-node-id="3311:1473"
+    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16 (left)"
+  ></span>
+
+  <span
+    aria-hidden="true"
+    class="bg-banner-amp-small bg-no-repeat bg-contain bg-center
+           h-1/3 aspect-[117/86] shrink-0 pointer-events-none"
+    data-node-id="3311:1472"
+    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (left)"
+  ></span>
+
+  <h2
+    class="flex-1 min-w-0 m-0 text-center text-white font-normal
+           leading-none whitespace-nowrap drop-shadow-lg
+           text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+    data-node-id="3311:1461"
+  >{headline}</h2>
+
+  <span
+    aria-hidden="true"
+    class="bg-banner-amp-small bg-no-repeat bg-contain bg-center
+           h-1/3 aspect-[117/86] shrink-0 pointer-events-none"
+    data-node-id="3311:1468"
+    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_15 (right)"
+  ></span>
+
+  <span
+    aria-hidden="true"
+    class="bg-banner-amp-big bg-no-repeat bg-contain bg-center
+           h-full aspect-[241/224] shrink-0 pointer-events-none"
+    data-node-id="3311:1474"
+    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_16 (right)"
+  ></span>
+</section>

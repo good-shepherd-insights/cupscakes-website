@@ -3,6 +3,8 @@ import sanity from '@sanity/astro';
 import react from '@astrojs/react';
 import { loadEnv } from 'vite';
 
+import tailwindcss from '@tailwindcss/vite';
+
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 
 export default defineConfig({
@@ -32,5 +34,7 @@ export default defineConfig({
       'process.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.PUBLIC_SANITY_PROJECT_ID),
       'process.env.PUBLIC_SANITY_DATASET': JSON.stringify(env.PUBLIC_SANITY_DATASET ?? 'production'),
     },
+
+    plugins: [tailwindcss()],
   },
 });

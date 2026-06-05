@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/*
+  Design tokens ported verbatim from the prototype's @theme block.
+  Tailwind v4 reads these CSS custom properties and generates utilities
+  (`bg-brand-blue`, `text-flavor-chocolate`, `font-sans`, `bg-cups-icon`, etc.).
+  Asset URLs are root-relative (`/assets/...`) because Astro serves the
+  `public/` directory at the site root.
+*/
+@theme {
+  /* Brand palette */
+  --color-brand-blue: #87cefa;
+  --color-brand-blue-dark: #4aa6dc;
+  --color-brand-pink: #eb9cf9;
+  --color-brand-border: #a0a0a0;
+
+  /* Cupcake-flavor palette (Figma 3311:1475/1476/1477).
+     Each tone is reused later in the page (e.g. the chocolate label
+     card at 3311:1697-1702 reuses #9d570d), so they're promoted to
+     tokens per context.md §0. */
+  --color-flavor-chocolate: #9d570d;
+  --color-flavor-butter-pecan: #fcb840;
+  --color-flavor-carrot: #f59a00;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Navbar assets */
+  --background-image-cups-icon: url("/assets/cups-icon.svg");
+  --background-image-heart-group: url("/assets/heart-group.svg");
+  --background-image-cart-icon: url("/assets/cart-icon.svg");
+
+  /* Hero (Figma 3311:1437) */
+  --background-image-hero-cupcakes: url("/assets/hero-cupcakes.jpg");
+  --background-image-hero-scroll: url("/assets/hero-scroll.svg");
+  --background-image-hero-logo: url("/assets/hero-logo.svg");
+
+  /* Cupcake-flavor icon (Figma 3311:1573-1605, Groups 22-30) */
+  --background-image-flavor: url("/assets/flavor.svg");
+
+  /* Our Story section (Figma 3311:1652, Mask Group 15) */
+  --background-image-path-19: url("/assets/path-19.svg");
+  --background-image-story-photo: url("/assets/story-photo.jpg");
+  --background-image-story-mask-1: url("/assets/story-mask-1.svg");
+  --background-image-story-mask-2: url("/assets/story-mask-2.svg");
+  --background-image-story-logo: url("/assets/story-logo.svg");
+
+  /* Cupcake carousel — shared silhouette mask */
+  --background-image-cupcake-mask: url("/assets/cupcake-mask.svg");
+
+  /* Personal Cakes section (Figma 3311:1478/1715/1703/1617/1618) */
+  --background-image-personal-cake: url("/assets/personal-cake.png");
+  --background-image-personal-cakes-logo: url("/assets/personal-cakes-logo.svg");
+  --background-image-personal-cakes-amp: url("/assets/personal-cakes-amp.svg");
+
+  /* CUPCAKES banner ampersand glyphs (Figma 3311:1473/1474 + 3311:1468/1472) */
+  --background-image-banner-amp-big: url("/assets/banner-amp-big.svg");
+  --background-image-banner-amp-small: url("/assets/banner-amp-small.svg");
+}
+
+/*
+  Navbar utilities — pure Tailwind primitives, no math.
+  Figma reference: nav text 28px ≈ text-3xl (30px) at xl; logo 46px
+  ≈ text-5xl (48px) at xl.
+*/
+@utility nav-link {
+  @apply relative inline-block text-center font-semibold text-brand-blue no-underline whitespace-nowrap;
+  @apply text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl leading-relaxed;
+  @apply transition-[color,transform] duration-150 ease-out;
+  @apply hover:text-brand-blue-dark hover:-translate-y-px;
+  @apply focus-visible:text-brand-blue-dark focus-visible:-translate-y-px focus-visible:outline-hidden;
+  @apply after:content-[''] after:absolute after:inset-x-[12%] after:-bottom-1 after:h-0.5 after:rounded-full after:bg-current after:origin-center after:scale-x-0 after:transition-transform after:duration-200 after:ease-out;
+  @apply hover:after:scale-x-100 focus-visible:after:scale-x-100;
+}
+
+@utility nav-icon {
+  @apply inline-block bg-no-repeat bg-contain bg-center;
+  @apply transition-[transform,opacity,filter] duration-150 ease-out;
+  @apply hover:scale-105 hover:brightness-90;
+  @apply focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden;
+}
+
+/* Cupcake carousel — white pill ORDER NOW button on each card. */
+@utility cupcake-cta {
+  @apply inline-flex items-center justify-center;
+  @apply bg-white text-brand-pink font-medium no-underline;
+  @apply border border-brand-border rounded-sm;
+  @apply text-xs sm:text-sm md:text-base lg:text-lg;
+  @apply h-8 sm:h-10 md:h-12 lg:h-14;
+  @apply w-32 sm:w-36 md:w-40 lg:w-44;
+  @apply transition-[transform,filter] duration-150 ease-out;
+  @apply hover:brightness-95 hover:-translate-y-px;
+  @apply focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden;
+}
+
+/* Cupcake carousel — big OTHER OPTIONS pill below the three cards
+   (Figma 3311:1612 / 3311:1607 white rect + 3311:1608 brand-blue label).
+   Figma renders 569×189 with Inter Medium 55px text; we lock the 569/189
+   ≈ 3:1 aspect ratio and step the type + width cap across breakpoints. */
+@utility cupcake-other-options {
+  @apply inline-flex items-center justify-center;
+  @apply bg-white text-brand-blue font-medium no-underline text-center;
+  @apply border border-brand-border rounded-md;
+  @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+  @apply w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl;
+  @apply aspect-[569/189];
+  @apply px-6 sm:px-8 md:px-10;
+  @apply transition-[transform,filter] duration-150 ease-out;
+  @apply hover:brightness-95 hover:-translate-y-px;
+  @apply focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden;
+}
+
+/*
+  Plain-CSS escape hatch (per prototype context.md §3).
+  CSS `mask-image` is outside Tailwind v4's primitive coverage: there is no
+  first-class mask utility and expressing it in `@utility` requires arbitrary
+  values. These classes still consume `@theme`-declared CSS variables
+  (`--background-image-story-mask-*`, `--background-image-cupcake-mask`).
+*/
+/* Our Story — soft masked photo overlay at 5% opacity. */
+.story-photo {
+  mask-image: var(--background-image-story-mask-1),
+    var(--background-image-story-mask-2);
+  -webkit-mask-image: var(--background-image-story-mask-1),
+    var(--background-image-story-mask-2);
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-size: contain, contain;
+  -webkit-mask-size: contain, contain;
+  mask-position: center, center;
+  -webkit-mask-position: center, center;
+}
+
+/* Cupcake carousel — cupcake-silhouette mask cropping each card photo. */
+.cupcake-photo {
+  mask-image: var(--background-image-cupcake-mask);
+  -webkit-mask-image: var(--background-image-cupcake-mask);
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}

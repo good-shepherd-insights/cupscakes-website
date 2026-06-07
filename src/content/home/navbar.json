@@ -1,8 +1,8 @@
 {
   "section": "navbar",
-  "homeHref": "#top",
+  "homeHref": "/",
   "whoHref": "#who-we-are",
-  "orderHref": "#order",
+  "orderHref": "/order",
   "favoritesHref": "#favorites",
   "cartHref": "#cart"
 }

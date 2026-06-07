@@ -1,0 +1,90 @@
+---
+/**
+ * Atomic button component.
+ *
+ * Variants:
+ *   - `white`  → white background, brand-blue text (default), dark border.
+ *                For use on brand-blue sections (e.g. Order page card).
+ *                The label color can be overridden to brand-pink via
+ *                the `text` prop (PICK-UP button on the order page).
+ *   - `solid`  → brand-blue background, white text, dark border. For use
+ *                on white sections (e.g. Hero CTA).
+ *
+ * Shapes:
+ *   - `auto`   → padding-driven width, rounded corners (default).
+ *   - `square` → fixed width/height rectangle with no rounded corners,
+ *                matching the homepage "ORDER NOW" CTA geometry. Padding
+ *                tokens are dropped so the label sits inside a precise box.
+ *
+ * The visual size scales with the page; consumers can override the
+ * `sizeClass` (default `size-md`) for larger/smaller instances. Each
+ * size token is a literal string so Tailwind's content scanner sees
+ * the responsive utilities statically.
+ */
+
+interface Props {
+  href: string;
+  label: string;
+  /** One of: `white`, `solid`. */
+  variant?: "white" | "solid";
+  /** Label color when `variant` is `white`. Defaults to `brand-blue`. */
+  text?: "brand-blue" | "brand-pink";
+  /** One of: `sm`, `md`, `lg`. */
+  size?: "sm" | "md" | "lg";
+  /** Geometry of the button. Defaults to `auto`. */
+  shape?: "auto" | "square";
+  /** Optional extra utility classes (e.g. layout positioning). */
+  class?: string;
+  /** Optional aria-label override; defaults to the visible label. */
+  ariaLabel?: string;
+}
+
+const {
+  href,
+  label,
+  variant = "white",
+  text = "brand-blue",
+  size = "md",
+  shape = "auto",
+  class: extraClass = "",
+  ariaLabel,
+} = Astro.props;
+
+const labelColorClass = text === "brand-pink" ? "text-brand-pink" : "text-brand-blue";
+
+const variantClass =
+  variant === "white"
+    ? `bg-white ${labelColorClass}`
+    : "bg-brand-blue text-white";
+
+// Padding-driven sizing for the default rounded shape.
+const autoSizeClass =
+  size === "sm"
+    ? "px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base md:text-lg rounded-md"
+    : size === "lg"
+    ? "px-8 sm:px-10 md:px-12 lg:px-14 py-4 sm:py-5 md:py-6 lg:py-8 text-xl sm:text-2xl md:text-3xl lg:text-4xl rounded-2xl"
+    : "px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 lg:py-6 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl rounded-md";
+
+// Fixed-rectangle sizing matching the homepage "ORDER NOW" CTA.
+// `lg` here is ~15% smaller than the homepage CTA so the Order page
+// PICK-UP / DELIVERY buttons feel proportionate inside the blue card.
+const squareSizeClass =
+  size === "sm"
+    ? "h-8 sm:h-10 md:h-12 w-32 sm:w-40 md:w-48 text-sm sm:text-base md:text-lg"
+    : size === "lg"
+    ? "h-10 sm:h-12 md:h-14 lg:h-[68px] xl:h-20 w-48 sm:w-56 md:w-[245px] lg:w-[272px] xl:w-[326px] text-lg sm:text-xl md:text-2xl lg:text-3xl"
+    : "h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20 w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl";
+
+const sizeClass = shape === "square" ? squareSizeClass : autoSizeClass;
+---
+
+<a
+  href={href}
+  class={`inline-flex items-center justify-center font-medium no-underline text-center
+          border border-brand-border
+          transition-[transform,filter] duration-150 ease-out
+          hover:brightness-95 hover:-translate-y-px
+          focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden
+          ${variantClass} ${sizeClass} ${extraClass}`}
+  aria-label={ariaLabel ?? label}
+><span>{label}</span></a>

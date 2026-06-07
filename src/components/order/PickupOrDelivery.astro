@@ -1,0 +1,88 @@
+---
+import Button from "../ui/Button.astro";
+
+interface Props {
+  pickupHref: string;
+  pickupLabel: string;
+  deliveryHref: string;
+  deliveryLabel: string;
+  pickupAriaName: string;
+  deliveryAriaName: string;
+}
+
+const {
+  pickupHref,
+  pickupLabel,
+  deliveryHref,
+  deliveryLabel,
+  pickupAriaName,
+  deliveryAriaName,
+} = Astro.props;
+---
+
+<section
+  id="order-pickup-or-delivery"
+  aria-labelledby="order-pickup-or-delivery-heading"
+  class="relative flex-1 min-h-[36rem] sm:min-h-[40rem] lg:min-h-[44rem] w-full overflow-hidden bg-brand-blue border-b border-brand-border"
+>
+  {/* Decorative background mark — the large translucent CUPS_&_CAKES_LOGO_2026_UPDATE_16
+      ampersand/cup-and-cake silhouette centered behind the buttons.
+      Figma 3311:6191: 1221×1136. The SVG path already has opacity="0.05"
+      baked in, so the wrapper does NOT apply additional opacity. */}
+  <div
+    class="pointer-events-none absolute inset-0 flex items-center justify-center"
+    aria-hidden="true"
+    data-node-id="3311:6191"
+  >
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="block h-[98%] w-auto max-w-none aspect-[1221/1136] object-contain pointer-events-none select-none"
+    />
+  </div>
+
+  {/* Foreground ampersand mark — the stylized "&" graphic from Figma
+      3311:6195 (CUPS_&_CAKES_LOGO_2026_UPDATE_14, 142.87×105.30). Sits
+      in the upper-middle of the section, above the buttons. Sized so it
+      is visibly prominent at every breakpoint while preserving the
+      Figma proportion via aspect-ratio + object-contain (no skew). */}
+  <img
+    src="/assets/order-logo-small.svg"
+    alt="Cups & Cakes"
+    width="142"
+    height="105"
+    class="pointer-events-none select-none absolute z-10
+           left-1/2 -translate-x-1/2
+           top-[28%] -translate-y-1/2
+           h-[68px] sm:h-20 md:h-24 lg:h-[108px] xl:h-[122px] w-auto
+           aspect-[142/105] object-contain drop-shadow-md"
+  />
+
+  {/* Pickup-or-delivery action buttons. Figma 3311:6202/6209: 366×101,
+      horizontally centered, vertically in the lower half of the section. */}
+  <div
+    id="order-pickup-or-delivery-heading"
+    class="absolute left-1/2 -translate-x-1/2 top-[56%] -translate-y-1/2
+           z-10 flex flex-col sm:flex-row items-center justify-center
+           gap-6 sm:gap-8 md:gap-10 lg:gap-12"
+  >
+    <Button
+      href={pickupHref}
+      label={pickupLabel}
+      variant="white"
+      text="brand-pink"
+      size="lg"
+      shape="square"
+      ariaLabel={pickupAriaName}
+    />
+    <Button
+      href={deliveryHref}
+      label={deliveryLabel}
+      variant="white"
+      size="lg"
+      shape="square"
+      ariaLabel={deliveryAriaName}
+    />
+  </div>
+</section>

@@ -1,0 +1,13 @@
+{
+  "section": "order-pickup-or-delivery",
+  "logoLargeSrc": "/assets/order-logo-large.svg",
+  "logoLargeAlt": "Cups & Cakes decorative background mark",
+  "logoSmallSrc": "/assets/order-logo-small.svg",
+  "logoSmallAlt": "Cups & Cakes",
+  "pickupHref": "/order/pickup",
+  "pickupLabel": "PICK-UP",
+  "deliveryHref": "/order/delivery",
+  "deliveryLabel": "DELIVERY",
+  "pickupAriaName": "Order for pick-up",
+  "deliveryAriaName": "Order for delivery"
+}

@@ -72,6 +72,20 @@ const footerSchema = z.object({
   copyright: z.string(),
 });
 
+const orderPickupOrDeliverySchema = z.object({
+  section: z.literal("order-pickup-or-delivery"),
+  logoLargeSrc: z.string(),
+  logoLargeAlt: z.string(),
+  logoSmallSrc: z.string(),
+  logoSmallAlt: z.string(),
+  pickupHref: z.string(),
+  pickupLabel: z.string(),
+  deliveryHref: z.string(),
+  deliveryLabel: z.string(),
+  pickupAriaName: z.string(),
+  deliveryAriaName: z.string(),
+});
+
 const home = defineCollection({
   loader: glob({ pattern: "*.json", base: "./src/content/home" }),
   schema: z.discriminatedUnion("section", [
@@ -86,4 +100,9 @@ const home = defineCollection({
   ]),
 });
 
-export const collections = { home };
+const order = defineCollection({
+  loader: glob({ pattern: "*.json", base: "./src/content/order" }),
+  schema: z.discriminatedUnion("section", [orderPickupOrDeliverySchema]),
+});
+
+export const collections = { home, order };

@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/home/Navbar.astro";
+import PickupOrDelivery from "../components/order/PickupOrDelivery.astro";
+import { loadHomeContent } from "../lib/content/home";
+import { loadOrderContent } from "../lib/content/order";
+
+const { navbar } = await loadHomeContent();
+const { pickupOrDelivery } = await loadOrderContent();
+---
+<Layout title="Order — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} />
+    <PickupOrDelivery {...pickupOrDelivery} />
+  </div>
+</Layout>

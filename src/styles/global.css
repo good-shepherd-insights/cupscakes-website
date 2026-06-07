@@ -14,13 +14,19 @@
   --color-brand-pink: #eb9cf9;
   --color-brand-border: #a0a0a0;
 
-  /* Cupcake-flavor palette (Figma 3311:1475/1476/1477).
-     Each tone is reused later in the page (e.g. the chocolate label
-     card at 3311:1697-1702 reuses #9d570d), so they're promoted to
-     tokens per context.md §0. */
+  /* Cupcake-flavor palette (Figma 3311:1475/1476/1477 + products page
+     3311:2985 flavor grid). Each tone is reused later in the page
+     (e.g. the chocolate label card at 3311:1697-1702 reuses #9d570d),
+     so they're promoted to tokens per context.md §0. The vanilla /
+     pumpkin / lemon / strawberry tones come from the products page
+     flavor cards. */
   --color-flavor-chocolate: #9d570d;
   --color-flavor-butter-pecan: #fcb840;
   --color-flavor-carrot: #f59a00;
+  --color-flavor-vanilla: #f5e9c8;
+  --color-flavor-pumpkin: #e07b1f;
+  --color-flavor-lemon: #f7e26b;
+  --color-flavor-strawberry: #f59ca8;
 
   /* Typography */
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;

@@ -1,0 +1,112 @@
+---
+/**
+ * Category header band — two half-width panels.
+ *
+ * Left panel (3311:3184): pink bg (#eb9cf9), CUPCAKES heading (3311:3223)
+ *   with _15 ampersand mark (3311:3227).
+ * Right panel (3311:3185): blue bg (#87cefa), PERSONAL CAKES heading
+ *   (3311:3228) two lines, 110px Inter Regular, white, text-center.
+ *
+ * Three faded _16 marks (3311:3232/3233/3234) span the full width
+ * behind both panels.
+ */
+interface Props {
+  cupcakesHeading: string;
+  cupcakesHref: string;
+  personalCakesHeading: string;
+  personalCakesHref: string;
+}
+
+const {
+  cupcakesHeading,
+  cupcakesHref,
+  personalCakesHeading,
+  personalCakesHref,
+} = Astro.props;
+
+const pinkBg = "bg-brand-pink";
+const blueBg = "bg-brand-blue";
+---
+
+<section
+  aria-labelledby="products-category-header"
+  class="relative w-full border-y border-brand-border overflow-hidden"
+  data-node-id="3311:2985"
+  data-name="Category header band"
+>
+  {/* Three faded _16 background marks (baked 5% opacity). */}
+  <div
+    class="pointer-events-none absolute inset-0 flex items-center justify-between
+           px-4 sm:px-6 md:px-10 lg:px-14"
+    aria-hidden="true"
+  >
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="block h-[99%] w-auto max-w-none object-contain"
+      data-node-id="3311:3232"
+    />
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="block h-[99%] w-auto max-w-none object-contain"
+      data-node-id="3311:3233"
+    />
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="block h-[99%] w-auto max-w-none object-contain"
+      data-node-id="3311:3234"
+    />
+  </div>
+
+  <h2 id="products-category-header" class="sr-only">Browse our menu</h2>
+
+  <div class="relative mx-auto max-w-screen-2xl grid grid-cols-1 md:grid-cols-2">
+    {/* Left panel — pink. CUPCAKES + _15 accent. */}
+    <a
+      href={cupcakesHref}
+      class={`flex items-center justify-center text-center text-white no-underline
+              ${pinkBg} border-r border-brand-border
+              min-h-[18rem] sm:min-h-[22rem] md:min-h-[26rem] lg:min-h-[30rem] xl:min-h-[34rem]`}
+      data-node-id="3311:3184"
+    >
+      <div class="flex items-center justify-center gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+        <h3
+          class="m-0 font-normal leading-[normal] whitespace-nowrap
+                 text-[3.85rem] sm:text-[4.62rem] md:text-[5.39rem] lg:text-[6.16rem] xl:text-[92.4px]"
+          data-node-id="3311:3223"
+        >{cupcakesHeading}</h3>
+        <img
+          src="/assets/personal-cakes-amp.svg"
+          alt=""
+          aria-hidden="true"
+          class="h-8 sm:h-10 md:h-12 lg:h-16 xl:h-20 aspect-[170/158]
+                 object-contain shrink-0 pointer-events-none"
+          data-node-id="3311:3227"
+        />
+      </div>
+    </a>
+
+    {/* Right panel — blue. PERSONAL CAKES two-line heading. */}
+    <a
+      href={personalCakesHref}
+      class={`flex items-center justify-center text-center text-white no-underline
+              ${blueBg}
+              min-h-[18rem] sm:min-h-[22rem] md:min-h-[26rem] lg:min-h-[30rem] xl:min-h-[34rem]`}
+      data-node-id="3311:3185"
+    >
+      <h3
+        class="m-0 font-normal leading-[1] whitespace-pre-line
+               text-[3.85rem] sm:text-[4.62rem] md:text-[5.39rem] lg:text-[6.16rem] xl:text-[92.4px]"
+        data-node-id="3311:3228"
+      >
+        <span class="block">{personalCakesHeading.split(" ")[0]}</span>
+        <span class="block">{personalCakesHeading.split(" ").slice(1).join(" ")}</span>
+      </h3>
+    </a>
+  </div>
+</section>

@@ -1,0 +1,69 @@
+{
+  "section": "cupcakes",
+  "heading": "CUPCAKES",
+  "flavors": [
+    {
+      "key": "chocolate",
+      "name": "Chocolate",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Chocolate cupcake",
+      "orderHref": "/order"
+    },
+    {
+      "key": "vanilla",
+      "name": "Vanilla",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Vanilla cupcake",
+      "orderHref": "/order"
+    },
+    {
+      "key": "carrot",
+      "name": "Carrot",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Carrot cupcake",
+      "orderHref": "/order"
+    },
+    {
+      "key": "butter-pecan",
+      "name": "Butter Pecan",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Butter Pecan cupcake",
+      "orderHref": "/order"
+    },
+    {
+      "key": "pumpkin",
+      "name": "Pumpkin",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Pumpkin cupcake",
+      "orderHref": "/order"
+    },
+    {
+      "key": "lemon",
+      "name": "Lemon",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Lemon cupcake",
+      "orderHref": "/order"
+    },
+    {
+      "key": "strawberry",
+      "name": "Strawberry",
+      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "price": "$3.25 each",
+      "imageSrc": "/assets/cupcake-photo.png",
+      "imageAlt": "Strawberry cupcake",
+      "orderHref": "/order"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/home/Navbar.astro";
+import Footer from "../../components/home/Footer.astro";
+import CategoryHeader from "../../components/product/CategoryHeader.astro";
+import CupcakeGrid from "../../components/product/CupcakeGrid.astro";
+import PersonalCakeGrid from "../../components/product/PersonalCakeGrid.astro";
+import { loadHomeContent } from "../../lib/content/home";
+import { loadProductsContent } from "../../lib/content/products";
+
+const { navbar, footer } = await loadHomeContent();
+const { categoryHeader, cupcakes, personalCakes } =
+  await loadProductsContent();
+---
+<Layout title="Cupcakes & Personal Cakes — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} activeLink="order" />
+    <CategoryHeader {...categoryHeader} />
+    <CupcakeGrid {...cupcakes} />
+    <PersonalCakeGrid {...personalCakes} />
+    <Footer {...footer} />
+  </div>
+</Layout>

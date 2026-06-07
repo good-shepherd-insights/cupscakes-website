@@ -1,0 +1,85 @@
+---
+/**
+ * Products page cupcake flavor card.
+ *
+ * Matches the PersonalCakeCard style — no card chrome, white page
+ * background, black centered text, image on top, plain button.
+ */
+
+type FlavorKey =
+  | "chocolate"
+  | "vanilla"
+  | "carrot"
+  | "butter-pecan"
+  | "pumpkin"
+  | "lemon"
+  | "strawberry";
+
+interface Props {
+  flavorKey: FlavorKey;
+  name: string;
+  description: string;
+  price: string;
+  imageSrc: string;
+  imageAlt: string;
+  orderHref: string;
+}
+
+const {
+  name,
+  description,
+  price,
+  imageSrc,
+  imageAlt,
+  orderHref,
+} = Astro.props;
+---
+
+<article
+  class="flex flex-col items-center text-center
+         w-full max-w-[312px] mx-auto
+         gap-[0.9rem] sm:gap-[1.1rem] md:gap-[1.35rem] lg:gap-[1.8rem]"
+  data-name="Cupcake flavor card"
+>
+  {/* Image */}
+  <div class="w-full max-w-[214px] aspect-[389/305] overflow-hidden rounded-2xl sm:rounded-3xl" data-node-id="3311:3257">
+    <img
+      src={imageSrc}
+      alt={imageAlt}
+      class="block w-full h-full object-cover pointer-events-none"
+    />
+  </div>
+
+  {/* Name */}
+  <h3
+    class="m-0 text-black font-medium leading-none
+           text-[1.54rem] sm:text-[1.85rem] md:text-[2.16rem] lg:text-[2.46rem] xl:text-[2.77rem]"
+  >{name}</h3>
+
+  {/* Description */}
+  <p
+    class="m-0 w-[71%] text-black font-medium leading-snug
+           text-[0.63rem] sm:text-[0.77rem] md:text-[0.92rem] lg:text-[1.08rem]"
+  >{description}</p>
+
+  {/* Price */}
+  <p
+    class="m-0 text-black font-medium leading-none
+           text-[0.77rem] sm:text-[0.92rem] md:text-[1.08rem] lg:text-[1.23rem] xl:text-[1.39rem]"
+  >{price}</p>
+
+  {/* ORDER NOW */}
+  <a
+    href={orderHref}
+    class="inline-flex items-center justify-center
+           bg-white border border-[#707070] no-underline
+           text-brand-pink font-medium text-center
+           h-[32px] sm:h-[39px] md:h-[45px] lg:h-[50px]
+           w-[123px] sm:w-[147px] md:w-[165px] lg:w-[183px]
+           text-[0.56rem] sm:text-[0.63rem] md:text-[0.7rem] lg:text-[0.77rem]
+           transition-[transform,filter] duration-150 ease-out
+           hover:brightness-95 hover:-translate-y-px
+           focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+    aria-label={`Order ${name} cupcakes now`}
+  ><span>ORDER NOW</span></a>
+</article>

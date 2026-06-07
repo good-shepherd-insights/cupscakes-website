@@ -5,9 +5,29 @@ interface Props {
   orderHref: string;
   favoritesHref: string;
   cartHref: string;
+  /**
+   * Marks one of the top-level nav links as the current page so the
+   * navbar renders a brand-pink underline beneath that link (Figma
+   * 3311:3222 / Rectangle 35). Defaults to `undefined` so existing
+   * call sites render no indicator.
+   */
+  activeLink?: "who" | "order";
 }
 
-const { homeHref, whoHref, orderHref, favoritesHref, cartHref } = Astro.props;
+const {
+  homeHref,
+  whoHref,
+  orderHref,
+  favoritesHref,
+  cartHref,
+  activeLink,
+} = Astro.props;
+
+// Active-link underline shared classes. Absolutely positioned below the
+// nav link so it does not affect link layout. Tailwind sees the full
+// literal string for the JIT scanner.
+const activeUnderlineClass =
+  "absolute left-1/2 -translate-x-1/2 -bottom-1 sm:-bottom-1.5 md:-bottom-2\n   h-0.5 sm:h-[3px] md:h-1 w-3/4 rounded-full bg-brand-pink";
 ---
 
 <header
@@ -46,15 +66,37 @@ const { homeHref, whoHref, orderHref, favoritesHref, cartHref } = Astro.props;
     >
       <a
         href={whoHref}
-        class="nav-link hidden md:inline-block"
+        class="nav-link relative hidden md:inline-block"
         data-node-id="3311:1674"
-      >WHO WE ARE</a>
+        aria-current={activeLink === "who" ? "page" : undefined}
+      >
+        <span>WHO WE ARE</span>
+        {activeLink === "who" && (
+          <span
+            aria-hidden="true"
+            class={activeUnderlineClass}
+            data-node-id="3311:3222"
+            data-name="Active link underline"
+          ></span>
+        )}
+      </a>
 
       <a
         href={orderHref}
-        class="nav-link hidden md:inline-block"
+        class="nav-link relative hidden md:inline-block"
         data-node-id="3311:1678"
-      >ORDER NOW</a>
+        aria-current={activeLink === "order" ? "page" : undefined}
+      >
+        <span>ORDER NOW</span>
+        {activeLink === "order" && (
+          <span
+            aria-hidden="true"
+            class={activeUnderlineClass}
+            data-node-id="3311:3222"
+            data-name="Active link underline"
+          ></span>
+        )}
+      </a>
 
       <a
         href={favoritesHref}

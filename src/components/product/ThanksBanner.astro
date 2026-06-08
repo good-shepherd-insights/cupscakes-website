@@ -1,0 +1,29 @@
+---
+/**
+ * Products page hero banner. Figma 3311:2990.
+ *
+ * Full-width white band with a single brand-pink headline; scales like
+ * the FRESH. SIMPLE. WHOLE. hero text from the home page (3xl → 8xl).
+ */
+interface Props {
+  headline: string;
+}
+
+const { headline } = Astro.props;
+---
+
+<section
+  aria-labelledby="products-thanks-heading"
+  class="w-full bg-white
+         px-4 sm:px-6 md:px-10 lg:px-14
+         py-10 sm:py-14 md:py-20 lg:py-24"
+  data-node-id="3311:2990"
+  data-name="Thanks for starting your order!"
+>
+  <h1
+    id="products-thanks-heading"
+    class="m-0 mx-auto max-w-screen-2xl text-center
+           text-brand-pink font-medium leading-tight
+           text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+  >{headline}</h1>
+</section>

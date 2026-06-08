@@ -1,0 +1,132 @@
+---
+/**
+ * Category header band — two half-width panels.
+ *
+ * Figma (3311:2985), band y=499..1105 (h=606), w=1920.
+ *
+ * Left panel (3311:3184): pink bg (#eb9cf9), CUPCAKES heading
+ *   (3311:3223) centered on the panel.
+ * Right panel (3311:3185): blue bg (#87cefa), PERSONAL CAKES heading
+ *   (3311:3228) two lines, 110px Inter Regular, white, text-center.
+ *
+ * Single solid white _15 ampersand (3311:3227) sits on the seam between
+ * the two panels (Figma left=875.14, w=169.724 → horizontal center at
+ * x=960, exactly on the divider).
+ *
+ * Three faded _16 logo marks (3311:3232/3233/3234) sit behind both
+ * panels as decoration (baked translucency in the asset). Positions are
+ * expressed as percentages of the 1920px band width to preserve the
+ * Figma layout at any breakpoint.
+ */
+interface Props {
+  cupcakesHeading: string;
+  cupcakesHref: string;
+  personalCakesHeading: string;
+  personalCakesHref: string;
+}
+
+const {
+  cupcakesHeading,
+  cupcakesHref,
+  personalCakesHeading,
+  personalCakesHref,
+} = Astro.props;
+
+const pinkBg = "bg-brand-pink";
+const blueBg = "bg-brand-blue";
+---
+
+<section
+  aria-labelledby="products-category-header"
+  class="relative w-full border-y border-brand-border overflow-hidden"
+  data-node-id="3311:2985"
+  data-name="Category header band"
+>
+  <h2 id="products-category-header" class="sr-only">Browse our menu</h2>
+
+  <div class="relative mx-auto max-w-screen-2xl grid grid-cols-1 md:grid-cols-2">
+    {/* Left panel — pink. CUPCAKES heading only. */}
+    <a
+      href={cupcakesHref}
+      class={`flex items-center justify-center text-center text-white no-underline
+              ${pinkBg} border-r border-brand-border
+              min-h-[18rem] sm:min-h-[22rem] md:min-h-[26rem] lg:min-h-[30rem] xl:min-h-[34rem]`}
+      data-node-id="3311:3184"
+    >
+      <h3
+        class="m-0 font-normal leading-[normal] whitespace-nowrap
+               text-[2.54rem] sm:text-[3.05rem] md:text-[3.55rem] lg:text-[4.07rem] xl:text-[60.9px]"
+        data-node-id="3311:3223"
+      >{cupcakesHeading}</h3>
+    </a>
+
+    {/* Right panel — blue. PERSONAL CAKES two-line heading. */}
+    <a
+      href={personalCakesHref}
+      class={`flex items-center justify-center text-center text-white no-underline
+              ${blueBg}
+              min-h-[18rem] sm:min-h-[22rem] md:min-h-[26rem] lg:min-h-[30rem] xl:min-h-[34rem]`}
+      data-node-id="3311:3185"
+    >
+      <h3
+        class="m-0 font-normal leading-[1] whitespace-pre-line
+               text-[2.54rem] sm:text-[3.05rem] md:text-[3.55rem] lg:text-[4.07rem] xl:text-[60.9px]"
+        data-node-id="3311:3228"
+      >
+        <span class="block">{personalCakesHeading.split(" ")[0]}</span>
+        <span class="block">{personalCakesHeading.split(" ").slice(1).join(" ")}</span>
+      </h3>
+    </a>
+  </div>
+
+  {/*
+    Three faded _16 background marks. Figma positions (of 1920):
+      left: -169.81 → -8.844%   (3311:3233)
+      left:  667    → 34.740%   (3311:3232)
+      left: 1562.09 → 81.359%   (3311:3234)
+    Each is h≈99.75% of the 606px band, w = 649.814/1920 ≈ 33.844%.
+  */}
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="absolute top-[0.254%] h-[99.746%] w-[33.844%] max-w-none object-contain"
+      style="left: -8.844%;"
+      data-node-id="3311:3233"
+    />
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="absolute top-[0.254%] h-[99.746%] w-[33.844%] max-w-none object-contain"
+      style="left: 34.740%;"
+      data-node-id="3311:3232"
+    />
+    <img
+      src="/assets/order-logo-large.svg"
+      alt=""
+      aria-hidden="true"
+      class="absolute top-[0.254%] h-[99.746%] w-[33.844%] max-w-none object-contain"
+      style="left: 81.359%;"
+      data-node-id="3311:3234"
+    />
+  </div>
+
+  {/*
+    Solid white _15 ampersand sits on the seam between the two panels.
+    Figma: left=875.14, top=725, w=169.724, h=157.878 → horizontal
+    center at x=960 (panel divider) and vertical center at y≈803.9
+    (band center y=802). Render above the panels (z-10) so the ampersand
+    overlaps both colors.
+  */}
+  <img
+    src="/assets/category-header-amp.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+           z-10 aspect-[170/158] object-contain
+           h-16 sm:h-20 md:h-24 lg:h-28 xl:h-[157.878px]"
+    data-node-id="3311:3227"
+  />
+</section>

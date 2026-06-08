@@ -86,6 +86,66 @@ const orderPickupOrDeliverySchema = z.object({
   deliveryAriaName: z.string(),
 });
 
+// --- products page (Figma 3311:2985) ---
+const productsThanksBannerSchema = z.object({
+  section: z.literal("thanks-banner"),
+  headline: z.string(),
+});
+
+const productsCategoryHeaderSchema = z.object({
+  section: z.literal("category-header"),
+  cupcakesHeading: z.string(),
+  cupcakesCaption: z.string(),
+  cupcakesHref: z.string(),
+  personalCakesHeading: z.string(),
+  personalCakesCaption: z.string(),
+  personalCakesHref: z.string(),
+});
+
+// One flavor card on the products page. `key` must match a Tailwind
+// `bg-flavor-<key>` token declared in src/styles/global.css.
+const productsCupcakeFlavorSchema = z.object({
+  key: z.enum([
+    "chocolate",
+    "vanilla",
+    "carrot",
+    "butter-pecan",
+    "pumpkin",
+    "lemon",
+    "strawberry",
+  ]),
+  name: z.string(),
+  description: z.string(),
+  price: z.string(),
+  imageSrc: z.string(),
+  imageAlt: z.string(),
+  orderHref: z.string(),
+});
+
+const productsCupcakesSchema = z.object({
+  section: z.literal("cupcakes"),
+  heading: z.string(),
+  caption: z.string(),
+  flavors: z.array(productsCupcakeFlavorSchema).min(1),
+});
+
+const productsPersonalCakeSchema = z.object({
+  key: z.enum(["chocolate", "vanilla"]),
+  name: z.string(),
+  description: z.string(),
+  price: z.string(),
+  imageSrc: z.string(),
+  imageAlt: z.string(),
+  orderHref: z.string(),
+});
+
+const productsPersonalCakesSchema = z.object({
+  section: z.literal("personal-cakes"),
+  heading: z.string(),
+  caption: z.string(),
+  items: z.array(productsPersonalCakeSchema).min(1),
+});
+
 const home = defineCollection({
   loader: glob({ pattern: "*.json", base: "./src/content/home" }),
   schema: z.discriminatedUnion("section", [
@@ -105,4 +165,14 @@ const order = defineCollection({
   schema: z.discriminatedUnion("section", [orderPickupOrDeliverySchema]),
 });
 
-export const collections = { home, order };
+const products = defineCollection({
+  loader: glob({ pattern: "*.json", base: "./src/content/products" }),
+  schema: z.discriminatedUnion("section", [
+    productsThanksBannerSchema,
+    productsCategoryHeaderSchema,
+    productsCupcakesSchema,
+    productsPersonalCakesSchema,
+  ]),
+});
+
+export const collections = { home, order, products };

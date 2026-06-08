@@ -1,0 +1,94 @@
+---
+/**
+ * Products page personal-cake card. Figma 3311:2985, cards at
+ * 3311:3257 / 3311:3258. Specs taken from Figma get_design_context:
+ *
+ *   - Image (3311:3257/3258): 389×305, object-cover, rounded.
+ *     Cell width is 568; image x=189 → ~90px inset (~16% of cell).
+ *   - Name (3311:3190 "Chocolate"): Inter Medium 75px, BLACK, text-center,
+ *     placed across the full 568px cell.
+ *   - Description (3311:3047): Inter Medium 27px, BLACK, text-center,
+ *     401px wide (placed at x=177, ~78px inset → ~14% of cell).
+ *   - Price (3311:3010 "$25"): Inter Medium 85px, BLACK, text-center,
+ *     placed across the full 568px cell.
+ *   - ORDER NOW (3311:3126 Group): white fill, border [#707070] solid,
+ *     238×65 rectangle (NOT rounded), label Inter Medium 25px
+ *     color #eb9cf9 (brand-pink), text-center.
+ *
+ * The card has NO surrounding chrome — no fill, no border, no rounded
+ * card. Everything sits on the white page. The image is the only
+ * "card-like" visual.
+ *
+ * Type sizes are reproduced as fluid responsive scales that land near
+ * the Figma values at the 2xl breakpoint:
+ *   - name  75px → text-3xl … 7xl
+ *   - desc  27px → text-base … 2xl
+ *   - price 85px → text-4xl … 8xl
+ *   - btn   25px → text-sm  … xl
+ */
+
+interface Props {
+  name: string;
+  description: string;
+  price: string;
+  imageSrc: string;
+  imageAlt: string;
+  orderHref: string;
+}
+
+const { name, description, price, imageSrc, imageAlt, orderHref } = Astro.props;
+---
+
+<article
+  class="flex flex-col items-center text-center
+         w-full max-w-[312px] mx-auto
+         gap-[0.9rem] sm:gap-[1.1rem] md:gap-[1.35rem] lg:gap-[1.8rem]"
+  data-name="Personal cake card"
+>
+  {/* Image — 389/305, ~16% inset from cell-left to match Figma. */}
+  <div class="w-full max-w-[214px] aspect-[389/305] overflow-hidden rounded-2xl sm:rounded-3xl" data-node-id="3311:3257">
+    <img
+      src={imageSrc}
+      alt={imageAlt}
+      class="block w-full h-full object-cover pointer-events-none"
+    />
+  </div>
+
+  {/* Name — black, centered, very large. */}
+  <h3
+    class="m-0 text-black font-medium leading-none
+           text-[1.54rem] sm:text-[1.85rem] md:text-[2.16rem] lg:text-[2.46rem] xl:text-[2.77rem]"
+    data-name="Personal cake name"
+  >{name}</h3>
+
+  {/* Description — black, centered, 27px → fluid base..2xl. */}
+  <p
+    class="m-0 w-[71%] text-black font-medium leading-snug
+           text-[0.63rem] sm:text-[0.77rem] md:text-[0.92rem] lg:text-[1.08rem]"
+    data-name="Personal cake description"
+  >{description}</p>
+
+  {/* Price — black, centered, even larger than the name (85 vs 75 px). */}
+  <p
+    class="m-0 text-black font-medium leading-none
+           text-[0.77rem] sm:text-[0.92rem] md:text-[1.08rem] lg:text-[1.23rem] xl:text-[1.39rem]"
+    data-name="Personal cake price"
+  >{price}</p>
+
+  {/* ORDER NOW — exact Figma button: white, #707070 border, 238x65,
+      pink label. No rounded corners. */}
+  <a
+    href={orderHref}
+    class="inline-flex items-center justify-center
+           bg-white border border-[#707070] no-underline
+           text-brand-pink font-medium text-center
+           h-[32px] sm:h-[39px] md:h-[45px] lg:h-[50px]
+           w-[123px] sm:w-[147px] md:w-[165px] lg:w-[183px]
+           text-[0.56rem] sm:text-[0.63rem] md:text-[0.7rem] lg:text-[0.77rem]
+           transition-[transform,filter] duration-150 ease-out
+           hover:brightness-95 hover:-translate-y-px
+           focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+    data-node-id="3311:3126"
+    aria-label={`Order ${name} personal cake now`}
+  ><span>ORDER NOW</span></a>
+</article>

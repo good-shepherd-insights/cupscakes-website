@@ -1,0 +1,104 @@
+---
+/**
+ * Breadcrumb navigation.
+ *
+ * Improvements over v1:
+ *   - Real ordered list (`<ol>`) for semantics and screen-reader support.
+ *   - Current page marked with `aria-current="page"`.
+ *   - Configurable separator (default "/"; pass "›" for a chevron).
+ *     Separators are decorative (`aria-hidden`).
+ *   - Emits BreadcrumbList JSON-LD for SEO when crumbs have hrefs.
+ *   - Long labels truncate with ellipsis on small screens.
+ *   - Hover/focus moves to brand-blue-dark with a soft color transition.
+ *
+ * Default text styling continues to match Figma 3311:2297 (Inter Thin
+ * links, Inter Regular current page, black, 30px at xl).
+ */
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+  /** Visible separator character. Defaults to "/". */
+  separator?: string;
+  /** When true, emits BreadcrumbList JSON-LD. Defaults to true. */
+  jsonLd?: boolean;
+  /** Optional extra utility classes (e.g. layout positioning). */
+  class?: string;
+}
+
+const {
+  items,
+  separator = "/",
+  jsonLd = true,
+  class: extraClass = "",
+} = Astro.props;
+
+const sizeClass =
+  "text-[13px] sm:text-[15px] md:text-[18px] lg:text-[22px] xl:text-[30px]";
+
+const linkClass = [
+  "font-thin text-black no-underline",
+  "transition-colors duration-150 ease-out",
+  "hover:text-brand-blue-dark hover:underline",
+  "focus-visible:text-brand-blue-dark focus-visible:underline focus-visible:outline-hidden",
+].join(" ");
+
+const jsonLdPayload =
+  jsonLd && items.some((i) => i.href)
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: items.map((item, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: item.label,
+          ...(item.href ? { item: item.href } : {}),
+        })),
+      }
+    : null;
+---
+
+<nav
+  aria-label="Breadcrumb"
+  class={`text-black ${sizeClass} ${extraClass}`}
+  data-node-id="3311:2297"
+>
+  <ol class="flex flex-wrap items-center gap-x-1 sm:gap-x-2 list-none m-0 p-0 min-w-0">
+    {items.map((item, i) => {
+      const isLast = i === items.length - 1;
+      const isInterior = !isLast && i > 0;
+      return (
+        <li class={`flex items-center min-w-0 ${isInterior ? "hidden sm:flex" : "flex"}`}>
+          {isLast || !item.href ? (
+            <span
+              class={`${isLast ? "font-normal" : "font-thin"} truncate max-w-[18ch] sm:max-w-none`}
+              aria-current={isLast ? "page" : undefined}
+            >{item.label}</span>
+          ) : (
+            <a
+              href={item.href}
+              class={`${linkClass} truncate max-w-[14ch] sm:max-w-none`}
+            >{item.label}</a>
+          )}
+          {!isLast && (
+            <span
+              aria-hidden="true"
+              class="font-thin px-1 sm:px-2 select-none text-black/60"
+            >{separator}</span>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+
+  {jsonLdPayload && (
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLdPayload)}
+    />
+  )}
+</nav>

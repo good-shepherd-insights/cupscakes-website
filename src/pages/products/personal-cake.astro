@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/home/Navbar.astro";
+import Footer from "../../components/home/Footer.astro";
+import PersonalCakeProduct from "../../components/product/PersonalCakeProduct.astro";
+import { loadHomeContent } from "../../lib/content/home";
+
+const { navbar, footer } = await loadHomeContent();
+---
+
+<Layout title="Personal Cake — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} />
+    <PersonalCakeProduct
+      breadcrumbHrefHome={navbar.homeHref}
+      breadcrumbHrefOrder={navbar.orderHref}
+    />
+    <Footer {...footer} />
+  </div>
+</Layout>

@@ -125,6 +125,7 @@ const productsCupcakeFlavorSchema = z.object({
 const productsCupcakesSchema = z.object({
   section: z.literal("cupcakes"),
   heading: z.string(),
+  caption: z.string(),
   flavors: z.array(productsCupcakeFlavorSchema).min(1),
 });
 

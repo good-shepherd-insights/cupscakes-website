@@ -1,0 +1,267 @@
+---
+/**
+ * Order → Delivery form card (Figma 3311:6318 inner white card 3311:6354).
+ *
+ * Renders the full form: "Delivery" heading + top-right "Change" link,
+ * "Contact Information" 2-col input grid, "Home Address" 1-col + 2-col
+ * grid, and the curved "NEXT" submit pill (3311:6422).
+ *
+ * Field definitions are passed in via props sourced from
+ * `src/content/order/order-delivery.json` so all visible copy and the
+ * field set are content-driven and validated by Zod.
+ *
+ * Responsiveness mirrors the rest of the codebase (sm/md/lg/xl ladder
+ * used by Hero, Navbar, PickupOrDelivery, CategoryHeader). The card
+ * collapses to a single column below `md` and steps up to the Figma
+ * pixel sizes (~`xl`) at the largest breakpoint.
+ */
+
+type DeliveryFieldId =
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "phone"
+  | "street"
+  | "apt"
+  | "city"
+  | "zipcode";
+
+interface DeliveryField {
+  id: DeliveryFieldId;
+  label: string;
+  type?: "text" | "email" | "tel";
+  required?: boolean;
+  autocomplete?: string;
+}
+
+interface Props {
+  heading: string;
+  changeLabel: string;
+  changeHref: string;
+  contactHeading: string;
+  addressHeading?: string;
+  contactFields: DeliveryField[];
+  addressFields?: DeliveryField[];
+  nextLabel: string;
+  nextHref: string;
+}
+
+const {
+  heading,
+  changeLabel,
+  changeHref,
+  contactHeading,
+  addressHeading,
+  contactFields,
+  addressFields,
+  nextLabel,
+  nextHref,
+} = Astro.props;
+
+// Address fields are rendered with a custom 4-row layout that matches
+// the Figma frame exactly (street + apt span both columns; city + zip
+// share a row). Pull each by id once so the JSX reads top-to-bottom.
+const byId = new Map((addressFields ?? []).map((f) => [f.id, f]));
+const street = byId.get("street");
+const apt = byId.get("apt");
+const city = byId.get("city");
+const zipcode = byId.get("zipcode");
+const hasAddress = (addressFields?.length ?? 0) > 0;
+
+// Shared input + label classes. Keep literals so Tailwind's content
+// scanner sees every utility statically.
+const labelClass =
+  "block font-normal text-black leading-[normal] " +
+  "text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] " +
+  "mb-2 sm:mb-2.5 md:mb-3";
+
+const inputClass =
+  "block w-full bg-white border border-brand-border " +
+  "h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] " +
+  "px-3 sm:px-4 md:px-5 " +
+  "text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] " +
+  "text-black placeholder:text-black/40 " +
+  "transition-[box-shadow,border-color] duration-150 ease-out " +
+  "focus:outline-hidden focus:border-brand-blue-dark " +
+  "focus-visible:ring-2 focus-visible:ring-brand-blue-dark/40";
+---
+
+<article
+  class="relative z-10 mx-auto w-full max-w-[854px]
+         bg-white border border-brand-border
+         px-5 sm:px-8 md:px-10 lg:px-12 xl:px-[42px]
+         pt-6 sm:pt-8 md:pt-10 lg:pt-12 xl:pt-[31px]
+         pb-8 sm:pb-10 md:pb-12 lg:pb-14 xl:pb-[60px]"
+  data-node-id="3311:6354"
+  data-name="Delivery card"
+>
+  {/* Heading row: "Delivery" + top-right "Change" pill (3311:6357 + 3311:6415). */}
+  <header
+    class="flex items-start justify-between gap-4 sm:gap-6
+           mb-6 sm:mb-8 md:mb-10 lg:mb-12"
+  >
+    <h1
+      class="m-0 font-medium text-black leading-[normal]
+             text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[90px]"
+      data-node-id="3311:6357"
+    >{heading}</h1>
+
+    <a
+      href={changeHref}
+      class="inline-flex items-center justify-center text-center
+             font-medium text-black no-underline
+             bg-white border border-brand-border
+             h-9 sm:h-10 md:h-12 lg:h-14 xl:h-[65px]
+             w-24 sm:w-28 md:w-36 lg:w-44 xl:w-[238px]
+             text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px]
+             transition-[transform,filter] duration-150 ease-out
+             hover:brightness-95 hover:-translate-y-px
+             focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+      data-node-id="3311:6415"
+      data-name="Change"
+    ><span data-node-id="3311:6411">{changeLabel}</span></a>
+  </header>
+
+  <form
+    method="post"
+    action={nextHref}
+    class="grid gap-y-6 sm:gap-y-8 md:gap-y-10 lg:gap-y-12"
+    novalidate
+  >
+    {/* Contact Information ------------------------------------------------ */}
+    <fieldset class="m-0 p-0 border-0">
+      <legend
+        class="font-medium text-black leading-[normal] mb-4 sm:mb-5 md:mb-6 lg:mb-8
+               text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
+        data-node-id="3311:6361"
+      >{contactHeading}</legend>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-5 md:gap-x-6 lg:gap-x-8 gap-y-5 sm:gap-y-6 md:gap-y-7 lg:gap-y-8">
+        {contactFields.map((field) => (
+          <div>
+            <label for={`delivery-${field.id}`} class={labelClass}>
+              {field.label}{field.required && <span aria-hidden="true"> *</span>}
+            </label>
+            <input
+              id={`delivery-${field.id}`}
+              name={field.id}
+              type={field.type ?? "text"}
+              required={field.required}
+              autocomplete={field.autocomplete}
+              class={inputClass}
+              data-node-id={
+                field.id === "firstName" ? "3311:6369"
+                : field.id === "lastName" ? "3311:6376"
+                : field.id === "email" ? "3311:6374"
+                : field.id === "phone" ? "3311:6375"
+                : undefined
+              }
+            />
+          </div>
+        ))}
+      </div>
+    </fieldset>
+
+    {/* Home Address (delivery only) ------------------------------------- */}
+    {hasAddress && addressHeading && (
+    <fieldset class="m-0 p-0 border-0">
+      <legend
+        class="font-medium text-black leading-[normal] mb-4 sm:mb-5 md:mb-6 lg:mb-8
+               text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
+        data-node-id="3311:6365"
+      >{addressHeading}</legend>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-5 md:gap-x-6 lg:gap-x-8 gap-y-5 sm:gap-y-6 md:gap-y-7 lg:gap-y-8">
+        {street && (
+          <div class="md:col-span-2">
+            <label for="delivery-street" class={labelClass}>
+              {street.label}{street.required && <span aria-hidden="true"> *</span>}
+            </label>
+            <input
+              id="delivery-street"
+              name="street"
+              type="text"
+              required={street.required}
+              autocomplete={street.autocomplete}
+              class={inputClass}
+              data-node-id="3311:6370"
+            />
+          </div>
+        )}
+
+        {apt && (
+          <div class="md:col-span-2">
+            <label for="delivery-apt" class={labelClass}>
+              {apt.label}{apt.required && <span aria-hidden="true"> *</span>}
+            </label>
+            <input
+              id="delivery-apt"
+              name="apt"
+              type="text"
+              required={apt.required}
+              autocomplete={apt.autocomplete}
+              class={inputClass}
+              data-node-id="3311:6371"
+            />
+          </div>
+        )}
+
+        {city && (
+          <div>
+            <label for="delivery-city" class={labelClass}>
+              {city.label}{city.required && <span aria-hidden="true"> *</span>}
+            </label>
+            <input
+              id="delivery-city"
+              name="city"
+              type="text"
+              required={city.required}
+              autocomplete={city.autocomplete}
+              class={inputClass}
+              data-node-id="3311:6372"
+            />
+          </div>
+        )}
+
+        {zipcode && (
+          <div>
+            <label for="delivery-zipcode" class={labelClass}>
+              {zipcode.label}{zipcode.required && <span aria-hidden="true"> *</span>}
+            </label>
+            <input
+              id="delivery-zipcode"
+              name="zipcode"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9A-Za-z\- ]*"
+              required={zipcode.required}
+              autocomplete={zipcode.autocomplete}
+              class={inputClass}
+              data-node-id="3311:6373"
+            />
+          </div>
+        )}
+      </div>
+    </fieldset>
+    )}
+
+    {/* NEXT pill (Figma 3311:6422 / 3311:6883). White capsule, brand-border,
+        brand-blue label. Curved-end shape via large border-radius. */}
+    <div class="flex justify-center pt-2 sm:pt-4 md:pt-6 lg:pt-8">
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center text-center
+               bg-white text-brand-blue font-medium no-underline
+               border border-brand-border rounded-full
+               h-12 sm:h-14 md:h-16 lg:h-20 xl:h-[101px]
+               w-56 sm:w-64 md:w-80 lg:w-[320px] xl:w-[366px]
+               text-2xl sm:text-3xl md:text-4xl lg:text-[40px]
+               transition-[transform,filter] duration-150 ease-out
+               hover:brightness-95 hover:-translate-y-px
+               focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+        data-node-id="3311:6422"
+        data-name="NEXT"
+      ><span data-node-id="3311:6418">{nextLabel}</span></button>
+    </div>
+  </form>
+</article>

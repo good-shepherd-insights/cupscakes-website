@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/home/Navbar.astro";
+import Cart from "../components/cart/Cart.astro";
+import { loadHomeContent } from "../lib/content/home";
+import { loadCartContent } from "../lib/content/cart";
+
+const { navbar } = await loadHomeContent();
+const { cart } = await loadCartContent();
+---
+<Layout title="Shopping Cart — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} />
+    <Cart {...cart} />
+  </div>
+</Layout>

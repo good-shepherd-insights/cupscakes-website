@@ -86,6 +86,140 @@ const orderPickupOrDeliverySchema = z.object({
   deliveryAriaName: z.string(),
 });
 
+// Order → Delivery page (Figma 3311:6318). One typed input per Figma
+// rectangle so the page renders deterministically from JSON. Field
+// order mirrors the visual reading order in the Figma frame.
+const orderDeliveryFieldSchema = z.object({
+  id: z.enum([
+    "firstName",
+    "lastName",
+    "email",
+    "phone",
+    "street",
+    "apt",
+    "city",
+    "zipcode",
+  ]),
+  label: z.string(),
+  type: z.enum(["text", "email", "tel"]).default("text"),
+  required: z.boolean().default(false),
+  autocomplete: z.string().optional(),
+});
+
+const orderDeliverySchema = z.object({
+  section: z.literal("order-delivery"),
+  heading: z.string(),
+  changeLabel: z.string(),
+  changeHref: z.string(),
+  contactHeading: z.string(),
+  addressHeading: z.string(),
+  contactFields: z.array(orderDeliveryFieldSchema).min(1),
+  addressFields: z.array(orderDeliveryFieldSchema).min(1),
+  nextLabel: z.string(),
+  nextHref: z.string(),
+});
+
+// Order → Pick-Up page (Figma 3311:6803). Same form structure as the
+// delivery page minus the Home Address section.
+const orderPickupSchema = z.object({
+  section: z.literal("order-pickup"),
+  heading: z.string(),
+  changeLabel: z.string(),
+  changeHref: z.string(),
+  contactHeading: z.string(),
+  contactFields: z.array(orderDeliveryFieldSchema).min(1),
+  nextLabel: z.string(),
+  nextHref: z.string(),
+});
+
+// Order → Loading page (Figma 3311:5499). Brand-blue band with the
+// centered C&C ampersand, "LOADING" text + animated dots, and the
+// repeating decorative stripe pattern (Group 85 — saved as
+// /assets/loading-stripe.svg).
+const orderLoadingSchema = z.object({
+  section: z.literal("order-loading"),
+  loadingLabel: z.string(),
+  redirectHref: z.string(),
+  /** Auto-redirect after this many milliseconds. Defaults to 2500. */
+  redirectAfterMs: z.number().int().positive().default(2500),
+});
+
+// Order → Date selection (Figma 3311:6708 PICK-UP DATE / 3311:6423
+// DELIVERY DATE). The two pages share an identical layout and
+// component; only the heading + section label + final NEXT route
+// differ. Up to 6 rounded-pill options laid out in a 2-column grid;
+// the last cell is reserved for "Other Date".
+const orderDateOptionSchema = z.object({
+  /** Visible label on the pill (e.g. "Thurs. May 21"). */
+  label: z.string(),
+  /** Submitted form value when the option is chosen. */
+  value: z.string(),
+  /** When true, the option is rendered as the special "Other Date" cell. */
+  other: z.boolean().default(false),
+});
+
+const orderPickupDateSchema = z.object({
+  section: z.literal("order-pickup-date"),
+  heading: z.string(),
+  changeLabel: z.string(),
+  changeHref: z.string(),
+  dateHeading: z.string(),
+  helperNote: z.string(),
+  options: z.array(orderDateOptionSchema).min(1).max(6),
+  nextLabel: z.string(),
+  nextHref: z.string(),
+});
+
+const orderDeliveryDateSchema = z.object({
+  section: z.literal("order-delivery-date"),
+  heading: z.string(),
+  changeLabel: z.string(),
+  changeHref: z.string(),
+  dateHeading: z.string(),
+  helperNote: z.string(),
+  options: z.array(orderDateOptionSchema).min(1).max(6),
+  nextLabel: z.string(),
+  nextHref: z.string(),
+});
+
+
+// --- Shopping cart (Figma 3311:4172) ---
+// One row per cart line item. Each item carries display strings copied
+// from the product config and a `accentKey` that picks the side-strip
+// color token (blue for personal cakes, pink for cupcakes), so cards
+// stay in sync with the rest of the design system without hardcoding
+// hex values in the component.
+const cartItemSchema = z.object({
+  id: z.string(),
+  product: z.string(),
+  flavor: z.string(),
+  /** Personal cakes show "Frosting Color"; cupcakes show "Quantity". */
+  variantLabel: z.string(),
+  variantValue: z.string(),
+  occasion: z.string(),
+  price: z.string(),
+  imageSrc: z.string(),
+  imageAlt: z.string(),
+  /** Side-strip accent color. */
+  accent: z.enum(["blue", "pink"]),
+  editHref: z.string(),
+});
+
+const cartSchema = z.object({
+  section: z.literal("shopping-cart"),
+  heading: z.string(),
+  productHeading: z.string(),
+  flavorHeading: z.string(),
+  occasionHeading: z.string(),
+  priceHeading: z.string(),
+  editLabel: z.string(),
+  subtotalLabel: z.string(),
+  subtotalValue: z.string(),
+  checkoutLabel: z.string(),
+  checkoutHref: z.string(),
+  items: z.array(cartItemSchema).min(1),
+});
+
 // --- products page (Figma 3311:2985) ---
 const productsThanksBannerSchema = z.object({
   section: z.literal("thanks-banner"),
@@ -162,7 +296,19 @@ const home = defineCollection({
 
 const order = defineCollection({
   loader: glob({ pattern: "*.json", base: "./src/content/order" }),
-  schema: z.discriminatedUnion("section", [orderPickupOrDeliverySchema]),
+  schema: z.discriminatedUnion("section", [
+    orderPickupOrDeliverySchema,
+    orderDeliverySchema,
+    orderPickupSchema,
+    orderLoadingSchema,
+    orderPickupDateSchema,
+    orderDeliveryDateSchema,
+  ]),
+});
+
+const cart = defineCollection({
+  loader: glob({ pattern: "*.json", base: "./src/content/cart" }),
+  schema: z.discriminatedUnion("section", [cartSchema]),
 });
 
 const products = defineCollection({
@@ -175,4 +321,4 @@ const products = defineCollection({
   ]),
 });
 
-export const collections = { home, order, products };
+export const collections = { home, order, cart, products };

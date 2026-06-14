@@ -1,0 +1,6 @@
+{
+  "section": "order-loading",
+  "loadingLabel": "LOADING",
+  "redirectHref": "/order",
+  "redirectAfterMs": 2500
+}

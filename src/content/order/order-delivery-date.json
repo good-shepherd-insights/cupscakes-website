@@ -1,0 +1,37 @@
+{
+  "section": "order-delivery-date",
+  "heading": "Delivery",
+  "changeLabel": "Change",
+  "changeHref": "/order",
+  "dateHeading": "Delivery Date:",
+  "helperNote": "*Please allow a minimum of 3 days to prepare order*",
+  "options": [
+    {
+      "label": "Thurs. May 21",
+      "value": "2025-05-21"
+    },
+    {
+      "label": "Fri. May 22",
+      "value": "2025-05-22"
+    },
+    {
+      "label": "Sat. May 23",
+      "value": "2025-05-23"
+    },
+    {
+      "label": "Sun. May 24",
+      "value": "2025-05-24"
+    },
+    {
+      "label": "Mon. May 25",
+      "value": "2025-05-25"
+    },
+    {
+      "label": "Other Date",
+      "value": "other",
+      "other": true
+    }
+  ],
+  "nextLabel": "NEXT",
+  "nextHref": "/products"
+}

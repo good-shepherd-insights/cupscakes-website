@@ -1,0 +1,43 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/home/Navbar.astro";
+import OrderForm from "../../components/order/OrderForm.astro";
+import { loadHomeContent } from "../../lib/content/home";
+import { loadOrderContent } from "../../lib/content/order";
+
+const { navbar } = await loadHomeContent();
+const { pickup } = await loadOrderContent();
+---
+<Layout title="Pick-Up — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} activeLink="order" />
+
+    {/* Brand-pink page band (Figma 3311:6837). The decorative
+        translucent C&C logo (3311:6841) sits behind the white card
+        using the same recipe as PickupOrDelivery and CategoryHeader. */}
+    <section
+      aria-labelledby="order-pickup-heading"
+      class="relative flex-1 w-full overflow-hidden bg-brand-pink border-b border-brand-border
+             py-10 sm:py-14 md:py-20 lg:py-24 xl:py-[159px]"
+      data-node-id="3311:6837"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden="true"
+        data-node-id="3311:6841"
+      >
+        <img
+          src="/assets/order-logo-large.svg"
+          alt=""
+          aria-hidden="true"
+          class="block h-[98%] w-auto max-w-none aspect-[1221/1136] object-contain pointer-events-none select-none"
+        />
+      </div>
+
+      <div class="relative z-10 px-4 sm:px-6 md:px-8 lg:px-10">
+        <h2 id="order-pickup-heading" class="sr-only">Pick-up details</h2>
+        <OrderForm {...pickup} />
+      </div>
+    </section>
+  </div>
+</Layout>

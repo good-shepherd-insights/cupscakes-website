@@ -1,0 +1,23 @@
+---
+// WIP — the current loading screen does not match Figma 3311:5499.
+// Do not link to it from production navigation until redone.
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/home/Navbar.astro";
+import Loading from "../../components/order/Loading.astro";
+import { loadHomeContent } from "../../lib/content/home";
+import { loadOrderContent } from "../../lib/content/order";
+
+const { navbar } = await loadHomeContent();
+const { loading } = await loadOrderContent();
+---
+<Layout title="Loading [WIP] — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} activeLink="order" />
+    <Loading {...loading} />
+    <noscript>
+      <p class="px-4 py-3 text-center text-sm text-black">
+        Loading… <a class="underline text-brand-blue-dark" href={loading.redirectHref}>Continue</a>
+      </p>
+    </noscript>
+  </div>
+</Layout>

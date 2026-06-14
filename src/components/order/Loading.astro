@@ -1,0 +1,107 @@
+---
+/**
+ * [WIP] Order → Loading screen (Figma 3311:5499).
+ * Implementation does not yet match the Figma frame; do not promote.
+ *
+ * Full-bleed brand-blue band with the centered C&C ampersand mark
+ * (3311:5541), "LOADING" text (3311:5545) + 3 animated dots
+ * (3311:5542/5543/5544), and a repeating decorative stripe pattern
+ * (3311:5574/etc, all instances of `Group 85` — saved as a single SVG
+ * asset and tiled vertically with `background-repeat-y`).
+ *
+ * Behaviour: client-side `setTimeout` redirect to `redirectHref` after
+ * `redirectAfterMs`. Uses Astro's `is:inline` script so it runs once
+ * the static HTML is parsed; no React/Astro client island needed.
+ *
+ * Responsiveness: the same sm/md/lg/xl ladder used by Hero/Navbar.
+ * The ampersand and "LOADING" text scale with breakpoints; the stripe
+ * tile keeps its 2041/79 aspect via `background-size`.
+ */
+
+interface Props {
+  loadingLabel: string;
+  redirectHref: string;
+  redirectAfterMs?: number;
+}
+
+const {
+  loadingLabel,
+  redirectHref,
+  redirectAfterMs = 2500,
+} = Astro.props;
+---
+
+<section
+  aria-busy="true"
+  aria-live="polite"
+  aria-label={loadingLabel}
+  class="relative flex-1 w-full overflow-hidden bg-brand-blue border-y border-brand-border
+         min-h-[36rem] sm:min-h-[40rem] md:min-h-[44rem] lg:min-h-[48rem] xl:min-h-[56rem]"
+  data-node-id="3311:5537"
+  data-name="Loading band"
+>
+  {/* Repeating stripe pattern. The Figma frame stacks 15 copies of
+      Group 85 (h=79.134, w=2041.359) every 79.134px from y=150 down to
+      y≈1262. We replicate that with a tiled background-image at the
+      stripe's natural height so it covers any band height responsively. */}
+  <div
+    class="pointer-events-none absolute inset-0 bg-repeat-y bg-top"
+    style="background-image: url('/assets/loading-stripe.svg'); background-size: 100% 4.94rem;"
+    aria-hidden="true"
+    data-node-id="3311:5574"
+    data-name="Loading stripes"
+  ></div>
+
+  {/* Centered ampersand + LOADING + dots. Vertically centered in the
+      band; horizontally centered. */}
+  <div class="relative z-10 flex h-full w-full items-center justify-center">
+    <div class="flex flex-col items-center gap-6 sm:gap-8 md:gap-10 px-4 text-center">
+      <img
+        src="/assets/order-logo-small.svg"
+        alt=""
+        aria-hidden="true"
+        class="block aspect-[182.65/134.628] object-contain drop-shadow-md select-none
+               h-20 sm:h-24 md:h-28 lg:h-32 xl:h-[134.628px] w-auto"
+        data-node-id="3311:5541"
+        data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_14"
+      />
+
+      <p
+        class="m-0 font-medium text-white tracking-wide leading-[normal]
+               text-xl sm:text-2xl md:text-3xl lg:text-[35px]"
+        data-node-id="3311:5545"
+      >{loadingLabel}</p>
+
+      <div
+        class="flex items-center gap-2 sm:gap-2.5 md:gap-3"
+        role="presentation"
+        aria-hidden="true"
+      >
+        <span
+          class="loading-dot block size-2.5 sm:size-3 md:size-3.5 lg:size-4 rounded-full bg-white"
+          style="animation-delay: 0ms"
+          data-node-id="3311:5542"
+        ></span>
+        <span
+          class="loading-dot block size-2.5 sm:size-3 md:size-3.5 lg:size-4 rounded-full bg-white"
+          style="animation-delay: 180ms"
+          data-node-id="3311:5543"
+        ></span>
+        <span
+          class="loading-dot block size-2.5 sm:size-3 md:size-3.5 lg:size-4 rounded-full bg-white"
+          style="animation-delay: 360ms"
+          data-node-id="3311:5544"
+        ></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Inline redirect script. Falls back to a manual link below for
+    no-JS clients via the page-level `<noscript>` (rendered in the page,
+    not here, so this component stays presentational). */}
+<script is:inline define:vars={{ redirectHref, redirectAfterMs }}>
+  setTimeout(() => {
+    window.location.assign(redirectHref);
+  }, redirectAfterMs);
+</script>

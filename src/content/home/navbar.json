@@ -4,5 +4,5 @@
   "whoHref": "/#who-we-are",
   "orderHref": "/order",
   "favoritesHref": "#favorites",
-  "cartHref": "#cart"
+  "cartHref": "/cart"
 }

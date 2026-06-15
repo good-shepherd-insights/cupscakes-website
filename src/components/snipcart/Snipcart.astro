@@ -1,8 +1,32 @@
 ---
 import { PUBLIC_SNIPCART_API_KEY } from 'astro:env/client';
+import { buildLoaderScript } from '../../lib/snipcart/loader';
+
+interface Props {
+  version?: string;
+  currency?: string;
+  modalStyle?: 'side';
+  addProductBehavior?: 'none';
+  loadStrategy?: 'on-user-interaction' | 'manual';
+}
+
+const {
+  version,
+  currency,
+  modalStyle = 'side',
+  addProductBehavior = 'none',
+  loadStrategy = 'on-user-interaction',
+} = Astro.props;
+
+const loaderScript = buildLoaderScript({
+  publicApiKey: PUBLIC_SNIPCART_API_KEY,
+  version,
+  currency,
+  modalStyle,
+  addProductBehavior,
+  loadStrategy,
+});
 ---
 <link rel="preconnect" href="https://app.snipcart.com" />
 <link rel="preconnect" href="https://cdn.snipcart.com" />
-<link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.0/default/snipcart.css" />
-<div hidden id="snipcart" data-api-key={PUBLIC_SNIPCART_API_KEY} transition:persist></div>
-<script async src="https://cdn.snipcart.com/themes/v3.0/default/snipcart.js"></script>
+<script is:inline set:html={loaderScript} />

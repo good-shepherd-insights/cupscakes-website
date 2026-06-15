@@ -1,3 +1,11 @@
-<button class="snipcart-checkout" aria-label="Open cart">
-  Cart (<span class="snipcart-items-count">0</span>)
+---
+interface Props {
+  label?: string;
+}
+const { label = 'Open cart' } = Astro.props;
+---
+<button class="snipcart-checkout" aria-label={label}>
+  <slot>
+    Cart (<span class="snipcart-items-count">0</span>)
+  </slot>
 </button>

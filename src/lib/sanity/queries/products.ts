@@ -29,6 +29,6 @@ export async function getProductsByCategorySlug(categorySlug: string): Promise<P
 
 export async function getAllProductCategories(): Promise<ProductCategory[]> {
   return sanityClient.fetch<ProductCategory[]>(
-    `*[_type == "productCategory"] | order(displayOrder asc) { _id, title, slug, heading, caption, displayOrder }`
+    `*[_type == "productCategory"] | order(displayOrder == null asc, displayOrder asc) { _id, title, slug, heading, caption, displayOrder }`
   );
 }

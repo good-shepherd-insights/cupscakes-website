@@ -11,7 +11,7 @@ export function validateUniqueSlug(documentType: string) {
 
     const { document, getClient } = context;
     const client = getClient({ apiVersion: '2026-05-01' });
-    const id = document?._id.replace(/^drafts\./, '');
+    const id = document?._id?.replace(/^drafts\./, '');
 
     const conflictId = await client.fetch<string | null>(
       `*[_type == $type && !(_id in [$draft, $published]) && slug.current == $slug][0]._id`,

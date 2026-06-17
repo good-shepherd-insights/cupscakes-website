@@ -69,9 +69,14 @@ export const product = defineType({
           const routeGroups = groups.filter(
             (g: { definesVariantRoute?: boolean }) => g.definesVariantRoute
           );
-          return routeGroups.length > 1
-            ? 'Only one group may be used as the shareable variant URL.'
-            : true;
+          if (routeGroups.length > 1) {
+            return 'Only one group may be used as the shareable variant URL.';
+          }
+          const names = groups
+            .map((g: { name?: string }) => g.name?.trim().toLowerCase())
+            .filter(Boolean);
+          const hasDuplicate = names.length !== new Set(names).size;
+          return hasDuplicate ? 'Group names must be unique within a product.' : true;
         }),
       of: [
         defineArrayMember({

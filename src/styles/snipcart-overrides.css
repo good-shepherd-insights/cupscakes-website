@@ -13,11 +13,21 @@
  *   Font family: Inter
  */
 
-/* Cart side panel — Snipcart sets z-index: 20 by default, which sits
-   below this site's sticky navbar (z-50, the highest z-index used
-   anywhere on the site — see Navbar.astro), so the navbar painted over
-   the open cart drawer. 60 clears every z-index in use site-wide. */
-.snipcart-modal__container.snipcart-cart-summary-side {
+/* Every Snipcart modal state — side cart drawer, the full "detailed
+   cart" page, checkout, etc. — shares the base .snipcart-modal__container
+   class (position: fixed; z-index: 20 in Snipcart's own stylesheet,
+   confirmed by reading cdn.snipcart.com/themes/v3.7.2/default/snipcart.css
+   directly). That sits below this site's sticky navbar (z-50, the
+   highest z-index used anywhere on the site — see Navbar.astro), so the
+   navbar painted over Snipcart's modal regardless of which state it was
+   in. Elements inside the modal (e.g. .snipcart-cart-header at z-index:
+   400) don't help — z-index only orders siblings within the same
+   stacking context, and the modal's own container is what's being
+   compared against the navbar, not its children. Overriding the base
+   class (not just the more specific .snipcart-cart-summary-side variant)
+   covers every Snipcart modal state in one rule. 60 clears every z-index
+   in use site-wide. */
+.snipcart-modal__container {
   z-index: 60 !important;
 }
 

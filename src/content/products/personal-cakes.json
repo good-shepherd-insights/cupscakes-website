@@ -10,7 +10,7 @@
       "price": "$25",
       "imageSrc": "/assets/personal-cake.png",
       "imageAlt": "Chocolate personal cake",
-      "orderHref": "/order"
+      "orderHref": "/products/personal-cakes/chocolate"
     },
     {
       "key": "vanilla",
@@ -19,7 +19,7 @@
       "price": "$25",
       "imageSrc": "/assets/personal-cake.png",
       "imageAlt": "Vanilla personal cake",
-      "orderHref": "/order"
+      "orderHref": "/products/personal-cakes/vanilla"
     }
   ]
 }

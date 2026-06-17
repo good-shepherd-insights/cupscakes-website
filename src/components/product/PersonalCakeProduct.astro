@@ -250,15 +250,15 @@ const selectionBtn = [
                   group.definesVariantRoute && option.slug && productSlug ? (
                     <a
                       href={routes.productVariant(productSlug, option.slug.current)}
-                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "underline" : ""}`}
+                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "bg-brand-pink!" : ""}`}
                     >
                       {option.label}
                       {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
                     </a>
                   ) : (
-                    <label class={selectionBtn}>
-                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only peer" />
-                      <span class="peer-checked:underline">
+                    <label class={`${selectionBtn} has-checked:bg-brand-pink!`}>
+                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only" />
+                      <span>
                         {option.label}
                         {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
                       </span>

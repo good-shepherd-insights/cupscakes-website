@@ -7,7 +7,13 @@ const PRODUCT_FIELDS = `
   price,
   slug,
   image,
-  description
+  description,
+  subtitle,
+  servingInfo,
+  flavors,
+  frostingColors,
+  quantities,
+  occasions
 `;
 
 export async function getAllProducts(): Promise<Product[]> {

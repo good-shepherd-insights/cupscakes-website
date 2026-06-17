@@ -74,19 +74,40 @@ import Breadcrumb from "../ui/Breadcrumb.astro";
 interface Props {
   breadcrumbHrefHome: string;
   breadcrumbHrefOrder: string;
+  breadcrumbLabel: string;
+  title: string;
+  subtitle: string;
+  /** Italic line below subtitle. Omit to hide (e.g. cupcakes). */
+  servingInfo?: string;
   /** Public path to the product image (defaults to the Figma asset). */
   imageSrc?: string;
   imageAlt?: string;
   /** Form submission endpoint (defaults to "#"). */
   addToCartHref?: string;
+  flavors: string[];
+  /** Omit to hide the Frosting Color section. */
+  frostingColors?: string[];
+  /** Omit to hide the Quantity section. */
+  quantities?: string[];
+  occasions: string[];
+  price: string;
 }
 
 const {
   breadcrumbHrefHome,
   breadcrumbHrefOrder,
+  breadcrumbLabel,
+  title,
+  subtitle,
+  servingInfo,
   imageSrc = "/assets/personal-cake-product.png",
   imageAlt = "Personal cake with pink frosting",
   addToCartHref = "#",
+  flavors,
+  frostingColors,
+  quantities,
+  occasions,
+  price,
 } = Astro.props;
 
 /* Reusable button class — exactly matches Figma 238×65 white box with
@@ -106,20 +127,6 @@ const selectionBtn = [
   "focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden",
   "cursor-pointer",
 ].join(" ");
-
-/* Flavor / frosting / occasion option lists, in Figma source order. */
-const flavors = ["Chocolate", "Vanilla"] as const;
-const frostingColors = [
-  "Red",
-  "Blue",
-  "Green",
-  "Yellow",
-  "Purple",
-  "Pink",
-  "White",
-  "Custom",
-] as const;
-const occasions = ["Regular", "Birthday", "Wedding", "Holiday", "Other"] as const;
 ---
 
 <main
@@ -141,7 +148,7 @@ const occasions = ["Regular", "Birthday", "Wedding", "Holiday", "Other"] as cons
       items={[
         { label: "Home", href: breadcrumbHrefHome },
         { label: "Order Now", href: breadcrumbHrefOrder },
-        { label: "Personal Cakes" },
+        { label: breadcrumbLabel },
       ]}
       class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[81px]"
     />
@@ -186,7 +193,7 @@ const occasions = ["Regular", "Birthday", "Wedding", "Holiday", "Other"] as cons
           class="m-0 text-black font-medium leading-[1.05]
                  text-[36px] sm:text-[48px] md:text-[60px] lg:text-[72px] xl:text-[95px]"
           data-node-id="3311:2220"
-        >Personal Cake</h1>
+        >{title}</h1>
 
         {/* Subtitle (3311:2228) — Inter Medium 35px black. Figma y=429
             → ~143px below title baseline. */}
@@ -195,16 +202,18 @@ const occasions = ["Regular", "Birthday", "Wedding", "Holiday", "Other"] as cons
                  text-black font-medium leading-[1.15]
                  text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
           data-node-id="3311:2228"
-        >Small in size but big in bringing joy to each bite!</p>
+        >{subtitle}</p>
 
         {/* Italic line (3311:2232) — Inter Light Italic 35px black.
-            Figma y=496 → ~67px below subtitle. */}
-        <p
-          class="m-0 mt-2 sm:mt-2 md:mt-2 lg:mt-2 xl:mt-[8px]
-                 text-black font-light italic leading-[1.15]
-                 text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
-          data-node-id="3311:2232"
-        >Serves 3-4 people.</p>
+            Figma y=496 → ~67px below subtitle. Omitted when absent. */}
+        {servingInfo && (
+          <p
+            class="m-0 mt-2 sm:mt-2 md:mt-2 lg:mt-2 xl:mt-[8px]
+                   text-black font-light italic leading-[1.15]
+                   text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+            data-node-id="3311:2232"
+          >{servingInfo}</p>
+        )}
 
         {/* Flavor section — label (3311:2301) at Figma y=558, buttons
             (3311:2306/2313) at y=653. */}
@@ -249,40 +258,76 @@ const occasions = ["Regular", "Birthday", "Wedding", "Holiday", "Other"] as cons
         {/* Frosting Color section — label (3311:2320) at Figma y=769,
             buttons start at y=864. Eight options laid out 3 per row in
             Figma order: Red Blue Green / Yellow Purple Pink / White
-            Custom. */}
-        <fieldset
-          class="m-0 p-0 border-0
-                 mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
-          data-node-id="3311:2320"
-        >
-          <legend
-            class="p-0 m-0 text-black leading-[1.15]
-                   text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+            Custom. Omitted when frostingColors prop is absent. */}
+        {frostingColors && (
+          <fieldset
+            class="m-0 p-0 border-0
+                   mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
+            data-node-id="3311:2320"
           >
-            <span class="font-light">Frosting Color: </span>
-            <span class="font-normal">(please choose up to 2 colors)</span>
-          </legend>
+            <legend
+              class="p-0 m-0 text-black leading-[1.15]
+                     text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+            >
+              <span class="font-light">Frosting Color: </span>
+              <span class="font-normal">(please choose up to 2 colors)</span>
+            </legend>
 
-          <div
-            class="grid grid-cols-2 sm:grid-cols-3
-                   gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
-                   gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[56px]
-                   mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
-                   max-w-[810px]"
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3
+                     gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
+                     gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[56px]
+                     mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
+                     max-w-[810px]"
+            >
+              {frostingColors.map((label) => (
+                <label class={selectionBtn}>
+                  <input
+                    type="checkbox"
+                    name="frosting"
+                    value={label}
+                    class="sr-only peer"
+                  />
+                  <span class="peer-checked:underline">{label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
+        {/* Quantity section — same geometry as Occasion. Omitted when
+            quantities prop is absent (e.g. personal cakes). */}
+        {quantities && (
+          <fieldset
+            class="m-0 p-0 border-0
+                   mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
           >
-            {frostingColors.map((label) => (
-              <label class={selectionBtn}>
-                <input
-                  type="checkbox"
-                  name="frosting"
-                  value={label}
-                  class="sr-only peer"
-                />
-                <span class="peer-checked:underline">{label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+            <legend
+              class="p-0 m-0 text-black font-light leading-[1]
+                     text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+            >Quantity:</legend>
+
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3
+                     gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
+                     gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[49px]
+                     mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
+                     max-w-[810px]"
+            >
+              {quantities.map((label) => (
+                <label class={selectionBtn}>
+                  <input
+                    type="radio"
+                    name="quantity"
+                    value={label}
+                    class="sr-only peer"
+                  />
+                  <span class="peer-checked:underline">{label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
         {/* Occasion section — label (3311:2236, Figma spelling
             "Occassion:") at Figma y=1222, buttons at y=1315/1429. */}
@@ -342,7 +387,7 @@ const occasions = ["Regular", "Birthday", "Wedding", "Holiday", "Other"] as cons
                  text-black font-medium leading-[1]
                  text-[32px] sm:text-[44px] md:text-[56px] lg:text-[68px] xl:text-[85px]"
           data-node-id="3311:2224"
-        >$0.00</p>
+        >{price}</p>
       </form>
     </div>
   </div>

@@ -483,5 +483,17 @@ Fixed by applying `stegaClean()` (from `@sanity/client/stega`) in two places, bo
 
 Verified with a real headless-browser click test (Playwright, temporary — not added as a project dependency): confirmed `data-item-custom1-value`/`data-item-custom2-value` go from `null` to the correct selected values after a real click, confirmed the Personal Cakes "Custom" frosting case computes `data-item-price="28"` (`25` base `+ 3`), and confirmed the `astro:page-load` re-binding fix by clicking ADD TO CART on a second page reached via a ClientRouter flavor-switch (not a hard reload) and seeing it still resolve to that page's own correct `data-item-id`/`name`/custom values.
 
+## Two more real bugs found via manual testing with a real Snipcart API key
+
+A placeholder `PUBLIC_SNIPCART_API_KEY` masked two further real bugs in the Playwright testing above. Once the user supplied a real key:
+
+**Bug 1 — load-timing race.** Snipcart's deferred `loadStrategy: "on-user-interaction"` (the site-wide default) only treats `focus`/`mouseover`/`touchmove`/`scroll`/`keydown` as "start loading" triggers — `click` is not one of them — plus a ~2.75s fallback timer. A customer whose very first interaction with the page is clicking ADD TO CART can click before Snipcart has loaded and attached its own handler, and that click is silently lost. Fixed in `cartSync.ts`: `bindAddToCartSync()` now proactively calls the loader's exposed `window.LoadSnipcart()`, so loading starts the moment a page with a real add-to-cart button is ready — without forcing eager loading on pages that never call this function.
+
+**Bug 2 — the `#snipcart` div breaking across ClientRouter navigations.** Confirmed via Snipcart's own console warning ("The #snipcart div was removed from the document") and researched against Astro's actual source (`swap-functions.ts`) rather than guessed at. `transition:persist` was tried first and seemed to work in initial testing (cart still accumulated items correctly), but research into *why* the warning still fired revealed it wasn't a real fix: Astro's `transition:persist` keeps an element alive across the `<body>`-replacing swap by lifting it out to `<html>` immediately before the swap and back into the new body immediately after — a deliberate design to stop Safari losing a `<canvas>`'s WebGL context during brief detachment (per Astro's own source comment), but it's still two real DOM reparenting operations. Snipcart's own `MutationObserver` reports each as a removal, regardless of Astro's narrower "never removed from `document`" guarantee being technically satisfied.
+
+Fixed properly in new `src/lib/snipcart/swapGuard.ts`: a custom `astro:before-swap` swap implementation (built from Astro's own exported `swapFunctions` from `astro:transitions/client`, so head/root-attribute/focus/script behavior stays identical to the default) that excludes `#snipcart` from the swap entirely — not lifted, not reparented, not part of the diff in any way, for the whole lifetime of the page. Confirmed `#snipcart` is the only `transition:persist` usage anywhere in the codebase, so this global override can't break any other persisted element.
+
+Verified with a real Playwright run across 3 consecutive ClientRouter navigations (home → carrot → chocolate → vanilla): **zero** "removed from the document" warnings (previously: 1+ per navigation), and a repeat of the multi-add-across-navigation test (add on carrot, navigate to chocolate, add again) still correctly accumulates both items with zero warnings.
+
 ## Approval
 `Status: Implemented and verified.`

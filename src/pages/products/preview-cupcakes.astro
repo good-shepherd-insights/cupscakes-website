@@ -9,7 +9,7 @@ import cupcakesJson from "../../content/products/cupcakes.json";
 
 const { navbar, footer } = await loadHomeContent();
 
-const flavors = cupcakesJson.flavors.map((f) => f.name);
+const flavors = cupcakesJson.flavors.map((f) => ({ label: f.name }));
 ---
 
 <Layout title="Cupcakes — Cups & Cakes">
@@ -23,9 +23,11 @@ const flavors = cupcakesJson.flavors.map((f) => f.name);
       subtitle="Our cupcakes are soft, sweet, and baked to delicate perfection!"
       imageSrc="/assets/cupcake-photo.png"
       imageAlt="Assorted cupcakes"
-      flavors={flavors}
-      quantities={["6", "12", "24"]}
-      occasions={["Regular", "Birthday", "Wedding", "Holiday", "Other"]}
+      customOptions={[
+        { name: "Flavor", inputType: "radio", options: flavors },
+        { name: "Quantity", inputType: "radio", options: ["6", "12", "24"].map((label) => ({ label })) },
+        { name: "Occasion", inputType: "radio", options: ["Regular", "Birthday", "Wedding", "Holiday", "Other"].map((label) => ({ label })) },
+      ]}
       price="$3.25"
     />
     <Footer {...footer} />

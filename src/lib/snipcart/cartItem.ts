@@ -54,6 +54,15 @@ export function buildProductCartAttributes(input: ProductCartItemInput): Record<
       // on click.
       value: '',
     })),
+    // Invisible in Snipcart's own cart/checkout UI — exists purely so
+    // the custom /cart page (LiveCart.tsx) can recover "product" and
+    // "flavor" as separate fields without re-parsing the combined
+    // display name, and without a second, non-Snipcart data source.
+    metadata: {
+      product: stegaClean(input.title),
+      flavor: selectedVariantOption ? stegaClean(selectedVariantOption.label) : '',
+      category: input.productSlug ?? '',
+    },
   });
 
   // Bookkeeping only — not a Snipcart attribute. cartSync.ts recomputes

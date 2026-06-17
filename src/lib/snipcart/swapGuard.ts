@@ -22,13 +22,34 @@
  */
 import { swapFunctions } from 'astro:transitions/client';
 
+// Snipcart's loader (lib/snipcart/loader.ts) injects its own <link
+// rel="stylesheet"> and <script> into <head> at runtime, the first time
+// Snipcart loads. Those tags only ever exist in the live document — the
+// freshly-fetched newDocument for the next page never had Snipcart's
+// loader run on it, so it has neither tag. swapHeadElements() diffs old
+// head against newDocument's head and removes anything not present in
+// the new one, which means it would delete Snipcart's CSS/JS on the very
+// first navigation after Snipcart has loaded, leaving its DOM rendering
+// completely unstyled (it keeps working — its in-memory app state
+// survives — just with no stylesheet applied). Lifted out of head before
+// the diff and restored after, exactly like #snipcart itself, so the
+// diff never sees them and can't remove them.
+const SNIPCART_HEAD_SELECTOR = 'link[href*="snipcart.css"], script[src*="snipcart.js"]';
+
 export function installSnipcartSwapGuard(): void {
   document.addEventListener('astro:before-swap', (event) => {
     event.swap = () => {
+      const snipcartHeadElements = Array.from(
+        document.head.querySelectorAll(SNIPCART_HEAD_SELECTOR)
+      );
+      snipcartHeadElements.forEach((el) => el.remove());
+
       swapFunctions.deselectScripts(event.newDocument);
       swapFunctions.swapRootAttributes(event.newDocument);
       swapFunctions.swapHeadElements(event.newDocument);
       const restoreFocus = swapFunctions.saveFocus();
+
+      snipcartHeadElements.forEach((el) => document.head.appendChild(el));
 
       const oldBody = document.body;
       const newBody = event.newDocument.body;

@@ -121,8 +121,8 @@ const selectionBtn = [
   // 238×65 at xl, fluid below
   "h-[40px] sm:h-[48px] md:h-[56px] lg:h-[60px] xl:h-[65px]",
   "w-full",
-  // 25px label at xl
-  "text-[14px] sm:text-[16px] md:text-[18px] lg:text-[22px] xl:text-[25px]",
+  // 25px label at xl, reduced 10%
+  "text-[13px] sm:text-[14px] md:text-[16px] lg:text-[20px] xl:text-[23px]",
   "transition-[transform,filter] duration-150 ease-out",
   "hover:brightness-95 hover:-translate-y-px",
   "focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden",
@@ -250,13 +250,13 @@ const selectionBtn = [
                   group.definesVariantRoute && option.slug && productSlug ? (
                     <a
                       href={routes.productVariant(productSlug, option.slug.current)}
-                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "bg-brand-pink!" : ""}`}
+                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "bg-brand-pink! text-white!" : ""}`}
                     >
                       {option.label}
                       {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
                     </a>
                   ) : (
-                    <label class={`${selectionBtn} has-checked:bg-brand-pink!`}>
+                    <label class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!`}>
                       <input type={group.inputType} name={group.name} value={option.label} class="sr-only" />
                       <span>
                         {option.label}

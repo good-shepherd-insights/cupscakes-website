@@ -1,0 +1,147 @@
+---
+/**
+ * Order → Date selection (Figma 3311:6708 PICK-UP DATE / 3311:6423
+ * DELIVERY DATE).
+ *
+ * Reusable card: heading + Change pill, dateHeading label, italic
+ * helper note, 2-column grid of rounded date pills (last cell is the
+ * "Other Date" cell), and the NEXT submit pill.
+ *
+ * Each pill is a `<label>` wrapping a hidden radio. The selected pill
+ * gets the brand-blue tint via the `peer-checked:` modifier so the
+ * page works without JS.
+ */
+
+interface DateOption {
+  label: string;
+  value: string;
+  other?: boolean;
+}
+
+interface Props {
+  heading: string;
+  changeLabel: string;
+  changeHref: string;
+  dateHeading: string;
+  helperNote: string;
+  options: DateOption[];
+  nextLabel: string;
+  nextHref: string;
+  /** Used for `data-node-id` traceability ("3311:6708" / "3311:6423"). */
+  cardNodeId?: string;
+  /** Used for `data-node-id` traceability on the heading. */
+  headingNodeId?: string;
+  /** Used for `data-node-id` traceability on the date heading. */
+  dateHeadingNodeId?: string;
+}
+
+const {
+  heading,
+  changeLabel,
+  changeHref,
+  dateHeading,
+  helperNote,
+  options,
+  nextLabel,
+  nextHref,
+  cardNodeId,
+  headingNodeId,
+  dateHeadingNodeId,
+} = Astro.props;
+
+const pillBase =
+  "block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none " +
+  "h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] " +
+  "leading-[1] flex items-center justify-center " +
+  "text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black " +
+  "transition-[transform,filter,background-color,color,border-color] duration-150 ease-out " +
+  "hover:brightness-95 hover:-translate-y-px " +
+  "peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark " +
+  "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark";
+---
+
+<article
+  class="relative z-10 mx-auto w-full max-w-[854px]
+         bg-white border border-brand-border
+         px-5 sm:px-8 md:px-10 lg:px-12 xl:px-[42px]
+         pt-6 sm:pt-8 md:pt-10 lg:pt-12 xl:pt-[31px]
+         pb-8 sm:pb-10 md:pb-12 lg:pb-14 xl:pb-[60px]"
+  data-node-id={cardNodeId}
+  data-name="Date selection card"
+>
+  {/* Heading row + Change pill. */}
+  <header
+    class="flex items-start justify-between gap-4 sm:gap-6
+           mb-6 sm:mb-8 md:mb-10 lg:mb-12"
+  >
+    <h1
+      class="m-0 font-medium text-black leading-[normal]
+             text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[90px]"
+      data-node-id={headingNodeId}
+    >{heading}</h1>
+
+    <a
+      href={changeHref}
+      class="inline-flex items-center justify-center text-center
+             font-medium text-black no-underline
+             bg-white border border-brand-border
+             h-9 sm:h-10 md:h-12 lg:h-14 xl:h-[65px]
+             w-24 sm:w-28 md:w-36 lg:w-44 xl:w-[238px]
+             text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px]
+             transition-[transform,filter] duration-150 ease-out
+             hover:brightness-95 hover:-translate-y-px
+             focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+    ><span>{changeLabel}</span></a>
+  </header>
+
+  <form method="post" action={nextHref} class="flex flex-col gap-6 sm:gap-8 md:gap-10">
+    <fieldset class="m-0 p-0 border-0">
+      <legend
+        class="font-normal text-black leading-[normal] mb-3 sm:mb-4 md:mb-5
+               text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
+        data-node-id={dateHeadingNodeId}
+      >{dateHeading}</legend>
+
+      <p
+        class="m-0 mb-6 sm:mb-8 md:mb-10 italic font-medium text-black leading-[normal]
+               text-sm sm:text-base md:text-lg lg:text-xl xl:text-[30px]"
+      >{helperNote}</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-x-[42px] xl:gap-y-[49px]">
+        {options.map((option, i) => {
+          const id = `order-date-${i}`;
+          return (
+            <div class="relative">
+              <input
+                type="radio"
+                name="date"
+                id={id}
+                value={option.value}
+                required
+                class="peer sr-only"
+                data-other={option.other ? "true" : undefined}
+              />
+              <label for={id} class={pillBase}>{option.label}</label>
+            </div>
+          );
+        })}
+      </div>
+    </fieldset>
+
+    {/* NEXT pill. */}
+    <div class="flex justify-center pt-2 sm:pt-4 md:pt-6 lg:pt-8">
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center text-center
+               bg-white text-brand-blue font-medium no-underline
+               border border-brand-border rounded-full
+               h-12 sm:h-14 md:h-16 lg:h-20 xl:h-[101px]
+               w-56 sm:w-64 md:w-80 lg:w-[320px] xl:w-[366px]
+               text-2xl sm:text-3xl md:text-4xl lg:text-[40px]
+               transition-[transform,filter] duration-150 ease-out
+               hover:brightness-95 hover:-translate-y-px
+               focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+      ><span>{nextLabel}</span></button>
+    </div>
+  </form>
+</article>

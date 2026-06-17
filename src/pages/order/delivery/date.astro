@@ -1,0 +1,47 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/home/Navbar.astro";
+import DateSelect from "../../../components/order/DateSelect.astro";
+import { loadHomeContent } from "../../../lib/content/home";
+import { loadOrderContent } from "../../../lib/content/order";
+
+const { navbar } = await loadHomeContent();
+const { deliveryDate } = await loadOrderContent();
+---
+<Layout title="Delivery Date — Cups & Cakes">
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} activeLink="order" />
+
+    {/* Brand-pink page band (Figma 3311:6457). The decorative
+        translucent C&C logo (3311:6461) sits behind the white card. */}
+    <section
+      aria-labelledby="order-delivery-date-heading"
+      class="relative flex-1 w-full overflow-hidden bg-brand-pink border-b border-brand-border
+             py-10 sm:py-14 md:py-20 lg:py-24 xl:py-[159px]"
+      data-node-id="3311:6457"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden="true"
+        data-node-id="3311:6461"
+      >
+        <img
+          src="/assets/order-logo-large.svg"
+          alt=""
+          aria-hidden="true"
+          class="block h-[98%] w-auto max-w-none aspect-[1221/1136] object-contain pointer-events-none select-none"
+        />
+      </div>
+
+      <div class="relative z-10 px-4 sm:px-6 md:px-8 lg:px-10">
+        <h2 id="order-delivery-date-heading" class="sr-only">Choose a delivery date</h2>
+        <DateSelect
+          {...deliveryDate}
+          cardNodeId="3311:6459"
+          headingNodeId="3311:6462"
+          dateHeadingNodeId="3311:6510"
+        />
+      </div>
+    </section>
+  </div>
+</Layout>

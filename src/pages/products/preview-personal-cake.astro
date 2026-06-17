@@ -1,4 +1,5 @@
 ---
+// TEMP — delete when Sanity is live
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/home/Navbar.astro";
 import Footer from "../../components/home/Footer.astro";
@@ -14,6 +15,16 @@ const { navbar, footer } = await loadHomeContent();
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
       breadcrumbHrefOrder={navbar.orderHref}
+      breadcrumbLabel="Personal Cakes"
+      title="Personal Cake"
+      subtitle="Small in size but big in bringing joy to each bite!"
+      servingInfo="Serves 3-4 people."
+      imageSrc="/assets/personal-cake-product.png"
+      imageAlt="Personal cake with pink frosting"
+      flavors={["Chocolate", "Vanilla"]}
+      frostingColors={["Red", "Blue", "Green", "Yellow", "Purple", "Pink", "White", "Custom"]}
+      occasions={["Regular", "Birthday", "Wedding", "Holiday", "Other"]}
+      price="$25.00"
     />
     <Footer {...footer} />
   </div>

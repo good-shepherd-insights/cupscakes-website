@@ -30,5 +30,10 @@ export async function loadOrderContent() {
 
   return {
     pickupOrDelivery: stripSection(requireSection("order-pickup-or-delivery")),
+    delivery: stripSection(requireSection("order-delivery")),
+    pickup: stripSection(requireSection("order-pickup")),
+    loading: stripSection(requireSection("order-loading")),
+    pickupDate: stripSection(requireSection("order-pickup-date")),
+    deliveryDate: stripSection(requireSection("order-delivery-date")),
   };
 }

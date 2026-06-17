@@ -1,0 +1,76 @@
+/*
+ * Snipcart brand overrides for Cups & Cakes.
+ *
+ * Snipcart loads its own CSS from cdn.snipcart.com; this file is imported
+ * in Layout.astro so it appears in the document <head> AFTER the
+ * Snipcart CSS (which the IIFE prepends). Our rules override the
+ * defaults to match C&C brand tokens.
+ *
+ * Brand tokens (from tailwind @theme):
+ *   --color-brand-blue: #87CEFA
+ *   --color-brand-pink: #EB9CF9
+ *   --color-brand-border: #A0A0A0
+ *   Font family: Inter
+ */
+
+/* Primary accent — buttons, links, highlights */
+.snipcart__actions--link,
+.snipcart-cart-button--highlight,
+.snipcart-button--highlight {
+  background-color: #87CEFA !important;
+  border-color: #A0A0A0 !important;
+  color: white !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.snipcart__actions--link:hover,
+.snipcart-cart-button--highlight:hover {
+  background-color: #6BB8E8 !important;
+}
+
+/* Close/cancel/secondary buttons */
+.snipcart-cart-button,
+.snipcart-button {
+  border-color: #A0A0A0 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Typography — match C&C's Inter font stack */
+.snipcart * {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Cart header */
+.snipcart-cart-header {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Price styling */
+.snipcart-cart-summary-fees__item-price,
+.snipcart-cart-summary-fees__item-label,
+.snipcart-item-price {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Item quantity controls */
+.snipcart-item-quantity {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Discount box */
+.snipcart-discount-box {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Form inputs */
+.snipcart-form__input,
+.snipcart-form__select,
+.snipcart-input {
+  font-family: 'Inter', sans-serif !important;
+  border-color: #A0A0A0 !important;
+}
+
+/* Error messages */
+.snipcart-error-message {
+  font-family: 'Inter', sans-serif !important;
+}

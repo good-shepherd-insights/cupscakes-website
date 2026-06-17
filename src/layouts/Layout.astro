@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import Snipcart from '../components/snipcart/Snipcart.astro';
 import '../styles/global.css';
+import '../styles/snipcart-overrides.css';
 
 interface Props {
   title?: string;
@@ -22,9 +23,9 @@ const { title = 'Cupcakes' } = Astro.props;
       rel="stylesheet"
     />
     <ClientRouter />
+    <Snipcart />
   </head>
   <body class="m-0 p-0 bg-white font-sans antialiased">
     <slot />
-    <Snipcart />
   </body>
 </html>

@@ -1,0 +1,37 @@
+{
+  "section": "order-pickup",
+  "heading": "Pick-Up",
+  "changeLabel": "Change",
+  "changeHref": "/order",
+  "contactHeading": "Contact Information",
+  "contactFields": [
+    {
+      "id": "firstName",
+      "label": "First Name",
+      "required": true,
+      "autocomplete": "given-name"
+    },
+    {
+      "id": "lastName",
+      "label": "Last Name",
+      "required": true,
+      "autocomplete": "family-name"
+    },
+    {
+      "id": "email",
+      "label": "Email Address",
+      "type": "email",
+      "required": true,
+      "autocomplete": "email"
+    },
+    {
+      "id": "phone",
+      "label": "Phone Number",
+      "type": "tel",
+      "required": true,
+      "autocomplete": "tel"
+    }
+  ],
+  "nextLabel": "NEXT",
+  "nextHref": "/order/pickup/date"
+}

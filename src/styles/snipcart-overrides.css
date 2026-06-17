@@ -13,6 +13,14 @@
  *   Font family: Inter
  */
 
+/* Cart side panel — Snipcart sets z-index: 20 by default, which sits
+   below this site's sticky navbar (z-50, the highest z-index used
+   anywhere on the site — see Navbar.astro), so the navbar painted over
+   the open cart drawer. 60 clears every z-index in use site-wide. */
+.snipcart-modal__container.snipcart-cart-summary-side {
+  z-index: 60 !important;
+}
+
 /* Primary accent — buttons, links, highlights */
 .snipcart__actions--link,
 .snipcart-cart-button--highlight,

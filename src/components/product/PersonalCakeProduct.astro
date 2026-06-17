@@ -70,6 +70,8 @@
 
 import Button from "../ui/Button.astro";
 import Breadcrumb from "../ui/Breadcrumb.astro";
+import type { CustomOption } from "../../types/product";
+import { routes } from "../../lib/routes";
 
 interface Props {
   breadcrumbHrefHome: string;
@@ -84,12 +86,12 @@ interface Props {
   imageAlt?: string;
   /** Form submission endpoint (defaults to "#"). */
   addToCartHref?: string;
-  flavors: string[];
-  /** Omit to hide the Frosting Color section. */
-  frostingColors?: string[];
-  /** Omit to hide the Quantity section. */
-  quantities?: string[];
-  occasions: string[];
+  /** Selection groups rendered in order, e.g. Flavor, Frosting Color, Quantity, Occasion. */
+  customOptions: CustomOption[];
+  /** Required only when a group has definesVariantRoute — used to build that group's variant links. */
+  productSlug?: string;
+  /** The currently selected variant slug, if any, for active-state styling. */
+  currentVariantSlug?: string;
   price: string;
 }
 
@@ -103,10 +105,9 @@ const {
   imageSrc = "/assets/personal-cake-product.png",
   imageAlt = "Personal cake with pink frosting",
   addToCartHref = "#",
-  flavors,
-  frostingColors,
-  quantities,
-  occasions,
+  customOptions,
+  productSlug,
+  currentVariantSlug,
   price,
 } = Astro.props;
 
@@ -120,8 +121,8 @@ const selectionBtn = [
   // 238×65 at xl, fluid below
   "h-[40px] sm:h-[48px] md:h-[56px] lg:h-[60px] xl:h-[65px]",
   "w-full",
-  // 25px label at xl
-  "text-[14px] sm:text-[16px] md:text-[18px] lg:text-[22px] xl:text-[25px]",
+  // 25px label at xl, reduced 10% then a further 15%
+  "text-[11px] sm:text-[12px] md:text-[14px] lg:text-[17px] xl:text-[20px]",
   "transition-[transform,filter] duration-150 ease-out",
   "hover:brightness-95 hover:-translate-y-px",
   "focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden",
@@ -150,7 +151,8 @@ const selectionBtn = [
         { label: "Order Now", href: breadcrumbHrefOrder },
         { label: breadcrumbLabel },
       ]}
-      class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[81px]"
+      class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[81px]
+             text-[11px]! sm:text-[13px]! md:text-[15px]! lg:text-[19px]! xl:text-[26px]!"
     />
 
     {/* Two-column composition. Below lg: image stacks above the form.
@@ -158,15 +160,15 @@ const selectionBtn = [
         gap between them. Image track is intentionally smaller than the
         original Figma 694px to reduce the image's visual weight. */}
     <div
-      class="flex flex-col lg:flex-row
+      class="flex flex-col lg:flex-row justify-center
              gap-y-10 sm:gap-y-12 md:gap-y-14
-             gap-x-[160px] xl:gap-x-[240px]
+             gap-x-10 sm:gap-x-12 md:gap-x-16 lg:gap-x-20 xl:gap-x-[100px]
              items-start"
     >
       {/* PRODUCT IMAGE — reduced from Figma's 694×543 (aspect preserved). */}
       <div
-        class="w-full aspect-[694/543] overflow-hidden shrink-0 mx-auto
-               max-w-[420px] lg:max-w-[420px] xl:max-w-[460px]
+        class="w-full aspect-[694/543] overflow-hidden mx-auto
+               max-w-[420px] lg:max-w-none lg:flex-1
                mt-0 lg:mt-[60px] xl:mt-[97px]"
         data-node-id="3311:2319"
         data-name="C&C_PERSONAL_CAKE_PINK_003"
@@ -185,13 +187,13 @@ const selectionBtn = [
       <form
         action={addToCartHref}
         method="post"
-        class="flex flex-col w-full lg:max-w-[807px]"
+        class="flex flex-col w-full lg:max-w-none lg:flex-1"
       >
         {/* Title (3311:2220) — Inter Medium 95px black. Sits at Figma
             y=286 → ~37px above the image top (346). */}
         <h1
           class="m-0 text-black font-medium leading-[1.05]
-                 text-[36px] sm:text-[48px] md:text-[60px] lg:text-[72px] xl:text-[95px]"
+                 text-[31px] sm:text-[41px] md:text-[51px] lg:text-[61px] xl:text-[81px]"
           data-node-id="3311:2220"
         >{title}</h1>
 
@@ -200,7 +202,7 @@ const selectionBtn = [
         <p
           class="m-0 mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[44px]
                  text-black font-medium leading-[1.15]
-                 text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+                 text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
           data-node-id="3311:2228"
         >{subtitle}</p>
 
@@ -210,162 +212,65 @@ const selectionBtn = [
           <p
             class="m-0 mt-2 sm:mt-2 md:mt-2 lg:mt-2 xl:mt-[8px]
                    text-black font-light italic leading-[1.15]
-                   text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+                   text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
             data-node-id="3311:2232"
           >{servingInfo}</p>
         )}
 
-        {/* Flavor section — label (3311:2301) at Figma y=558, buttons
-            (3311:2306/2313) at y=653. */}
-        <fieldset
-          class="m-0 p-0 border-0
-                 mt-6 sm:mt-7 md:mt-8 lg:mt-10 xl:mt-[55px]"
-          data-node-id="3311:2301"
-        >
-          <legend
-            class="p-0 m-0 text-black font-light leading-[1]
-                   text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
-          >Flavor:</legend>
-
-          {/* 3 columns up to xl to match the 998/1282/1566 = 284px stride
-              grid; flavor row only uses the first 2 columns. */}
-          <div
-            class="grid grid-cols-2 sm:grid-cols-3
-                   gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
-                   gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[49px]
-                   mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
-                   max-w-[810px]"
-          >
-            {flavors.map((label, i) => (
-              <label
-                class={selectionBtn}
-                data-node-id={i === 0 ? "3311:2306" : "3311:2313"}
+        {/* Selection groups — one generic, data-driven fieldset per
+            customOptions entry (e.g. Flavor, Frosting Color, Quantity,
+            Occasion). Replaces what used to be four hardcoded sections
+            tied to specific Figma nodes; see FEATURE(product-catalog-extensibility).md
+            for the before/after and rationale. */}
+        {customOptions.map((group, i) => {
+          const needsSpacer = group.options.length % 3 === 2;
+          return (
+            <fieldset
+              class={`m-0 p-0 border-0 ${
+                i === 0
+                  ? "mt-6 sm:mt-7 md:mt-8 lg:mt-10 xl:mt-[55px]"
+                  : "mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
+              }`}
+            >
+              <legend
+                class="p-0 m-0 text-black leading-[1.15]
+                       text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
               >
-                <input
-                  type="radio"
-                  name="flavor"
-                  value={label}
-                  class="sr-only peer"
-                />
-                <span class="peer-checked:underline">{label}</span>
-              </label>
-            ))}
-            {/* Spacer to keep the 3-col grid stride even when only 2 flavors. */}
-            <span class="hidden sm:block" aria-hidden="true"></span>
-          </div>
-        </fieldset>
+                <span class="font-light">{group.name}: </span>
+                {group.helperText && <span class="font-normal">{group.helperText}</span>}
+              </legend>
 
-        {/* Frosting Color section — label (3311:2320) at Figma y=769,
-            buttons start at y=864. Eight options laid out 3 per row in
-            Figma order: Red Blue Green / Yellow Purple Pink / White
-            Custom. Omitted when frostingColors prop is absent. */}
-        {frostingColors && (
-          <fieldset
-            class="m-0 p-0 border-0
-                   mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
-            data-node-id="3311:2320"
-          >
-            <legend
-              class="p-0 m-0 text-black leading-[1.15]
-                     text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
-            >
-              <span class="font-light">Frosting Color: </span>
-              <span class="font-normal">(please choose up to 2 colors)</span>
-            </legend>
-
-            <div
-              class="grid grid-cols-2 sm:grid-cols-3
-                     gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
-                     gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[56px]
-                     mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
-                     max-w-[810px]"
-            >
-              {frostingColors.map((label) => (
-                <label class={selectionBtn}>
-                  <input
-                    type="checkbox"
-                    name="frosting"
-                    value={label}
-                    class="sr-only peer"
-                  />
-                  <span class="peer-checked:underline">{label}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        )}
-
-        {/* Quantity section — same geometry as Occasion. Omitted when
-            quantities prop is absent (e.g. personal cakes). */}
-        {quantities && (
-          <fieldset
-            class="m-0 p-0 border-0
-                   mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
-          >
-            <legend
-              class="p-0 m-0 text-black font-light leading-[1]
-                     text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
-            >Quantity:</legend>
-
-            <div
-              class="grid grid-cols-2 sm:grid-cols-3
-                     gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
-                     gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[49px]
-                     mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
-                     max-w-[810px]"
-            >
-              {quantities.map((label) => (
-                <label class={selectionBtn}>
-                  <input
-                    type="radio"
-                    name="quantity"
-                    value={label}
-                    class="sr-only peer"
-                  />
-                  <span class="peer-checked:underline">{label}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        )}
-
-        {/* Occasion section — label (3311:2236, Figma spelling
-            "Occassion:") at Figma y=1222, buttons at y=1315/1429. */}
-        <fieldset
-          class="m-0 p-0 border-0
-                 mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
-          data-node-id="3311:2236"
-        >
-          <legend
-            class="p-0 m-0 text-black font-light leading-[1]
-                   text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
-          >Occassion:</legend>
-
-          {/* Figma layout: row 1 (998,1315) Regular | (1282,1315) Birthday |
-              (1566,1315) Wedding. Row 2: (998,1429) Holiday | (1282,1429)
-              Other. */}
-          <div
-            class="grid grid-cols-2 sm:grid-cols-3
-                   gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
-                   gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[49px]
-                   mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
-                   max-w-[810px]"
-          >
-            {occasions.map((label) => (
-              <label class={selectionBtn}>
-                <input
-                  type="radio"
-                  name="occasion"
-                  value={label}
-                  class="sr-only peer"
-                />
-                <span class="peer-checked:underline">{label}</span>
-              </label>
-            ))}
-            {/* Trailing spacer keeps 3-col grid stride. */}
-            <span class="hidden sm:block" aria-hidden="true"></span>
-          </div>
-        </fieldset>
+              <div
+                class="grid grid-cols-2 sm:grid-cols-3
+                       gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
+                       gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[49px]
+                       mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
+                       max-w-[810px]"
+              >
+                {group.options.map((option) =>
+                  group.definesVariantRoute && option.slug && productSlug ? (
+                    <a
+                      href={routes.productVariant(productSlug, option.slug.current)}
+                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "bg-brand-pink! text-white!" : ""}`}
+                    >
+                      {option.label}
+                      {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
+                    </a>
+                  ) : (
+                    <label class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!`}>
+                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only" />
+                      <span>
+                        {option.label}
+                        {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
+                      </span>
+                    </label>
+                  )
+                )}
+                {needsSpacer && <span class="hidden sm:block" aria-hidden="true"></span>}
+              </div>
+            </fieldset>
+          );
+        })}
 
         {/* ADD TO CART (3311:2281) — reuses the shared ui/Button. The
             `lg` solid size matches the homepage ORDER NOW CTA geometry;
@@ -376,7 +281,8 @@ const selectionBtn = [
           variant="solid"
           size="lg"
           shape="square"
-          class="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px] !bg-brand-pink hover:!bg-brand-pink"
+          class="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px] bg-brand-pink! hover:bg-brand-pink!
+                 text-[15px]! sm:text-[17px]! md:text-[20px]! lg:text-[26px]!"
           ariaLabel="Add to cart"
         />
 
@@ -385,7 +291,7 @@ const selectionBtn = [
         <p
           class="m-0 mt-6 sm:mt-7 md:mt-9 lg:mt-10 xl:mt-[51px]
                  text-black font-medium leading-[1]
-                 text-[32px] sm:text-[44px] md:text-[56px] lg:text-[68px] xl:text-[85px]"
+                 text-[27px] sm:text-[37px] md:text-[48px] lg:text-[58px] xl:text-[72px]"
           data-node-id="3311:2224"
         >{price}</p>
       </form>

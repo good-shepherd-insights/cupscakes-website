@@ -1,20 +1,38 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { stegaClean } from '@sanity/client/stega';
 import Snipcart from '../components/snipcart/Snipcart.astro';
 import '../styles/global.css';
 import '../styles/snipcart-overrides.css';
 
 interface Props {
   title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
 }
-const { title = 'Cupcakes' } = Astro.props;
+const { title = 'Cupcakes', description, image, canonicalUrl } = Astro.props;
+// Sanity's stega visual-editing encoding injects invisible Unicode into every
+// GROQ string so the Presentation tool can map rendered text back to its
+// source field. <title>/<meta> are never visible/clickable DOM, so the
+// overlay can't attach there anyway — strip it here to avoid bloating the
+// tab title and og/meta tags with thousands of invisible characters.
+const cleanTitle = stegaClean(title);
+const cleanDescription = description ? stegaClean(description) : undefined;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{cleanTitle}</title>
+    {cleanDescription && <meta name="description" content={cleanDescription} />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <meta property="og:title" content={cleanTitle} />
+    {cleanDescription && <meta property="og:description" content={cleanDescription} />}
+    {image && <meta property="og:image" content={image} />}
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
     {/* Inter font (matches the prototype's --font-sans token). */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

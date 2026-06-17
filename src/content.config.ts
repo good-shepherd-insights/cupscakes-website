@@ -40,7 +40,6 @@ const cupcakesBannerSchema = z.object({
 const cupcakeCarouselSchema = z.object({
   section: z.literal("cupcake-carousel"),
   caption: z.string(),
-  orderHref: z.string(),
   otherOptionsHref: z.string(),
   otherOptionsLabel: z.string(),
 });

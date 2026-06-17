@@ -1,12 +1,13 @@
 ---
+import { routes } from "../../lib/routes";
+
 interface Props {
   caption: string;
-  orderHref: string;
   otherOptionsHref: string;
   otherOptionsLabel: string;
 }
 
-const { caption, orderHref, otherOptionsHref, otherOptionsLabel } = Astro.props;
+const { caption, otherOptionsHref, otherOptionsLabel } = Astro.props;
 
 // Each card's full class string is a literal so Tailwind's content
 // scanner can statically see `bg-flavor-chocolate`,
@@ -42,7 +43,7 @@ const flavors = [
     cardClass: `bg-flavor-carrot ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1475",
     nodePhoto: "3311:1513",
-    photoSrc: "/assets/cupcake-photo.png",
+    photoSrc: "https://cdn.sanity.io/images/9dxxafms/production/e23461ab4cf2cab6477fcf71a8fd8c406c6a116b-450x450.png",
   },
 ];
 
@@ -106,7 +107,7 @@ const orderLabel = "ORDER NOW";
           >{price}</p>
 
           <a
-            href={orderHref}
+            href={routes.productVariant("cupcakes", f.key)}
             class="cupcake-cta"
             aria-label={`Order ${f.name} cupcakes now`}
           ><span>{orderLabel}</span></a>

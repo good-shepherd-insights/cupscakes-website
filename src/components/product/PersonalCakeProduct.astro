@@ -159,15 +159,15 @@ const selectionBtn = [
         gap between them. Image track is intentionally smaller than the
         original Figma 694px to reduce the image's visual weight. */}
     <div
-      class="flex flex-col lg:flex-row
+      class="flex flex-col lg:flex-row justify-center
              gap-y-10 sm:gap-y-12 md:gap-y-14
-             gap-x-[160px] xl:gap-x-[240px]
+             gap-x-10 sm:gap-x-12 md:gap-x-16 lg:gap-x-20 xl:gap-x-[100px]
              items-start"
     >
       {/* PRODUCT IMAGE — reduced from Figma's 694×543 (aspect preserved). */}
       <div
-        class="w-full aspect-[694/543] overflow-hidden shrink-0 mx-auto
-               max-w-[420px] lg:max-w-[420px] xl:max-w-[460px]
+        class="w-full aspect-[694/543] overflow-hidden mx-auto
+               max-w-[420px] lg:max-w-none lg:flex-1
                mt-0 lg:mt-[60px] xl:mt-[97px]"
         data-node-id="3311:2319"
         data-name="C&C_PERSONAL_CAKE_PINK_003"
@@ -186,7 +186,7 @@ const selectionBtn = [
       <form
         action={addToCartHref}
         method="post"
-        class="flex flex-col w-full lg:max-w-[807px]"
+        class="flex flex-col w-full lg:max-w-none lg:flex-1"
       >
         {/* Title (3311:2220) — Inter Medium 95px black. Sits at Figma
             y=286 → ~37px above the image top (346). */}

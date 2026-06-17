@@ -7,4 +7,5 @@ export const routes = {
   orderLoading: "/order/loading",
   cart: "/cart",
   product: (slug: string) => `/products/${slug}`,
+  productVariant: (slug: string, variantSlug: string) => `/products/${slug}/${variantSlug}`,
 };

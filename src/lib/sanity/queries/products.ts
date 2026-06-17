@@ -27,17 +27,6 @@ export async function getProductsByCategorySlug(categorySlug: string): Promise<P
   );
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
-  return sanityClient.fetch<Product | null>(
-    `*[_type == "product" && slug.current == $slug][0]{ ${PRODUCT_FIELDS} }`,
-    { slug }
-  );
-}
-
-export async function getAllProductSlugs(): Promise<Pick<Product, 'slug'>[]> {
-  return sanityClient.fetch(`*[_type == "product" && defined(slug.current)]{ slug }`);
-}
-
 export async function getAllProductCategories(): Promise<ProductCategory[]> {
   return sanityClient.fetch<ProductCategory[]>(
     `*[_type == "productCategory"] | order(displayOrder asc) { _id, title, slug, heading, caption, displayOrder }`

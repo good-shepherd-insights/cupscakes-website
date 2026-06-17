@@ -11,12 +11,15 @@ export interface CustomOptionValue {
   label: string;
   /** Added to the product's base price when this option is selected, e.g. 3 for +$3.00. */
   priceModifier?: number;
+  slug?: { current: string };
+  image?: unknown;
 }
 
 export interface CustomOption {
   name: string;
   inputType: 'radio' | 'checkbox';
   helperText?: string;
+  definesVariantRoute?: boolean;
   options: CustomOptionValue[];
 }
 

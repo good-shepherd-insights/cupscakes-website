@@ -63,6 +63,16 @@ export const product = defineType({
       type: 'array',
       description:
         'Each entry is one selection group on the product page (e.g. Flavor, Frosting Color, Quantity, Occasion). Add, remove, or reorder groups here — no code change needed.',
+      validation: (Rule) =>
+        Rule.custom((groups) => {
+          if (!groups) return true;
+          const routeGroups = groups.filter(
+            (g: { definesVariantRoute?: boolean }) => g.definesVariantRoute
+          );
+          return routeGroups.length > 1
+            ? 'Only one group may be used as the shareable variant URL.'
+            : true;
+        }),
       of: [
         defineArrayMember({
           type: 'object',
@@ -95,6 +105,13 @@ export const product = defineType({
               description: 'Optional clarifying text after the label, e.g. "(please choose up to 2 colors)".',
             }),
             defineField({
+              name: 'definesVariantRoute',
+              title: 'Use as shareable variant URL',
+              type: 'boolean',
+              description: 'At most one group per product. Each option becomes its own URL (e.g. /products/cupcakes/vanilla) with its own image and link preview.',
+              initialValue: false,
+            }),
+            defineField({
               name: 'options',
               title: 'Options',
               type: 'array',
@@ -116,6 +133,20 @@ export const product = defineType({
                       type: 'number',
                       description: 'Added to the base price when this option is selected, e.g. 3 for +$3.00. Leave blank for no change.',
                       validation: (Rule) => Rule.precision(2),
+                    }),
+                    defineField({
+                      name: 'slug',
+                      title: 'Slug',
+                      type: 'slug',
+                      description: 'URL segment when this option is part of a shareable variant link, e.g. "vanilla".',
+                      options: { source: 'label', maxLength: 96 },
+                    }),
+                    defineField({
+                      name: 'image',
+                      title: 'Image',
+                      type: 'image',
+                      options: { hotspot: true },
+                      description: 'Optional photo for this specific option. Falls back to the product image if blank.',
                     }),
                   ],
                   preview: {

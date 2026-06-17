@@ -71,6 +71,7 @@
 import Button from "../ui/Button.astro";
 import Breadcrumb from "../ui/Breadcrumb.astro";
 import type { CustomOption } from "../../types/product";
+import { routes } from "../../lib/routes";
 
 interface Props {
   breadcrumbHrefHome: string;
@@ -87,6 +88,10 @@ interface Props {
   addToCartHref?: string;
   /** Selection groups rendered in order, e.g. Flavor, Frosting Color, Quantity, Occasion. */
   customOptions: CustomOption[];
+  /** Required only when a group has definesVariantRoute — used to build that group's variant links. */
+  productSlug?: string;
+  /** The currently selected variant slug, if any, for active-state styling. */
+  currentVariantSlug?: string;
   price: string;
 }
 
@@ -101,6 +106,8 @@ const {
   imageAlt = "Personal cake with pink frosting",
   addToCartHref = "#",
   customOptions,
+  productSlug,
+  currentVariantSlug,
   price,
 } = Astro.props;
 
@@ -239,15 +246,25 @@ const selectionBtn = [
                        mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
                        max-w-[810px]"
               >
-                {group.options.map((option) => (
-                  <label class={selectionBtn}>
-                    <input type={group.inputType} name={group.name} value={option.label} class="sr-only peer" />
-                    <span class="peer-checked:underline">
+                {group.options.map((option) =>
+                  group.definesVariantRoute && option.slug && productSlug ? (
+                    <a
+                      href={routes.productVariant(productSlug, option.slug.current)}
+                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "underline" : ""}`}
+                    >
                       {option.label}
                       {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
-                    </span>
-                  </label>
-                ))}
+                    </a>
+                  ) : (
+                    <label class={selectionBtn}>
+                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only peer" />
+                      <span class="peer-checked:underline">
+                        {option.label}
+                        {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
+                      </span>
+                    </label>
+                  )
+                )}
                 {needsSpacer && <span class="hidden sm:block" aria-hidden="true"></span>}
               </div>
             </fieldset>

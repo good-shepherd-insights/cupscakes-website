@@ -6,8 +6,11 @@ import '../styles/snipcart-overrides.css';
 
 interface Props {
   title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
 }
-const { title = 'Cupcakes' } = Astro.props;
+const { title = 'Cupcakes', description, image, canonicalUrl } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -15,6 +18,13 @@ const { title = 'Cupcakes' } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {image && <meta property="og:image" content={image} />}
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
     {/* Inter font (matches the prototype's --font-sans token). */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

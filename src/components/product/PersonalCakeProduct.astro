@@ -68,8 +68,10 @@
  *     SVG; reuses existing brand-pink token).
  */
 
-import Button from "../ui/Button.astro";
+import { stegaClean } from "@sanity/client/stega";
 import Breadcrumb from "../ui/Breadcrumb.astro";
+import AddToCartButton from "../snipcart/AddToCartButton.astro";
+import { buildProductCartAttributes } from "../../lib/snipcart/cartItem";
 import type { CustomOption } from "../../types/product";
 import { routes } from "../../lib/routes";
 
@@ -110,6 +112,29 @@ const {
   currentVariantSlug,
   price,
 } = Astro.props;
+
+// The one piece of Astro-specific context buildProductCartAttributes()
+// can't resolve itself: URL building needs Astro.site, which only exists
+// here in frontmatter. Mirrors [...variant].astro's own canonicalPath
+// computation — prefer the canonical per-variant route (correct even on
+// the bare, no-flavor-segment URL, where currentVariantSlug is still the
+// default flavor) and fall back to the current request URL when this
+// component is used without those props (e.g. preview-personal-cake.astro).
+const cartItemPath =
+  productSlug && currentVariantSlug
+    ? routes.productVariant(productSlug, currentVariantSlug)
+    : Astro.url.pathname;
+const cartItemUrl = Astro.site ? new URL(cartItemPath, Astro.site).toString() : cartItemPath;
+
+const cartAttrs = buildProductCartAttributes({
+  title,
+  price,
+  imageSrc,
+  customOptions,
+  productSlug,
+  currentVariantSlug,
+  url: cartItemUrl,
+});
 
 /* Reusable button class — exactly matches Figma 238×65 white box with
    #707070 border and Inter Medium 25px black centered label. Scales
@@ -258,7 +283,13 @@ const selectionBtn = [
                     </a>
                   ) : (
                     <label class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!`}>
-                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only" />
+                      <input
+                        type={group.inputType}
+                        name={stegaClean(group.name)}
+                        value={stegaClean(option.label)}
+                        data-price-modifier={option.priceModifier ?? 0}
+                        class="sr-only"
+                      />
                       <span>
                         {option.label}
                         {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
@@ -272,19 +303,23 @@ const selectionBtn = [
           );
         })}
 
-        {/* ADD TO CART (3311:2281) — reuses the shared ui/Button. The
-            `lg` solid size matches the homepage ORDER NOW CTA geometry;
-            class overrides swap the fill to brand-pink to match Figma. */}
-        <Button
-          href={addToCartHref}
-          label="ADD TO CART"
-          variant="solid"
-          size="lg"
-          shape="square"
-          class="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px] bg-brand-pink! hover:bg-brand-pink!
-                 text-[15px]! sm:text-[17px]! md:text-[20px]! lg:text-[26px]!"
-          ariaLabel="Add to cart"
-        />
+        {/* ADD TO CART (3311:2281) — real Snipcart button. Visual classes
+            replicate the old shared ui/Button "solid lg square" output
+            exactly (border, sizing, hover/focus, brand-pink fill) now that
+            this is a plain <button> instead of an <a>. */}
+        <AddToCartButton
+          attrs={cartAttrs}
+          class="inline-flex items-center justify-center font-medium no-underline text-center
+                 border border-brand-border
+                 transition-[transform,filter] duration-150 ease-out
+                 hover:brightness-95 hover:-translate-y-px
+                 focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden
+                 bg-brand-pink text-white
+                 h-10 sm:h-12 md:h-14 lg:h-[68px] xl:h-20
+                 w-48 sm:w-56 md:w-[245px] lg:w-[272px] xl:w-[326px]
+                 mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px]
+                 text-[15px] sm:text-[17px] md:text-[20px] lg:text-[26px]"
+        >ADD TO CART</AddToCartButton>
 
         {/* Price (3311:2224) — Inter Medium 85px black, Figma y=1730
             → 51px below ADD TO CART (1569+110=1679; 1730-1679=51). */}
@@ -298,3 +333,9 @@ const selectionBtn = [
     </div>
   </div>
 </main>
+
+<script>
+  import { bindAddToCartSync } from "../../lib/snipcart/cartSync";
+
+  document.addEventListener("astro:page-load", bindAddToCartSync);
+</script>

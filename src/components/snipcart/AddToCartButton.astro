@@ -2,10 +2,12 @@
 interface Props {
   /** Pre-built Snipcart data-item-* attributes from buildItemAttributes(). */
   attrs: Record<string, string>;
+  /** Optional extra utility classes for visual styling. */
+  class?: string;
 }
 
-const { attrs } = Astro.props;
+const { attrs, class: extraClass = '' } = Astro.props;
 ---
-<button class="snipcart-add-item" {...attrs}>
+<button type="button" class={`snipcart-add-item ${extraClass}`} {...attrs}>
   <slot>Add to Cart</slot>
 </button>

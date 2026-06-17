@@ -121,8 +121,8 @@ const selectionBtn = [
   // 238×65 at xl, fluid below
   "h-[40px] sm:h-[48px] md:h-[56px] lg:h-[60px] xl:h-[65px]",
   "w-full",
-  // 25px label at xl
-  "text-[14px] sm:text-[16px] md:text-[18px] lg:text-[22px] xl:text-[25px]",
+  // 25px label at xl, reduced 10% then a further 15%
+  "text-[11px] sm:text-[12px] md:text-[14px] lg:text-[17px] xl:text-[20px]",
   "transition-[transform,filter] duration-150 ease-out",
   "hover:brightness-95 hover:-translate-y-px",
   "focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden",
@@ -151,7 +151,8 @@ const selectionBtn = [
         { label: "Order Now", href: breadcrumbHrefOrder },
         { label: breadcrumbLabel },
       ]}
-      class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[81px]"
+      class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[81px]
+             text-[11px]! sm:text-[13px]! md:text-[15px]! lg:text-[19px]! xl:text-[26px]!"
     />
 
     {/* Two-column composition. Below lg: image stacks above the form.
@@ -192,7 +193,7 @@ const selectionBtn = [
             y=286 → ~37px above the image top (346). */}
         <h1
           class="m-0 text-black font-medium leading-[1.05]
-                 text-[36px] sm:text-[48px] md:text-[60px] lg:text-[72px] xl:text-[95px]"
+                 text-[31px] sm:text-[41px] md:text-[51px] lg:text-[61px] xl:text-[81px]"
           data-node-id="3311:2220"
         >{title}</h1>
 
@@ -201,7 +202,7 @@ const selectionBtn = [
         <p
           class="m-0 mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[44px]
                  text-black font-medium leading-[1.15]
-                 text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+                 text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
           data-node-id="3311:2228"
         >{subtitle}</p>
 
@@ -211,7 +212,7 @@ const selectionBtn = [
           <p
             class="m-0 mt-2 sm:mt-2 md:mt-2 lg:mt-2 xl:mt-[8px]
                    text-black font-light italic leading-[1.15]
-                   text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+                   text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
             data-node-id="3311:2232"
           >{servingInfo}</p>
         )}
@@ -233,7 +234,7 @@ const selectionBtn = [
             >
               <legend
                 class="p-0 m-0 text-black leading-[1.15]
-                       text-[15px] sm:text-[18px] md:text-[22px] lg:text-[28px] xl:text-[35px]"
+                       text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
               >
                 <span class="font-light">{group.name}: </span>
                 {group.helperText && <span class="font-normal">{group.helperText}</span>}
@@ -250,15 +251,15 @@ const selectionBtn = [
                   group.definesVariantRoute && option.slug && productSlug ? (
                     <a
                       href={routes.productVariant(productSlug, option.slug.current)}
-                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "underline" : ""}`}
+                      class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "bg-brand-pink! text-white!" : ""}`}
                     >
                       {option.label}
                       {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
                     </a>
                   ) : (
-                    <label class={selectionBtn}>
-                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only peer" />
-                      <span class="peer-checked:underline">
+                    <label class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!`}>
+                      <input type={group.inputType} name={group.name} value={option.label} class="sr-only" />
+                      <span>
                         {option.label}
                         {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
                       </span>
@@ -280,7 +281,8 @@ const selectionBtn = [
           variant="solid"
           size="lg"
           shape="square"
-          class="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px] bg-brand-pink! hover:bg-brand-pink!"
+          class="mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px] bg-brand-pink! hover:bg-brand-pink!
+                 text-[15px]! sm:text-[17px]! md:text-[20px]! lg:text-[26px]!"
           ariaLabel="Add to cart"
         />
 
@@ -289,7 +291,7 @@ const selectionBtn = [
         <p
           class="m-0 mt-6 sm:mt-7 md:mt-9 lg:mt-10 xl:mt-[51px]
                  text-black font-medium leading-[1]
-                 text-[32px] sm:text-[44px] md:text-[56px] lg:text-[68px] xl:text-[85px]"
+                 text-[27px] sm:text-[37px] md:text-[48px] lg:text-[58px] xl:text-[72px]"
           data-node-id="3311:2224"
         >{price}</p>
       </form>

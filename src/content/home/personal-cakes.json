@@ -4,8 +4,8 @@
   "caption": "Small in size but big in bringing joy to each bite!",
   "flavorHeadline": "Choose your flavor!",
   "price": "$25",
-  "chocolateHref": "#order",
+  "chocolateHref": "/products/personal-cakes/chocolate",
   "chocolateLabel": "Chocolate",
-  "vanillaHref": "#order",
+  "vanillaHref": "/products/personal-cakes/vanilla",
   "vanillaLabel": "Vanilla"
 }

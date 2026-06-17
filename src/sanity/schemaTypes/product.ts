@@ -38,6 +38,15 @@ export const product = defineType({
       title: 'Image',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description:
+            'Descriptive alt text for SEO and accessibility, e.g. "Carrot cupcake with cream cheese frosting". Falls back to a generated label if left blank.',
+        }),
+      ],
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -152,6 +161,15 @@ export const product = defineType({
                       type: 'image',
                       options: { hotspot: true },
                       description: 'Optional photo for this specific option. Falls back to the product image if blank.',
+                      fields: [
+                        defineField({
+                          name: 'alt',
+                          title: 'Alt Text',
+                          type: 'string',
+                          description:
+                            'Descriptive alt text for SEO and accessibility, e.g. "Carrot cupcake with cream cheese frosting". Falls back to a generated label if left blank.',
+                        }),
+                      ],
                     }),
                   ],
                   preview: {

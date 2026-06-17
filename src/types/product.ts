@@ -7,12 +7,18 @@ export interface ProductCategory {
   displayOrder?: number;
 }
 
+export interface SanityImage {
+  asset?: { _ref?: string; _type?: string };
+  /** Editorial alt text set in Sanity Studio. Falls back to a generated label when blank. */
+  alt?: string;
+}
+
 export interface CustomOptionValue {
   label: string;
   /** Added to the product's base price when this option is selected, e.g. 3 for +$3.00. */
   priceModifier?: number;
   slug?: { current: string };
-  image?: unknown;
+  image?: SanityImage;
 }
 
 export interface CustomOption {
@@ -29,7 +35,7 @@ export interface Product {
   price: number;
   slug: { current: string };
   category: ProductCategory;
-  image: unknown;
+  image: SanityImage;
   description?: string;
   subtitle?: string;
   servingInfo?: string;

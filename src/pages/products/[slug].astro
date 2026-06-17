@@ -1,11 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import AddToCartButton from '../../components/snipcart/AddToCartButton.astro';
-import { buildItemAttributes } from '../../lib/snipcart/attributes';
+import Navbar from '../../components/home/Navbar.astro';
+import Footer from '../../components/home/Footer.astro';
+import PersonalCakeProduct from '../../components/product/PersonalCakeProduct.astro';
+import { loadHomeContent } from '../../lib/content/home';
 import { getAllProductSlugs, getProductBySlug } from '../../lib/sanity/queries/products';
 import { urlFor } from '../../lib/sanity/image';
 import { IMAGE_WIDTHS } from '../../lib/constants';
-import { routes } from '../../lib/routes';
+
+const DEFAULT_OCCASIONS = ["Regular", "Birthday", "Wedding", "Holiday", "Other"];
 
 export async function getStaticPaths() {
   const slugs = await getAllProductSlugs();
@@ -13,37 +16,36 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const product = await getProductBySlug(slug!);
+const [{ navbar, footer }, product] = await Promise.all([
+  loadHomeContent(),
+  getProductBySlug(slug!),
+]);
 
 if (!product) return Astro.redirect('/404');
 
-// Cast to any is required because Product.image is 'unknown' per strict zero-import rules in src/types/
-const imageUrl = product.image ? urlFor(product.image as any).width(IMAGE_WIDTHS.detail).url() : undefined;
-const productUrl = routes.product(slug!);
-
-const cartAttrs = buildItemAttributes({
-  id: product._id,
-  name: product.name,
-  price: product.price,
-  url: productUrl,
-  description: product.description,
-  image: imageUrl,
-});
+const imageUrl = product.image
+  ? urlFor(product.image as any).width(IMAGE_WIDTHS.detail).url()
+  : undefined;
 ---
-<Layout title={product.name}>
-  <article>
-    {imageUrl && (
-      <img
-        src={imageUrl}
-        alt={product.name}
-        fetchpriority="high"
-        loading="eager"
-        decoding="sync"
-      />
-    )}
-    <h1>{product.name}</h1>
-    <p>{product.price}</p>
-    {product.description && <p>{product.description}</p>}
-    <AddToCartButton {cartAttrs} />
-  </article>
+
+<Layout title={`${product.name} — Cups & Cakes`}>
+  <div class="flex min-h-dvh flex-col">
+    <Navbar {...navbar} />
+    <PersonalCakeProduct
+      breadcrumbHrefHome={navbar.homeHref}
+      breadcrumbHrefOrder={navbar.orderHref}
+      breadcrumbLabel={product.name}
+      title={product.name}
+      subtitle={product.subtitle ?? ""}
+      servingInfo={product.servingInfo}
+      imageSrc={imageUrl}
+      imageAlt={product.name}
+      flavors={product.flavors ?? []}
+      frostingColors={product.frostingColors}
+      quantities={product.quantities}
+      occasions={product.occasions ?? DEFAULT_OCCASIONS}
+      price={`$${product.price.toFixed(2)}`}
+    />
+    <Footer {...footer} />
+  </div>
 </Layout>

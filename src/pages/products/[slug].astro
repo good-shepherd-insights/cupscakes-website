@@ -8,8 +8,6 @@ import { getAllProductSlugs, getProductBySlug } from '../../lib/sanity/queries/p
 import { urlFor } from '../../lib/sanity/image';
 import { IMAGE_WIDTHS } from '../../lib/constants';
 
-const DEFAULT_OCCASIONS = ["Regular", "Birthday", "Wedding", "Holiday", "Other"];
-
 export async function getStaticPaths() {
   const slugs = await getAllProductSlugs();
   return slugs.map((p) => ({ params: { slug: p.slug.current } }));
@@ -40,10 +38,7 @@ const imageUrl = product.image
       servingInfo={product.servingInfo}
       imageSrc={imageUrl}
       imageAlt={product.name}
-      flavors={product.flavors ?? []}
-      frostingColors={product.frostingColors}
-      quantities={product.quantities}
-      occasions={product.occasions ?? DEFAULT_OCCASIONS}
+      customOptions={product.customOptions ?? []}
       price={`$${product.price.toFixed(2)}`}
     />
     <Footer {...footer} />

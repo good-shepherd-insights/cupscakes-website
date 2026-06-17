@@ -21,9 +21,18 @@ const { navbar, footer } = await loadHomeContent();
       servingInfo="Serves 3-4 people."
       imageSrc="/assets/personal-cake-product.png"
       imageAlt="Personal cake with pink frosting"
-      flavors={["Chocolate", "Vanilla"]}
-      frostingColors={["Red", "Blue", "Green", "Yellow", "Purple", "Pink", "White", "Custom"]}
-      occasions={["Regular", "Birthday", "Wedding", "Holiday", "Other"]}
+      customOptions={[
+        { name: "Flavor", inputType: "radio", options: ["Chocolate", "Vanilla"].map((label) => ({ label })) },
+        {
+          name: "Frosting Color",
+          inputType: "checkbox",
+          helperText: "(please choose up to 2 colors)",
+          options: ["Red", "Blue", "Green", "Yellow", "Purple", "Pink", "White"]
+            .map((label) => ({ label }))
+            .concat({ label: "Custom", priceModifier: 3 }),
+        },
+        { name: "Occasion", inputType: "radio", options: ["Regular", "Birthday", "Wedding", "Holiday", "Other"].map((label) => ({ label })) },
+      ]}
       price="$25.00"
     />
     <Footer {...footer} />

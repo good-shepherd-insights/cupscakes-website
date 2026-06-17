@@ -17,7 +17,7 @@
       "name": "Vanilla",
       "description": "Sweetened just right and topped with cream cheese frosting.",
       "price": "$25",
-      "imageSrc": "/assets/personal-cake.png",
+      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/9ef7a673ae69a996459f1645b2f8893cedf771eb-3426x2681.png",
       "imageAlt": "Vanilla personal cake",
       "orderHref": "/products/personal-cakes/vanilla"
     }

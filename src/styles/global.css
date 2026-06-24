@@ -29,7 +29,7 @@
   --color-flavor-strawberry: #f59ca8;
 
   /* Typography */
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "jubilat", serif;
 
   /* Navbar assets */
   --background-image-cups-icon: url("/assets/cups-icon.svg");

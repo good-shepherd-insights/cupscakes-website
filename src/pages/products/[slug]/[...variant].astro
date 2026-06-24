@@ -66,10 +66,10 @@ const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).toString() 
   canonicalUrl={canonicalUrl}
 >
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
-      breadcrumbHrefOrder={navbar.orderHref}
+      breadcrumbHrefProducts={navbar.productsHref}
       breadcrumbLabel={product.name}
       title={product.name}
       subtitle={product.subtitle ?? ""}

@@ -10,8 +10,26 @@
  *   --color-brand-blue: #87CEFA
  *   --color-brand-pink: #EB9CF9
  *   --color-brand-border: #A0A0A0
- *   Font family: Inter
+ *   Font family: jubilat
  */
+
+/* Every Snipcart modal state — side cart drawer, the full "detailed
+   cart" page, checkout, etc. — shares the base .snipcart-modal__container
+   class (position: fixed; z-index: 20 in Snipcart's own stylesheet,
+   confirmed by reading cdn.snipcart.com/themes/v3.7.2/default/snipcart.css
+   directly). That sits below this site's sticky navbar (z-50, the
+   highest z-index used anywhere on the site — see Navbar.astro), so the
+   navbar painted over Snipcart's modal regardless of which state it was
+   in. Elements inside the modal (e.g. .snipcart-cart-header at z-index:
+   400) don't help — z-index only orders siblings within the same
+   stacking context, and the modal's own container is what's being
+   compared against the navbar, not its children. Overriding the base
+   class (not just the more specific .snipcart-cart-summary-side variant)
+   covers every Snipcart modal state in one rule. 60 clears every z-index
+   in use site-wide. */
+.snipcart-modal__container {
+  z-index: 60 !important;
+}
 
 /* Primary accent — buttons, links, highlights */
 .snipcart__actions--link,
@@ -20,7 +38,7 @@
   background-color: #87CEFA !important;
   border-color: #A0A0A0 !important;
   color: white !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
 .snipcart__actions--link:hover,
@@ -32,45 +50,45 @@
 .snipcart-cart-button,
 .snipcart-button {
   border-color: #A0A0A0 !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
-/* Typography — match C&C's Inter font stack */
+/* Typography — match C&C's jubilat font stack */
 .snipcart * {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
 /* Cart header */
 .snipcart-cart-header {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
 /* Price styling */
 .snipcart-cart-summary-fees__item-price,
 .snipcart-cart-summary-fees__item-label,
 .snipcart-item-price {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
 /* Item quantity controls */
 .snipcart-item-quantity {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
 /* Discount box */
 .snipcart-discount-box {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }
 
 /* Form inputs */
 .snipcart-form__input,
 .snipcart-form__select,
 .snipcart-input {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
   border-color: #A0A0A0 !important;
 }
 
 /* Error messages */
 .snipcart-error-message {
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'jubilat', serif !important;
 }

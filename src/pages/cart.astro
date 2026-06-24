@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/home/Navbar.astro";
-import Cart from "../components/cart/Cart.astro";
+import LiveCart from "../components/cart/LiveCart.tsx";
 import { loadHomeContent } from "../lib/content/home";
 import { loadCartContent } from "../lib/content/cart";
 
@@ -11,6 +11,19 @@ const { cart } = await loadCartContent();
 <Layout title="Shopping Cart — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} />
-    <Cart {...cart} />
+    <LiveCart
+      client:only="react"
+      heading={cart.heading}
+      productHeading={cart.productHeading}
+      flavorHeading={cart.flavorHeading}
+      occasionHeading={cart.occasionHeading}
+      priceHeading={cart.priceHeading}
+      editLabel={cart.editLabel}
+      saveLabel={cart.saveLabel}
+      cancelLabel={cart.cancelLabel}
+      subtotalLabel={cart.subtotalLabel}
+      checkoutLabel={cart.checkoutLabel}
+      emptyMessage={cart.emptyMessage}
+    />
   </div>
 </Layout>

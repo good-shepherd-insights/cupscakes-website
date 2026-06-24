@@ -6,36 +6,9 @@
   "occasionHeading": "Occassion",
   "priceHeading": "Price",
   "editLabel": "Edit",
+  "saveLabel": "Save",
+  "cancelLabel": "Cancel",
   "subtotalLabel": "Subtotal:",
-  "subtotalValue": "$44.50",
   "checkoutLabel": "CHECKOUT",
-  "checkoutHref": "/order",
-  "items": [
-    {
-      "id": "personal-cake-1",
-      "product": "Personal Cake",
-      "flavor": "Vanilla",
-      "variantLabel": "Frosting Color",
-      "variantValue": "Red, Blue",
-      "occasion": "Birthday",
-      "price": "$25.00",
-      "imageSrc": "/assets/cart-personal-cake.png",
-      "imageAlt": "Personal Cake",
-      "accent": "blue",
-      "editHref": "/products/personal-cake"
-    },
-    {
-      "id": "cupcake-1",
-      "product": "Cupcake",
-      "flavor": "Carrot",
-      "variantLabel": "Quantity",
-      "variantValue": "1/2 Dozen",
-      "occasion": "Birthday",
-      "price": "$19.50",
-      "imageSrc": "/assets/cart-cupcake.png",
-      "imageAlt": "Cupcake",
-      "accent": "pink",
-      "editHref": "/products"
-    }
-  ]
+  "emptyMessage": "Your cart is empty."
 }

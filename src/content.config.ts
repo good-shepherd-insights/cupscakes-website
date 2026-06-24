@@ -13,6 +13,7 @@ const navbarSchema = z.object({
   homeHref: z.string(),
   whoHref: z.string(),
   orderHref: z.string(),
+  productsHref: z.string(),
   favoritesHref: z.string(),
   cartHref: z.string(),
 });
@@ -183,27 +184,9 @@ const orderDeliveryDateSchema = z.object({
 
 
 // --- Shopping cart (Figma 3311:4172) ---
-// One row per cart line item. Each item carries display strings copied
-// from the product config and a `accentKey` that picks the side-strip
-// color token (blue for personal cakes, pink for cupcakes), so cards
-// stay in sync with the rest of the design system without hardcoding
-// hex values in the component.
-const cartItemSchema = z.object({
-  id: z.string(),
-  product: z.string(),
-  flavor: z.string(),
-  /** Personal cakes show "Frosting Color"; cupcakes show "Quantity". */
-  variantLabel: z.string(),
-  variantValue: z.string(),
-  occasion: z.string(),
-  price: z.string(),
-  imageSrc: z.string(),
-  imageAlt: z.string(),
-  /** Side-strip accent color. */
-  accent: z.enum(["blue", "pink"]),
-  editHref: z.string(),
-});
-
+// Items, subtotal, and checkout are all sourced live from Snipcart's own
+// cart state at runtime (see components/cart/LiveCart.tsx) — this schema
+// only covers the page's static heading/label copy.
 const cartSchema = z.object({
   section: z.literal("shopping-cart"),
   heading: z.string(),
@@ -212,11 +195,11 @@ const cartSchema = z.object({
   occasionHeading: z.string(),
   priceHeading: z.string(),
   editLabel: z.string(),
+  saveLabel: z.string(),
+  cancelLabel: z.string(),
   subtotalLabel: z.string(),
-  subtotalValue: z.string(),
   checkoutLabel: z.string(),
-  checkoutHref: z.string(),
-  items: z.array(cartItemSchema).min(1),
+  emptyMessage: z.string(),
 });
 
 // --- products page (Figma 3311:2985) ---

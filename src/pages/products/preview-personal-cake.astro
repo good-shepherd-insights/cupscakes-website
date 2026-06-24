@@ -11,10 +11,10 @@ const { navbar, footer } = await loadHomeContent();
 
 <Layout title="Personal Cake — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
-      breadcrumbHrefOrder={navbar.orderHref}
+      breadcrumbHrefProducts={navbar.productsHref}
       breadcrumbLabel="Personal Cakes"
       title="Personal Cake"
       subtitle="Small in size but big in bringing joy to each bite!"

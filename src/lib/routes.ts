@@ -6,6 +6,7 @@ export const routes = {
   orderDeliveryDate: "/order/delivery/date",
   orderLoading: "/order/loading",
   cart: "/cart",
+  products: "/products",
   product: (slug: string) => `/products/${slug}`,
   productVariant: (slug: string, variantSlug: string) => `/products/${slug}/${variantSlug}`,
 };

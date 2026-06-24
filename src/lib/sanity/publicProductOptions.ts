@@ -7,6 +7,11 @@
  * fetching Sanity's query API directly from the browser — direct browser
  * fetches hit the project's Sanity CORS allowlist, which doesn't cover
  * arbitrary dev/preview origins.
+ *
+ * That endpoint is statically prerendered (this project has no SSR
+ * adapter configured) and returns every product's options in one
+ * build-time JSON file, so this just fetches the whole map once and
+ * picks out the requested slugs client-side.
  */
 export interface ProductOptionGroup {
   name: string;
@@ -22,7 +27,12 @@ export async function fetchProductOptionsBySlug(
   slugs: string[]
 ): Promise<Record<string, ProductOptionsMeta>> {
   if (slugs.length === 0) return {};
-  const res = await fetch(`/api/product-options?slugs=${encodeURIComponent(slugs.join(','))}`);
+  const res = await fetch('/api/product-options');
   if (!res.ok) return {};
-  return (await res.json()) as Record<string, ProductOptionsMeta>;
+  const all = (await res.json()) as Record<string, ProductOptionsMeta>;
+  const picked: Record<string, ProductOptionsMeta> = {};
+  for (const slug of slugs) {
+    if (all[slug]) picked[slug] = all[slug];
+  }
+  return picked;
 }

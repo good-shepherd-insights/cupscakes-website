@@ -37,13 +37,47 @@ export function bindAddToCartSync(): void {
   (window as unknown as { LoadSnipcart?: () => void }).LoadSnipcart?.();
 
   document.querySelectorAll<HTMLButtonElement>('.snipcart-add-item').forEach((button) => {
+    // `astro:page-load` is documented to fire twice on the initial page
+    // load with Astro's ClientRouter. Without this guard, a second call
+    // against the same (still-attached) button stacks a second 'click'
+    // listener and a second set of 'change' listeners (via
+    // bindRequiredGroupsGate below), so every real click double-syncs
+    // data-item-* attributes and double-processes the quantity gate.
+    if (button.dataset.syncBound === 'true') return;
+    button.dataset.syncBound = 'true';
+
     button.addEventListener('click', () => {
       const form = button.closest('form');
       if (!form) return;
       syncCustomFields(button, form);
       syncPrice(button, form);
     });
+    bindRequiredGroupsGate(button);
   });
+}
+
+// Every single-choice (radio) group is required: PersonalCakeProduct.astro
+// renders the button already `disabled` whenever any such group has no
+// default-checked option (so there's no flash of an enabled button before
+// this runs). This re-enables it once every radio group has a checked
+// option, and disables it again if any selection is ever cleared. Checkbox
+// groups (e.g. Frosting Color) stay optional — they're excluded because
+// they aren't `input[type="radio"]`. Flavor is also excluded: it renders as
+// `<a>` variant links, not form inputs, so it's always "selected" via route.
+function bindRequiredGroupsGate(button: HTMLButtonElement): void {
+  const form = button.closest('form');
+  if (!form) return;
+  const radioInputs = Array.from(form.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+  if (radioInputs.length === 0) return;
+  const groupNames = Array.from(new Set(radioInputs.map((input) => input.name)));
+
+  const updateDisabled = () => {
+    button.disabled = groupNames.some(
+      (name) => !form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)
+    );
+  };
+  radioInputs.forEach((input) => input.addEventListener('change', updateDisabled));
+  updateDisabled();
 }
 
 function syncCustomFields(button: HTMLButtonElement, form: HTMLElement): void {
@@ -67,4 +101,38 @@ function syncPrice(button: HTMLButtonElement, form: HTMLElement): void {
     0
   );
   button.setAttribute('data-item-price', String(basePrice + modifierTotal));
+}
+
+/**
+ * Keeps the on-page price display (the "$0.00" text below ADD TO CART)
+ * in sync with the live form selection, same math as syncPrice() above
+ * but updating on every change rather than just at add-to-cart click
+ * time, so the customer sees the real total before they commit.
+ */
+export function bindPriceDisplay(): void {
+  document.querySelectorAll<HTMLElement>('[data-price-display]').forEach((el) => {
+    // Same double-fire guard as bindAddToCartSync above — astro:page-load
+    // can fire twice on initial load, which would otherwise stack a
+    // second 'change' listener per input.
+    if (el.dataset.syncBound === 'true') return;
+    el.dataset.syncBound = 'true';
+
+    const form = el.closest('form');
+    if (!form) return;
+    const basePrice = Number(el.dataset.basePrice ?? '0');
+
+    const update = () => {
+      const checked = form.querySelectorAll<HTMLInputElement>('input:checked');
+      const modifierTotal = Array.from(checked).reduce(
+        (sum, input) => sum + Number(input.dataset.priceModifier ?? '0'),
+        0
+      );
+      el.textContent = `$${(basePrice + modifierTotal).toFixed(2)}`;
+    };
+
+    form
+      .querySelectorAll<HTMLInputElement>('input')
+      .forEach((input) => input.addEventListener('change', update));
+    update();
+  });
 }

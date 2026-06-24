@@ -77,7 +77,7 @@ import { routes } from "../../lib/routes";
 
 interface Props {
   breadcrumbHrefHome: string;
-  breadcrumbHrefOrder: string;
+  breadcrumbHrefProducts: string;
   breadcrumbLabel: string;
   title: string;
   subtitle: string;
@@ -99,7 +99,7 @@ interface Props {
 
 const {
   breadcrumbHrefHome,
-  breadcrumbHrefOrder,
+  breadcrumbHrefProducts,
   breadcrumbLabel,
   title,
   subtitle,
@@ -126,6 +126,40 @@ const cartItemPath =
     : Astro.url.pathname;
 const cartItemUrl = Astro.site ? new URL(cartItemPath, Astro.site).toString() : cartItemPath;
 
+// Pre-checked defaults for radio (single-choice) groups. There's no schema
+// flag for this — group/option names are just editorial strings (see
+// product.ts) — so they're matched by name/label here, same strings
+// cartSync.ts's bindRequiredGroupsGate() re-disables the button for if a
+// selection is ever cleared.
+const DEFAULT_OPTION_LABEL: Record<string, string> = {
+  quantity: "1 Dozen",
+  occasion: "Regular",
+};
+
+// Every radio group is required before checkout can begin. Flavor is
+// excluded — it renders as `<a>` variant links, not form inputs, so it's
+// always "selected" via the route itself. A group only starts pre-satisfied
+// if one of its options matches DEFAULT_OPTION_LABEL above; otherwise the
+// button renders already `disabled` so there's no flash of an enabled
+// button before cartSync.ts's change listeners take over.
+const hasUnselectedRequiredGroup = customOptions.some((g) => {
+  if (g.inputType !== "radio" || g.definesVariantRoute) return false;
+  const defaultLabel = DEFAULT_OPTION_LABEL[stegaClean(g.name).trim().toLowerCase()];
+  return !g.options.some((o) => stegaClean(o.label) === defaultLabel);
+});
+
+// Server-render the price already reflecting the defaults above, so there's
+// no flash of the un-modified base price before bindPriceDisplay() (in
+// cartSync.ts) takes over client-side on astro:page-load.
+const basePriceNumber = Number(price.replace(/[^0-9.]/g, ""));
+const defaultModifierTotal = customOptions.reduce((sum, g) => {
+  if (g.inputType !== "radio" || g.definesVariantRoute) return sum;
+  const defaultLabel = DEFAULT_OPTION_LABEL[stegaClean(g.name).trim().toLowerCase()];
+  const defaultOption = g.options.find((o) => stegaClean(o.label) === defaultLabel);
+  return sum + (defaultOption?.priceModifier ?? 0);
+}, 0);
+const initialDisplayPrice = `$${(basePriceNumber + defaultModifierTotal).toFixed(2)}`;
+
 const cartAttrs = buildProductCartAttributes({
   title,
   price,
@@ -144,10 +178,11 @@ const selectionBtn = [
   "bg-white border border-[#707070] no-underline text-black",
   "font-medium text-center whitespace-nowrap",
   // 238×65 at xl, fluid below
-  "h-[40px] sm:h-[48px] md:h-[56px] lg:h-[60px] xl:h-[65px]",
+  "h-[29px] sm:h-[34px] md:h-[40px] lg:h-[43px] xl:h-[46px]",
   "w-full",
-  // 25px label at xl, reduced 10% then a further 15%
-  "text-[11px] sm:text-[12px] md:text-[14px] lg:text-[17px] xl:text-[20px]",
+  // 25px label at xl, reduced 10% then a further 15%, then scaled to 65%,
+  // then increased 10% (floored at 10px for legibility below lg)
+  "text-[11px] sm:text-[11px] md:text-[11px] lg:text-[12px] xl:text-[14px]",
   "transition-[transform,filter] duration-150 ease-out",
   "hover:brightness-95 hover:-translate-y-px",
   "focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden",
@@ -165,19 +200,19 @@ const selectionBtn = [
       (≈3% of 1920). */}
   <div
     class="mx-auto w-full max-w-[1920px]
-           px-[3vw] sm:px-[3vw] md:px-[3vw] lg:px-[3vw] xl:px-[58px]
-           pt-8 sm:pt-10 md:pt-12 lg:pt-14 xl:pt-[49px]
-           pb-12 sm:pb-16 md:pb-20 lg:pb-24 xl:pb-[120px]"
+           px-[2.15vw] sm:px-[2.15vw] md:px-[2.15vw] lg:px-[2.15vw] xl:px-[42px]
+           pt-[23px] sm:pt-[29px] md:pt-[34px] lg:pt-[40px] xl:pt-[35px]
+           pb-[34px] sm:pb-[46px] md:pb-[57px] lg:pb-[68px] xl:pb-[86px]"
   >
     {/* Breadcrumb (3311:2297) — reusable component. */}
     <Breadcrumb
       items={[
         { label: "Home", href: breadcrumbHrefHome },
-        { label: "Order Now", href: breadcrumbHrefOrder },
+        { label: "Products", href: breadcrumbHrefProducts },
         { label: breadcrumbLabel },
       ]}
-      class="mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-[81px]
-             text-[11px]! sm:text-[13px]! md:text-[15px]! lg:text-[19px]! xl:text-[26px]!"
+      class="mb-[18px] sm:mb-[23px] md:mb-[29px] lg:mb-[34px] xl:mb-[58px]
+             text-[11px]! sm:text-[11px]! md:text-[11px]! lg:text-[13px]! xl:text-[19px]!"
     />
 
     {/* Two-column composition. Below lg: image stacks above the form.
@@ -186,26 +221,34 @@ const selectionBtn = [
         original Figma 694px to reduce the image's visual weight. */}
     <div
       class="flex flex-col lg:flex-row justify-center
-             gap-y-10 sm:gap-y-12 md:gap-y-14
-             gap-x-10 sm:gap-x-12 md:gap-x-16 lg:gap-x-20 xl:gap-x-[100px]
+             gap-y-[29px] sm:gap-y-[34px] md:gap-y-[40px]
+             gap-x-[29px] sm:gap-x-[34px] md:gap-x-[46px] lg:gap-x-[57px] xl:gap-x-[72px]
              items-start"
     >
-      {/* PRODUCT IMAGE — reduced from Figma's 694×543 (aspect preserved). */}
+      {/* PRODUCT IMAGE column — keeps the 50/50 split with the form
+          column at lg+ (lg:flex-1, matching the form's lg:flex-1) even
+          though the image itself is capped smaller below via the inner
+          wrapper's max-w, so it sits centered within its half rather
+          than shrinking the column itself. */}
       <div
-        class="w-full aspect-[694/543] overflow-hidden mx-auto
-               max-w-[420px] lg:max-w-none lg:flex-1
-               mt-0 lg:mt-[60px] xl:mt-[97px]"
-        data-node-id="3311:2319"
-        data-name="C&C_PERSONAL_CAKE_PINK_003"
+        class="w-full lg:flex-1
+               mt-0 lg:mt-[39px] xl:mt-[63px]"
       >
-        <img
-          src={imageSrc}
-          alt={imageAlt}
-          class="block w-full h-full object-cover pointer-events-none"
-          loading="eager"
-          fetchpriority="high"
-          decoding="sync"
-        />
+        <div
+          class="aspect-[694/543] overflow-hidden mx-auto
+                 max-w-[394px]"
+          data-node-id="3311:2319"
+          data-name="C&C_PERSONAL_CAKE_PINK_003"
+        >
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            class="block w-full h-full object-cover pointer-events-none"
+            loading="eager"
+            fetchpriority="high"
+            decoding="sync"
+          />
+        </div>
       </div>
 
       {/* FORM COLUMN — everything Figma anchors at x=998. */}
@@ -218,16 +261,16 @@ const selectionBtn = [
             y=286 → ~37px above the image top (346). */}
         <h1
           class="m-0 text-black font-medium leading-[1.05]
-                 text-[31px] sm:text-[41px] md:text-[51px] lg:text-[61px] xl:text-[81px]"
+                 text-[22px] sm:text-[30px] md:text-[36px] lg:text-[44px] xl:text-[58px]"
           data-node-id="3311:2220"
         >{title}</h1>
 
         {/* Subtitle (3311:2228) — Inter Medium 35px black. Figma y=429
             → ~143px below title baseline. */}
         <p
-          class="m-0 mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[44px]
+          class="m-0 mt-[11px] sm:mt-[14px] md:mt-[18px] lg:mt-[23px] xl:mt-[32px]
                  text-black font-medium leading-[1.15]
-                 text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
+                 text-[11px] sm:text-[11px] md:text-[13px] lg:text-[18px] xl:text-[22px]"
           data-node-id="3311:2228"
         >{subtitle}</p>
 
@@ -235,9 +278,9 @@ const selectionBtn = [
             Figma y=496 → ~67px below subtitle. Omitted when absent. */}
         {servingInfo && (
           <p
-            class="m-0 mt-2 sm:mt-2 md:mt-2 lg:mt-2 xl:mt-[8px]
+            class="m-0 mt-[6px] sm:mt-[6px] md:mt-[6px] lg:mt-[6px] xl:mt-[6px]
                    text-black font-light italic leading-[1.15]
-                   text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
+                   text-[11px] sm:text-[11px] md:text-[13px] lg:text-[18px] xl:text-[22px]"
             data-node-id="3311:2232"
           >{servingInfo}</p>
         )}
@@ -253,13 +296,13 @@ const selectionBtn = [
             <fieldset
               class={`m-0 p-0 border-0 ${
                 i === 0
-                  ? "mt-6 sm:mt-7 md:mt-8 lg:mt-10 xl:mt-[55px]"
-                  : "mt-8 sm:mt-10 md:mt-12 lg:mt-14 xl:mt-[78px]"
+                  ? "mt-[18px] sm:mt-[20px] md:mt-[23px] lg:mt-[29px] xl:mt-[40px]"
+                  : "mt-[23px] sm:mt-[29px] md:mt-[34px] lg:mt-[40px] xl:mt-[56px]"
               }`}
             >
               <legend
                 class="p-0 m-0 text-black leading-[1.15]
-                       text-[13px] sm:text-[15px] md:text-[19px] lg:text-[24px] xl:text-[30px]"
+                       text-[11px] sm:text-[11px] md:text-[13px] lg:text-[18px] xl:text-[22px]"
               >
                 <span class="font-light">{group.name}: </span>
                 {group.helperText && <span class="font-normal">{group.helperText}</span>}
@@ -267,10 +310,10 @@ const selectionBtn = [
 
               <div
                 class="grid grid-cols-2 sm:grid-cols-3
-                       gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 xl:gap-x-[46px]
-                       gap-y-3 sm:gap-y-4 md:gap-y-5 lg:gap-y-6 xl:gap-y-[49px]
-                       mt-4 sm:mt-5 md:mt-6 lg:mt-8 xl:mt-[60px]
-                       max-w-[810px]"
+                       gap-x-[9px] sm:gap-x-[11px] md:gap-x-[14px] lg:gap-x-[18px] xl:gap-x-[33px]
+                       gap-y-[9px] sm:gap-y-[11px] md:gap-y-[14px] lg:gap-y-[18px] xl:gap-y-[35px]
+                       mt-[11px] sm:mt-[14px] md:mt-[18px] lg:mt-[23px] xl:mt-[43px]
+                       max-w-[580px]"
               >
                 {group.options.map((option) =>
                   group.definesVariantRoute && option.slug && productSlug ? (
@@ -279,7 +322,6 @@ const selectionBtn = [
                       class={`${selectionBtn} ${option.slug.current === currentVariantSlug ? "bg-brand-pink! text-white!" : ""}`}
                     >
                       {option.label}
-                      {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
                     </a>
                   ) : (
                     <label class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!`}>
@@ -288,12 +330,10 @@ const selectionBtn = [
                         name={stegaClean(group.name)}
                         value={stegaClean(option.label)}
                         data-price-modifier={option.priceModifier ?? 0}
+                        checked={DEFAULT_OPTION_LABEL[stegaClean(group.name).trim().toLowerCase()] === stegaClean(option.label)}
                         class="sr-only"
                       />
-                      <span>
-                        {option.label}
-                        {!!option.priceModifier && ` (+$${option.priceModifier.toFixed(2)})`}
-                      </span>
+                      <span>{option.label}</span>
                     </label>
                   )
                 )}
@@ -309,33 +349,39 @@ const selectionBtn = [
             this is a plain <button> instead of an <a>. */}
         <AddToCartButton
           attrs={cartAttrs}
+          disabled={hasUnselectedRequiredGroup}
           class="inline-flex items-center justify-center font-medium no-underline text-center
                  border border-brand-border
                  transition-[transform,filter] duration-150 ease-out
                  hover:brightness-95 hover:-translate-y-px
                  focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden
                  bg-brand-pink text-white
-                 h-10 sm:h-12 md:h-14 lg:h-[68px] xl:h-20
-                 w-48 sm:w-56 md:w-[245px] lg:w-[272px] xl:w-[326px]
-                 mt-8 sm:mt-10 md:mt-12 lg:mt-16 xl:mt-[75px]
-                 text-[15px] sm:text-[17px] md:text-[20px] lg:text-[26px]"
+                 disabled:opacity-40 disabled:cursor-not-allowed
+                 disabled:hover:brightness-100 disabled:hover:translate-y-0
+                 h-[29px] sm:h-[34px] md:h-[40px] lg:h-[48px] xl:h-[57px]
+                 w-[138px] sm:w-[161px] md:w-[175px] lg:w-[195px] xl:w-[233px]
+                 mt-[23px] sm:mt-[29px] md:mt-[34px] lg:mt-[46px] xl:mt-[54px]
+                 text-[11px] sm:text-[12px] md:text-[14px] lg:text-[19px]"
         >ADD TO CART</AddToCartButton>
 
         {/* Price (3311:2224) — Inter Medium 85px black, Figma y=1730
             → 51px below ADD TO CART (1569+110=1679; 1730-1679=51). */}
         <p
-          class="m-0 mt-6 sm:mt-7 md:mt-9 lg:mt-10 xl:mt-[51px]
+          class="m-0 mt-[18px] sm:mt-[20px] md:mt-[25px] lg:mt-[29px] xl:mt-[36px]
                  text-black font-medium leading-[1]
-                 text-[27px] sm:text-[37px] md:text-[48px] lg:text-[58px] xl:text-[72px]"
+                 text-[20px] sm:text-[26px] md:text-[34px] lg:text-[42px] xl:text-[52px]"
           data-node-id="3311:2224"
-        >{price}</p>
+          data-price-display
+          data-base-price={basePriceNumber}
+        >{initialDisplayPrice}</p>
       </form>
     </div>
   </div>
 </main>
 
 <script>
-  import { bindAddToCartSync } from "../../lib/snipcart/cartSync";
+  import { bindAddToCartSync, bindPriceDisplay } from "../../lib/snipcart/cartSync";
 
   document.addEventListener("astro:page-load", bindAddToCartSync);
+  document.addEventListener("astro:page-load", bindPriceDisplay);
 </script>

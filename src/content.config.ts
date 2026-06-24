@@ -13,6 +13,7 @@ const navbarSchema = z.object({
   homeHref: z.string(),
   whoHref: z.string(),
   orderHref: z.string(),
+  productsHref: z.string(),
   favoritesHref: z.string(),
   cartHref: z.string(),
 });
@@ -194,6 +195,8 @@ const cartSchema = z.object({
   occasionHeading: z.string(),
   priceHeading: z.string(),
   editLabel: z.string(),
+  saveLabel: z.string(),
+  cancelLabel: z.string(),
   subtotalLabel: z.string(),
   checkoutLabel: z.string(),
   emptyMessage: z.string(),

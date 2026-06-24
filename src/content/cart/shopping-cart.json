@@ -6,6 +6,8 @@
   "occasionHeading": "Occassion",
   "priceHeading": "Price",
   "editLabel": "Edit",
+  "saveLabel": "Save",
+  "cancelLabel": "Cancel",
   "subtotalLabel": "Subtotal:",
   "checkoutLabel": "CHECKOUT",
   "emptyMessage": "Your cart is empty."

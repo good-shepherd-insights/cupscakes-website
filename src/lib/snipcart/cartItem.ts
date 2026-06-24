@@ -49,6 +49,13 @@ export function buildProductCartAttributes(input: ProductCartItemInput): Record<
     image: input.imageSrc,
     customFields: customFieldGroups.map((group) => ({
       name: stegaClean(group.name),
+      // Without `options`, Snipcart renders this field as a free-text box
+      // in the cart, letting customers type anything — including values
+      // that were never valid choices on the product page. Passing the
+      // same labels offered there makes Snipcart render a dropdown
+      // instead, constrained to the actual choices.
+      type: 'dropdown',
+      options: group.options.map((option) => stegaClean(option.label)),
       // Placeholder — kept in sync with the live form selection by
       // cartSync.ts's bindAddToCartSync(), just before Snipcart reads it
       // on click.

@@ -33,13 +33,8 @@ const cleanDescription = description ? stegaClean(description) : undefined;
     {image && <meta property="og:image" content={image} />}
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
-    {/* Inter font (matches the prototype's --font-sans token). */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    {/* Jubilat font (matches the --font-sans token). */}
+    <link rel="stylesheet" href="https://use.typekit.net/ezr1eax.css" />
     <ClientRouter />
     <Snipcart />
   </head>

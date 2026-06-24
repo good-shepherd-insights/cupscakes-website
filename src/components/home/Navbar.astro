@@ -3,6 +3,7 @@ interface Props {
   homeHref: string;
   whoHref: string;
   orderHref: string;
+  productsHref: string;
   favoritesHref: string;
   cartHref: string;
   /**
@@ -11,16 +12,27 @@ interface Props {
    * 3311:3222 / Rectangle 35). Defaults to `undefined` so existing
    * call sites render no indicator.
    */
-  activeLink?: "who" | "order";
+  activeLink?: "who" | "order" | "products";
+  /**
+   * "store" swaps the "WHO WE ARE" / "ORDER NOW" links for a single
+   * "PRODUCTS" link back to the catalog. Both of those links lead away
+   * from the catalog and back toward the home page's own flows — fine
+   * everywhere else, but on /products and product detail pages it pulls
+   * shoppers out of the store they're actively browsing. Defaults to
+   * "site" so every other page's navbar is unchanged.
+   */
+  mode?: "site" | "store";
 }
 
 const {
   homeHref,
   whoHref,
   orderHref,
+  productsHref,
   favoritesHref,
   cartHref,
   activeLink,
+  mode = "site",
 } = Astro.props;
 
 // Active-link underline shared classes. Absolutely positioned below the
@@ -64,39 +76,60 @@ const activeUnderlineClass =
       class="flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-10"
       aria-label="Primary"
     >
-      <a
-        href={whoHref}
-        class="nav-link relative hidden md:inline-block"
-        data-node-id="3311:1674"
-        aria-current={activeLink === "who" ? "page" : undefined}
-      >
-        <span>WHO WE ARE</span>
-        {activeLink === "who" && (
-          <span
-            aria-hidden="true"
-            class={activeUnderlineClass}
-            data-node-id="3311:3222"
-            data-name="Active link underline"
-          ></span>
-        )}
-      </a>
+      {mode === "store" ? (
+        <a
+          href={productsHref}
+          class="nav-link relative hidden md:inline-block"
+          data-name="Products"
+          aria-current={activeLink === "products" ? "page" : undefined}
+        >
+          <span>PRODUCTS</span>
+          {activeLink === "products" && (
+            <span
+              aria-hidden="true"
+              class={activeUnderlineClass}
+              data-node-id="3311:3222"
+              data-name="Active link underline"
+            ></span>
+          )}
+        </a>
+      ) : (
+        <>
+          <a
+            href={whoHref}
+            class="nav-link relative hidden md:inline-block"
+            data-node-id="3311:1674"
+            aria-current={activeLink === "who" ? "page" : undefined}
+          >
+            <span>WHO WE ARE</span>
+            {activeLink === "who" && (
+              <span
+                aria-hidden="true"
+                class={activeUnderlineClass}
+                data-node-id="3311:3222"
+                data-name="Active link underline"
+              ></span>
+            )}
+          </a>
 
-      <a
-        href={orderHref}
-        class="nav-link relative hidden md:inline-block"
-        data-node-id="3311:1678"
-        aria-current={activeLink === "order" ? "page" : undefined}
-      >
-        <span>ORDER NOW</span>
-        {activeLink === "order" && (
-          <span
-            aria-hidden="true"
-            class={activeUnderlineClass}
-            data-node-id="3311:3222"
-            data-name="Active link underline"
-          ></span>
-        )}
-      </a>
+          <a
+            href={orderHref}
+            class="nav-link relative hidden md:inline-block"
+            data-node-id="3311:1678"
+            aria-current={activeLink === "order" ? "page" : undefined}
+          >
+            <span>ORDER NOW</span>
+            {activeLink === "order" && (
+              <span
+                aria-hidden="true"
+                class={activeUnderlineClass}
+                data-node-id="3311:3222"
+                data-name="Active link underline"
+              ></span>
+            )}
+          </a>
+        </>
+      )}
 
       <a
         href={favoritesHref}

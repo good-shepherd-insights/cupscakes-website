@@ -2,10 +2,14 @@
 interface Props {
   /** Pre-built Snipcart data-item-* attributes from buildItemAttributes(). */
   attrs: Record<string, string>;
+  /** Optional extra utility classes for visual styling. */
+  class?: string;
+  /** Starts the button disabled, e.g. until a required selection is made. */
+  disabled?: boolean;
 }
 
-const { attrs } = Astro.props;
+const { attrs, class: extraClass = '', disabled = false } = Astro.props;
 ---
-<button class="snipcart-add-item" {...attrs}>
+<button type="button" class={`snipcart-add-item ${extraClass}`} disabled={disabled} {...attrs}>
   <slot>Add to Cart</slot>
 </button>

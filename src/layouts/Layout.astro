@@ -33,17 +33,27 @@ const cleanDescription = description ? stegaClean(description) : undefined;
     {image && <meta property="og:image" content={image} />}
     {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
-    {/* Inter font (matches the prototype's --font-sans token). */}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    {/* Jubilat font (matches the --font-sans token). */}
+    <link rel="stylesheet" href="https://use.typekit.net/ezr1eax.css" />
     <ClientRouter />
     <Snipcart />
   </head>
   <body class="m-0 p-0 bg-white font-sans antialiased">
     <slot />
+    {/* Snipcart's loader (lib/snipcart/loader.ts) reuses this div if it
+        already exists rather than creating its own. A custom swap
+        (lib/snipcart/swapGuard.ts) excludes this element from Astro's
+        ClientRouter transitions entirely — it is never removed, never
+        reparented, for the lifetime of the page — which is what Snipcart's
+        own removal-detecting MutationObserver needs. transition:persist
+        was tried first but isn't enough: it still lifts/reinserts the
+        element through <html> around the swap, which Snipcart's observer
+        reports as "the #snipcart div was removed from the document" even
+        though Astro's own contract is technically satisfied. */}
+    <div id="snipcart" hidden></div>
+    <script>
+      import { installSnipcartSwapGuard } from "../lib/snipcart/swapGuard";
+      installSnipcartSwapGuard();
+    </script>
   </body>
 </html>

@@ -32,6 +32,9 @@
       "autocomplete": "tel"
     }
   ],
+  "dateLabel": "Pickup Date",
+  "timeLabel": "Pickup Time",
+  "schedulingNote": "We'll confirm your time slot after ordering",
   "nextLabel": "NEXT",
   "nextHref": "/order/pickup/date"
 }

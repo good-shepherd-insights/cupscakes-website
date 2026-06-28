@@ -58,6 +58,9 @@
       "autocomplete": "postal-code"
     }
   ],
+  "dateLabel": "Delivery Date",
+  "timeLabel": "Delivery Time",
+  "schedulingNote": "We'll confirm your time slot after ordering",
   "nextLabel": "NEXT",
   "nextHref": "/order/delivery/date"
 }

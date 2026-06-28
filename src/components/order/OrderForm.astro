@@ -42,6 +42,9 @@ interface Props {
   addressHeading?: string;
   contactFields: DeliveryField[];
   addressFields?: DeliveryField[];
+  dateLabel?: string;
+  timeLabel?: string;
+  schedulingNote?: string;
   nextLabel: string;
   nextHref: string;
 }
@@ -54,6 +57,9 @@ const {
   addressHeading,
   contactFields,
   addressFields,
+  dateLabel,
+  timeLabel,
+  schedulingNote,
   nextLabel,
   nextHref,
 } = Astro.props;
@@ -67,6 +73,7 @@ const apt = byId.get("apt");
 const city = byId.get("city");
 const zipcode = byId.get("zipcode");
 const hasAddress = (addressFields?.length ?? 0) > 0;
+const hasScheduling = Boolean(dateLabel && timeLabel);
 
 // Shared input + label classes. Keep literals so Tailwind's content
 // scanner sees every utility statically.
@@ -245,6 +252,54 @@ const inputClass =
     </fieldset>
     )}
 
+    {/* Scheduling — date picker and time slot selector. Rendered when
+        content provides dateLabel and timeLabel (pickup/delivery JSON). */}
+    {hasScheduling && (
+    <fieldset class="m-0 p-0 border-0">
+      <legend
+        class="font-medium text-black leading-[normal] mb-4 sm:mb-5 md:mb-6 lg:mb-8
+               text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
+      >{dateLabel}</legend>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-5 md:gap-x-6 lg:gap-x-8 gap-y-5 sm:gap-y-6 md:gap-y-7 lg:gap-y-8">
+        <div>
+          <label for="delivery-orderDate" class={labelClass}>
+            {dateLabel}<span aria-hidden="true"> *</span>
+          </label>
+          <input
+            id="delivery-orderDate"
+            name="orderDate"
+            type="date"
+            required
+            class={inputClass}
+          />
+          <span id="delivery-orderDate-error" class="block text-red-600 text-sm mt-1" aria-live="polite"></span>
+          {schedulingNote && (
+            <p class="m-0 mt-2 sm:mt-3 text-sm sm:text-base md:text-lg lg:text-xl italic text-black/60">
+              {schedulingNote}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label for="delivery-orderTime" class={labelClass}>
+            {timeLabel}<span aria-hidden="true"> *</span>
+          </label>
+          <select
+            id="delivery-orderTime"
+            name="orderTime"
+            required
+            disabled
+            class={inputClass + " appearance-none pr-10"}
+          >
+            <option value="">Select a date first</option>
+          </select>
+          <span id="delivery-orderTime-error" class="block text-red-600 text-sm mt-1" aria-live="polite"></span>
+        </div>
+      </div>
+    </fieldset>
+    )}
+
     {/* NEXT pill (Figma 3311:6422 / 3311:6883). White capsule, brand-border,
         brand-blue label. Curved-end shape via large border-radius. */}
     <div class="flex justify-center pt-2 sm:pt-4 md:pt-6 lg:pt-8">
@@ -265,3 +320,83 @@ const inputClass =
     </div>
   </form>
 </article>
+
+<script>
+  import { getAvailableDates, getTimeSlots } from "../../lib/fulfillment";
+  import config from "../../data/fulfillment-config.json";
+
+  function initOrderFormScheduling() {
+    const dateInput = document.getElementById("delivery-orderDate") as HTMLInputElement | null;
+    const timeSelect = document.getElementById("delivery-orderTime") as HTMLSelectElement | null;
+
+    if (!dateInput || !timeSelect) return;
+
+    const availableDates = getAvailableDates(config);
+
+    if (availableDates.length > 0) {
+      dateInput.min = availableDates[0];
+      dateInput.max = availableDates[availableDates.length - 1];
+    }
+
+    dateInput.addEventListener("change", () => {
+      const selectedDate = dateInput.value;
+      timeSelect.innerHTML = "";
+
+      if (!selectedDate) {
+        timeSelect.disabled = true;
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "Select a date first";
+        timeSelect.appendChild(placeholder);
+        return;
+      }
+
+      const slots = getTimeSlots(config, selectedDate);
+      timeSelect.disabled = false;
+
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = slots.length > 0 ? "Choose a time" : "No slots available";
+      timeSelect.appendChild(defaultOption);
+
+      for (const slot of slots) {
+        const option = document.createElement("option");
+        option.value = slot;
+        option.textContent = slot;
+        timeSelect.appendChild(option);
+      }
+    });
+
+    // Form validation on submit — ensure both date and time are selected
+    const form = dateInput.closest("form");
+    if (form) {
+      form.addEventListener("submit", (e) => {
+        let valid = true;
+
+        // Clear previous errors
+        const dateError = document.getElementById("delivery-orderDate-error");
+        const timeError = document.getElementById("delivery-orderTime-error");
+        if (dateError) dateError.textContent = "";
+        if (timeError) timeError.textContent = "";
+
+        if (!dateInput.value) {
+          valid = false;
+          const dateErrorEl = document.getElementById("delivery-orderDate-error");
+          if (dateErrorEl) dateErrorEl.textContent = "Please select a date.";
+        }
+
+        if (!timeSelect.value) {
+          valid = false;
+          const timeErrorEl = document.getElementById("delivery-orderTime-error");
+          if (timeErrorEl) timeErrorEl.textContent = "Please select a time.";
+        }
+
+        if (!valid) {
+          e.preventDefault();
+        }
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", initOrderFormScheduling);
+</script>

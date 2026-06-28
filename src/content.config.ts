@@ -115,6 +115,9 @@ const orderDeliverySchema = z.object({
   addressHeading: z.string(),
   contactFields: z.array(orderDeliveryFieldSchema).min(1),
   addressFields: z.array(orderDeliveryFieldSchema).min(1),
+  dateLabel: z.string().optional(),
+  timeLabel: z.string().optional(),
+  schedulingNote: z.string().optional(),
   nextLabel: z.string(),
   nextHref: z.string(),
 });
@@ -128,6 +131,9 @@ const orderPickupSchema = z.object({
   changeHref: z.string(),
   contactHeading: z.string(),
   contactFields: z.array(orderDeliveryFieldSchema).min(1),
+  dateLabel: z.string().optional(),
+  timeLabel: z.string().optional(),
+  schedulingNote: z.string().optional(),
   nextLabel: z.string(),
   nextHref: z.string(),
 });

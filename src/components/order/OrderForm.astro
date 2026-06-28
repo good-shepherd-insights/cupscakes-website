@@ -253,52 +253,8 @@ const inputClass =
     )}
 
     {/* Scheduling — date picker and time slot selector. Rendered when
-        content provides dateLabel and timeLabel (pickup/delivery JSON). */}
-    {hasScheduling && (
-    <fieldset class="m-0 p-0 border-0">
-      <legend
-        class="font-medium text-black leading-[normal] mb-4 sm:mb-5 md:mb-6 lg:mb-8
-               text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
-      >{dateLabel}</legend>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-5 md:gap-x-6 lg:gap-x-8 gap-y-5 sm:gap-y-6 md:gap-y-7 lg:gap-y-8">
-        <div>
-          <label for="delivery-orderDate" class={labelClass}>
-            {dateLabel}<span aria-hidden="true"> *</span>
-          </label>
-          <input
-            id="delivery-orderDate"
-            name="orderDate"
-            type="date"
-            required
-            class={inputClass}
-          />
-          <span id="delivery-orderDate-error" class="block text-red-600 text-sm mt-1" aria-live="polite"></span>
-          {schedulingNote && (
-            <p class="m-0 mt-2 sm:mt-3 text-sm sm:text-base md:text-lg lg:text-xl italic text-black/60">
-              {schedulingNote}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label for="delivery-orderTime" class={labelClass}>
-            {timeLabel}<span aria-hidden="true"> *</span>
-          </label>
-          <select
-            id="delivery-orderTime"
-            name="orderTime"
-            required
-            disabled
-            class={inputClass + " appearance-none pr-10"}
-          >
-            <option value="">Select a date first</option>
-          </select>
-          <span id="delivery-orderTime-error" class="block text-red-600 text-sm mt-1" aria-live="polite"></span>
-        </div>
-      </div>
-    </fieldset>
-    )}
+        content provides dateLabel and timeLabel (pickup/delivery JSON).
+        REMOVED per user request. */}
 
     {/* NEXT pill (Figma 3311:6422 / 3311:6883). White capsule, brand-border,
         brand-blue label. Curved-end shape via large border-radius. */}

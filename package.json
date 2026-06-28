@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.5",
+    "@frontman-ai/astro": "^1.0.2",
     "@sanity/astro": "^3.1.0",
     "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^1.1.0",

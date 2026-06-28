@@ -5,6 +5,8 @@ import { loadEnv } from 'vite';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import frontmanAi from '@frontman-ai/astro';
+
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 
 export default defineConfig({
@@ -16,20 +18,17 @@ export default defineConfig({
       PUBLIC_SNIPCART_API_KEY: envField.string({ context: 'client', access: 'public' })
     }
   },
-  integrations: [
-    sanity({
-      projectId: env.PUBLIC_SANITY_PROJECT_ID,
-      dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
-      apiVersion: '2026-05-01',
-      useCdn: false,
-      studioBasePath: '/admin',
-      stega: {
-        enabled: true,
-        studioUrl: '/admin',
-      },
-    }),
-    react(),
-  ],
+  integrations: [sanity({
+    projectId: env.PUBLIC_SANITY_PROJECT_ID,
+    dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
+    apiVersion: '2026-05-01',
+    useCdn: false,
+    studioBasePath: '/admin',
+    stega: {
+      enabled: true,
+      studioUrl: '/admin',
+    },
+  }), react(), frontmanAi()],
   vite: {
     define: {
       'process.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.PUBLIC_SANITY_PROJECT_ID),

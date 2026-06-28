@@ -86,6 +86,84 @@
   @apply focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden;
 }
 
+/* Mobile popout menu — links stacked in the pink panel. */
+@utility mobile-menu-link {
+  @apply font-semibold text-white no-underline whitespace-nowrap;
+  @apply text-2xl;
+  @apply transition-[transform,opacity] duration-150 ease-out;
+  @apply hover:-translate-y-px hover:opacity-90;
+  @apply focus-visible:-translate-y-px focus-visible:opacity-90 focus-visible:outline-hidden;
+}
+
+/* Mobile popout menu — social icons rendered in white via mask so the
+   blue source SVGs read against the pink panel. */
+@utility mobile-menu-social {
+  @apply inline-block h-9 w-9 bg-white;
+  @apply transition-[transform,opacity] duration-150 ease-out;
+  @apply hover:-translate-y-px hover:opacity-90;
+  @apply focus-visible:-translate-y-px focus-visible:opacity-90 focus-visible:outline-hidden;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}
+.mobile-menu-social.bg-facebook {
+  mask-image: url("/assets/facebook.svg");
+  -webkit-mask-image: url("/assets/facebook.svg");
+}
+.mobile-menu-social.bg-instagram {
+  mask-image: url("/assets/instagram.svg");
+  -webkit-mask-image: url("/assets/instagram.svg");
+}
+
+/* Mobile popout menu container + transitions. Plain CSS so the
+   slide/fade transitions are reliable (Tailwind's transform utilities
+   compose through CSS variables that don't animate cleanly here). */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  visibility: hidden;
+  pointer-events: none;
+}
+.mobile-menu.is-open {
+  visibility: visible;
+  pointer-events: auto;
+}
+.mobile-menu-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.mobile-menu.is-open .mobile-menu-overlay {
+  opacity: 1;
+}
+.mobile-menu-panel {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: 78%;
+  max-width: 20rem;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+.mobile-menu.is-open .mobile-menu-panel {
+  transform: translateX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-overlay,
+  .mobile-menu-panel {
+    transition: none;
+  }
+}
+
 /* Cupcake carousel — white pill ORDER NOW button on each card. */
 @utility cupcake-cta {
   @apply inline-flex items-center justify-center;

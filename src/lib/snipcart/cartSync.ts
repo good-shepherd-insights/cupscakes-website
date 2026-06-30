@@ -7,13 +7,13 @@
  * registration order, so this needs no capture-phase trickery to win the
  * race against Snipcart's own handler.
  *
- * Two things get synced:
- *   1. Custom field values (data-item-customN-value) — from whichever
- *      inputs are currently checked for each customN-name group.
- *   2. The price (data-item-price) — recomputed from the button's
- *      immutable data-base-price plus the data-price-modifier of every
- *      currently-checked input in the form (e.g. Personal Cakes' "Custom"
- *      frosting option carries data-price-modifier="3").
+ * What gets synced: the custom field values (data-item-customN-value),
+ * from whichever inputs are currently checked, per the data-syncN
+ * descriptor cartItem.ts emitted for each field. Price is NOT synced here
+ * — option price modifiers are declared natively in each field's
+ * data-item-customN-options (e.g. "Custom[+3.00]"), so Snipcart computes
+ * and recomputes the price itself (including on quantity change), and its
+ * crawler validates it against those same declared modifiers.
  *
  * Call this on `astro:page-load` (fires on initial load AND after every
  * ClientRouter swap) rather than at parse time — switching between pages
@@ -49,8 +49,10 @@ export function bindAddToCartSync(): void {
     button.addEventListener('click', () => {
       const form = button.closest('form');
       if (!form) return;
+      // Price is owned by Snipcart now (native option modifiers declared in
+      // each field's data-item-customN-options); we only sync each field's
+      // value from the live form selection.
       syncCustomFields(button, form);
-      syncPrice(button, form);
     });
     bindRequiredGroupsGate(button);
   });
@@ -80,34 +82,45 @@ function bindRequiredGroupsGate(button: HTMLButtonElement): void {
   updateDisabled();
 }
 
+// Sets each Snipcart custom field's value from the live form, driven by the
+// data-syncN descriptor cartItem.ts emitted alongside each field:
+//   single:<group>          -> the checked radio's value in <group>
+//   multi:<group>           -> comma-joined checked labels in <group>
+//   flag:<group>:<option>   -> 'true' if <option> is checked in <group>, else 'false'
+// Each produces exactly the value its native field type expects, so the
+// submitted value always matches a declared (validatable) option.
 function syncCustomFields(button: HTMLButtonElement, form: HTMLElement): void {
   let n = 1;
   while (button.hasAttribute(`data-item-custom${n}-name`)) {
-    const groupName = button.getAttribute(`data-item-custom${n}-name`);
-    const checked = form.querySelectorAll<HTMLInputElement>(`input[name="${groupName}"]:checked`);
-    const value = Array.from(checked)
-      .map((input) => input.value)
-      .join(', ');
+    const descriptor = button.getAttribute(`data-sync${n}`) ?? '';
+    const [kind, group, option] = descriptor.split(':');
+    let value = '';
+    if (kind === 'single') {
+      const checked = form.querySelector<HTMLInputElement>(`input[name="${group}"]:checked`);
+      value = checked?.value ?? '';
+    } else if (kind === 'multi') {
+      const checked = form.querySelectorAll<HTMLInputElement>(`input[name="${group}"]:checked`);
+      value = Array.from(checked)
+        .map((input) => input.value)
+        .join(', ');
+    } else if (kind === 'flag') {
+      const target = form.querySelector<HTMLInputElement>(
+        `input[name="${group}"][value="${option}"]`
+      );
+      value = target?.checked ? 'true' : 'false';
+    }
     button.setAttribute(`data-item-custom${n}-value`, value);
     n++;
   }
 }
 
-function syncPrice(button: HTMLButtonElement, form: HTMLElement): void {
-  const basePrice = Number(button.getAttribute('data-base-price') ?? '0');
-  const checked = form.querySelectorAll<HTMLInputElement>('input:checked');
-  const modifierTotal = Array.from(checked).reduce(
-    (sum, input) => sum + Number(input.dataset.priceModifier ?? '0'),
-    0
-  );
-  button.setAttribute('data-item-price', String(basePrice + modifierTotal));
-}
-
 /**
  * Keeps the on-page price display (the "$0.00" text below ADD TO CART)
- * in sync with the live form selection, same math as syncPrice() above
- * but updating on every change rather than just at add-to-cart click
- * time, so the customer sees the real total before they commit.
+ * in sync with the live form selection (base price plus the
+ * data-price-modifier of every checked input), updating on every change so
+ * the customer sees the real total before they commit. This is a *display
+ * only* preview computed from the page's own data attributes — Snipcart
+ * computes the authoritative price from the native option modifiers.
  */
 export function bindPriceDisplay(): void {
   document.querySelectorAll<HTMLElement>('[data-price-display]').forEach((el) => {

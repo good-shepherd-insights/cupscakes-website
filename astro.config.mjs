@@ -35,6 +35,22 @@ export default defineConfig({
       'process.env.PUBLIC_SANITY_DATASET': JSON.stringify(env.PUBLIC_SANITY_DATASET ?? 'production'),
     },
 
+    // Pre-bundle the React runtime up front so Vite never re-optimizes it
+    // mid-session. The frontmanAi() integration runs Lighthouse (chrome-launcher)
+    // against the dev server, whose route crawls keep triggering on-the-fly dep
+    // discovery + re-optimization; that bumps the optimized-dep hash and 504s the
+    // `react/jsx-dev-runtime` chunk the LiveCart (client:only) island imports,
+    // surfacing as "jsxDEV is not a function". Pinning these keeps the hash stable.
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        'react-dom/client',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
+      ],
+    },
+
     plugins: [tailwindcss()],
   },
 });

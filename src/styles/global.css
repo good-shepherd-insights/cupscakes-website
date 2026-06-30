@@ -185,10 +185,8 @@
   @apply inline-flex items-center justify-center;
   @apply bg-white text-brand-blue font-medium no-underline text-center;
   @apply border border-brand-border rounded-md;
-  @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
-  @apply w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl;
-  @apply aspect-[569/189];
-  @apply px-6 sm:px-8 md:px-10;
+  @apply text-sm sm:text-base;
+  @apply px-6 py-3;
   @apply transition-[transform,filter] duration-150 ease-out;
   @apply hover:brightness-95 hover:-translate-y-px;
   @apply focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden;

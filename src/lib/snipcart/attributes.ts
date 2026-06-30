@@ -54,6 +54,10 @@ export function buildItemAttributes(input: ItemAttributesInput): Record<string, 
     const field = input.customFields![i];
     const n = i + 1;
     attrs[`data-item-custom${n}-name`] = field.name;
+    // Option strings are passed through verbatim, so callers may embed
+    // Snipcart's native price modifiers — e.g. a dropdown "Custom[+3.00]"
+    // or a checkbox "true[3.00]|false" (see cartItem.ts). attributes.ts
+    // never parses or computes price; Snipcart owns that.
     if (field.options) attrs[`data-item-custom${n}-options`] = field.options.join('|');
     if (field.type) attrs[`data-item-custom${n}-type`] = field.type;
     if (field.required) attrs[`data-item-custom${n}-required`] = 'true';

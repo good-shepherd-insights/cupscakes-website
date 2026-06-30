@@ -11,6 +11,11 @@ interface SnipcartCartItem {
   uniqueId: string;
   name: string;
   price: number;
+  // Snipcart's CartItem also exposes basePrice (unit price before custom
+  // field modifiers) and unitPrice (after). Used to show the correct line
+  // total now that option modifiers are applied by Snipcart, not baked in.
+  basePrice?: number;
+  unitPrice?: number;
   quantity: number;
   image?: string;
   url?: string;
@@ -72,7 +77,14 @@ function toDisplayItem(item: SnipcartCartItem): DisplayItem {
   const quantityField = customFields.find((f) => f.name === 'Quantity');
   const occasionField = customFields.find((f) => f.name === 'Occasion');
   const otherFields = customFields.filter((f) => f.name !== 'Quantity' && f.name !== 'Occasion');
-  const lineTotal = item.price * item.quantity;
+  // Snipcart now owns price math (option modifiers are declared natively, not
+  // baked into data-item-price), so the unit price must come from Snipcart's
+  // post-modifier figure. unitPrice includes custom field modifiers; fall back
+  // through basePrice and the legacy `price` field for early store snapshots.
+  // (Which field carries base+modifier at runtime is confirmed empirically —
+  // see FIX(snipcart-native-price-modifiers).md, Docs Compliance Audit #2.)
+  const unitPrice = item.unitPrice ?? item.basePrice ?? item.price;
+  const lineTotal = unitPrice * item.quantity;
   return {
     id: item.id,
     uniqueId: item.uniqueId,

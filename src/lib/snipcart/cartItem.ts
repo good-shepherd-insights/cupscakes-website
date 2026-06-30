@@ -8,7 +8,7 @@
  * keeps this module Astro-free and independently testable.
  */
 import { stegaClean } from '@sanity/client/stega';
-import { buildItemAttributes } from './attributes';
+import { buildItemAttributes, type CustomField } from './attributes';
 import type { CustomOption } from '../../types/product';
 
 export interface ProductCartItemInput {
@@ -41,26 +41,64 @@ export function buildProductCartAttributes(input: ProductCartItemInput): Record<
   const basePrice = Number(input.price.replace(/[^0-9.]/g, ''));
   const customFieldGroups = input.customOptions.filter((g) => !g.definesVariantRoute);
 
+  // Snipcart's two native price-modifier formats differ by field type (v3 docs):
+  //   dropdown option:  "Custom[+3.00]"   — docs verbatim "Brown[+100.00]"
+  //   checkbox option:  "true[3.00]|false" — docs verbatim "true[10]|false"
+  const modDropdown = (m: number): string =>
+    m ? `[${m > 0 ? '+' : '-'}${Math.abs(m).toFixed(2)}]` : '';
+  const modCheckbox = (m: number): string => (m ? `[${m.toFixed(2)}]` : '');
+
+  // Build the Snipcart custom fields AND a parallel list of sync descriptors,
+  // in the same order, so cartSync.ts can fill each field's value from the
+  // live form at click time. One single-choice (radio) group -> one dropdown
+  // field. One multi-choice (checkbox) group -> one readonly display field
+  // (the chosen colors, no price) plus one native checkbox field per *priced*
+  // option (e.g. Custom +$3); free colors ride the display field only.
+  const fields: CustomField[] = [];
+  const syncDescriptors: string[] = [];
+
+  for (const group of customFieldGroups) {
+    const groupName = stegaClean(group.name);
+    if (group.inputType === 'checkbox') {
+      // Display field: shows the chosen colors in the cart. No `options`
+      // means Snipcart treats it as free input and does not price-validate
+      // it (validation only covers fields that are required or change price).
+      fields.push({ name: groupName, type: 'readonly', value: '' });
+      syncDescriptors.push(`multi:${groupName}`);
+      for (const option of group.options) {
+        if (!option.priceModifier) continue;
+        const label = stegaClean(option.label);
+        fields.push({
+          name: `${groupName}: ${label}`,
+          type: 'checkbox',
+          options: [`true${modCheckbox(option.priceModifier)}`, 'false'],
+          value: 'false',
+        });
+        syncDescriptors.push(`flag:${groupName}:${label}`);
+      }
+    } else {
+      fields.push({
+        name: groupName,
+        type: 'dropdown',
+        options: group.options.map(
+          (option) => `${stegaClean(option.label)}${modDropdown(option.priceModifier ?? 0)}`
+        ),
+        value: '',
+      });
+      syncDescriptors.push(`single:${groupName}`);
+    }
+  }
+
   const attrs = buildItemAttributes({
     id: `${input.productSlug ?? 'product'}-${input.currentVariantSlug ?? 'default'}`,
+    // True base price. Snipcart adds the selected options' modifiers itself
+    // and recomputes on quantity change; the crawler validates base price +
+    // declared modifiers. (Docs: data-item-price is the standalone base.)
     name,
     price: basePrice,
     url: input.url,
     image: input.imageSrc,
-    customFields: customFieldGroups.map((group) => ({
-      name: stegaClean(group.name),
-      // Without `options`, Snipcart renders this field as a free-text box
-      // in the cart, letting customers type anything — including values
-      // that were never valid choices on the product page. Passing the
-      // same labels offered there makes Snipcart render a dropdown
-      // instead, constrained to the actual choices.
-      type: 'dropdown',
-      options: group.options.map((option) => stegaClean(option.label)),
-      // Placeholder — kept in sync with the live form selection by
-      // cartSync.ts's bindAddToCartSync(), just before Snipcart reads it
-      // on click.
-      value: '',
-    })),
+    customFields: fields,
     // Invisible in Snipcart's own cart/checkout UI — exists purely so
     // the custom /cart page (LiveCart.tsx) can recover "product" and
     // "flavor" as separate fields without re-parsing the combined
@@ -72,15 +110,12 @@ export function buildProductCartAttributes(input: ProductCartItemInput): Record<
     },
   });
 
-  // Bookkeeping only — not a Snipcart attribute. cartSync.ts recomputes
-  // `data-item-price` on every click from this immutable base plus
-  // whichever options are checked at that moment (some options carry a
-  // priceModifier, e.g. Personal Cakes' "Custom" frosting is +$3). Storing
-  // the base separately means clicking ADD TO CART twice with different
-  // selections (the button stays on the page since adding doesn't reload
-  // it) always recomputes from the true original price, never compounds
-  // on top of a previously-adjusted one.
-  attrs['data-base-price'] = String(basePrice);
+  // Our own sync metadata, aligned 1:1 with data-item-customN-*, read only by
+  // cartSync.ts to set each field's value from the live form at click time.
+  // Never sent to Snipcart; has no bearing on validation.
+  syncDescriptors.forEach((descriptor, i) => {
+    attrs[`data-sync${i + 1}`] = descriptor;
+  });
 
   return attrs;
 }

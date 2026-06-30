@@ -1,11 +1,7 @@
-// Client-side persistent draft for the multi-step order flow — the single
-// source of truth for every field the customer enters across /order/* steps.
-// Backed by sessionStorage so values survive step navigation and reloads
-// within the session, and are gone when the tab closes (we don't retain PII
-// longer than the in-progress order). Fields are captured incrementally as
-// they're entered (see bindOrderCapture) and pushed to an external sink (see
-// draftSink) — never via a form submission.
-
+// Per-tab persistent draft for the multi-step order flow — the single source
+// of truth for everything entered across /order/*. Captured incrementally (see
+// bindOrderCapture) and pushed to an external sink (see draftSink), never via a
+// form POST. sessionStorage: survives step nav/reload, cleared on tab close.
 export type OrderDraft = Record<string, string>;
 
 const KEY = 'cupscakes.orderDraft';
@@ -19,14 +15,12 @@ export function getDraft(): OrderDraft {
   }
 }
 
-/** Merge `patch` into the stored draft and return the result. Best-effort:
- *  never throws, so capturing a field can never break the page. */
 export function updateDraft(patch: OrderDraft): OrderDraft {
   const next = { ...getDraft(), ...patch };
   try {
     sessionStorage.setItem(KEY, JSON.stringify(next));
   } catch {
-    /* storage unavailable/full — capture is best-effort */
+    /* best-effort: never throw on a capture */
   }
   return next;
 }
@@ -39,10 +33,8 @@ export function clearDraft(): void {
   }
 }
 
-/** Derive the chosen fulfillment method from an /order/* step URL, so the
- *  branch the customer picked (pickup vs delivery) is recorded in the draft
- *  even though it was selected via a plain link on /order. Kept here, not in
- *  bindOrderCapture, so the capture wiring stays generic and URL-agnostic. */
+/** pickup/delivery derived from an /order/* path, so the branch chosen by a
+ *  link on /order is recorded in the draft too. */
 export function fulfillmentFromPath(pathname: string): 'pickup' | 'delivery' | undefined {
   if (pathname.includes('/pickup')) return 'pickup';
   if (pathname.includes('/delivery')) return 'delivery';

@@ -94,7 +94,7 @@ const pillBase =
     ><span>{changeLabel}</span></a>
   </header>
 
-  <form method="post" action={nextHref} class="flex flex-col gap-6 sm:gap-8 md:gap-10">
+  <form id="order-date-form" data-next-href={nextHref} novalidate class="flex flex-col gap-6 sm:gap-8 md:gap-10">
     <fieldset class="m-0 p-0 border-0">
       <legend
         class="font-normal text-black leading-[normal] mb-3 sm:mb-4 md:mb-5
@@ -145,3 +145,22 @@ const pillBase =
     </div>
   </form>
 </article>
+
+<script>
+  // Capture the chosen date as it's entered and advance client-side — no
+  // form POST (which 405s on Vercel), no PII in the URL. See bindOrderCapture.
+  import { bindOrderCapture } from "../../lib/order/bindOrderCapture";
+  import { fulfillmentFromPath } from "../../lib/order/draftStore";
+
+  function initDateCapture() {
+    const form = document.getElementById("order-date-form") as HTMLFormElement | null;
+    if (!form) return;
+    const fulfillment = fulfillmentFromPath(location.pathname);
+    bindOrderCapture(form, {
+      nextHref: form.dataset.nextHref ?? "/",
+      seed: fulfillment ? { fulfillment } : undefined,
+    });
+  }
+
+  document.addEventListener("astro:page-load", initDateCapture);
+</script>

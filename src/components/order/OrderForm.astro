@@ -130,8 +130,8 @@ const inputClass =
   </header>
 
   <form
-    method="post"
-    action={nextHref}
+    id="order-form"
+    data-next-href={nextHref}
     class="grid gap-y-6 sm:gap-y-8 md:gap-y-10 lg:gap-y-12"
     novalidate
   >
@@ -278,81 +278,23 @@ const inputClass =
 </article>
 
 <script>
-  import { getAvailableDates, getTimeSlots } from "../../lib/fulfillment";
-  import config from "../../data/fulfillment-config.json";
+  // Capture the contact/address fields as they're entered and advance
+  // client-side on NEXT — no form POST (which 405s on Vercel), no PII in the
+  // URL. The earlier date/time scheduling UI was removed from this form, so
+  // there's no date/time validation here; the date is chosen on the separate
+  // /order/*/date step (DateSelect). See bindOrderCapture.
+  import { bindOrderCapture } from "../../lib/order/bindOrderCapture";
+  import { fulfillmentFromPath } from "../../lib/order/draftStore";
 
-  function initOrderFormScheduling() {
-    const dateInput = document.getElementById("delivery-orderDate") as HTMLInputElement | null;
-    const timeSelect = document.getElementById("delivery-orderTime") as HTMLSelectElement | null;
-
-    if (!dateInput || !timeSelect) return;
-
-    const availableDates = getAvailableDates(config);
-
-    if (availableDates.length > 0) {
-      dateInput.min = availableDates[0];
-      dateInput.max = availableDates[availableDates.length - 1];
-    }
-
-    dateInput.addEventListener("change", () => {
-      const selectedDate = dateInput.value;
-      timeSelect.innerHTML = "";
-
-      if (!selectedDate) {
-        timeSelect.disabled = true;
-        const placeholder = document.createElement("option");
-        placeholder.value = "";
-        placeholder.textContent = "Select a date first";
-        timeSelect.appendChild(placeholder);
-        return;
-      }
-
-      const slots = getTimeSlots(config, selectedDate);
-      timeSelect.disabled = false;
-
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.textContent = slots.length > 0 ? "Choose a time" : "No slots available";
-      timeSelect.appendChild(defaultOption);
-
-      for (const slot of slots) {
-        const option = document.createElement("option");
-        option.value = slot;
-        option.textContent = slot;
-        timeSelect.appendChild(option);
-      }
+  function initOrderCapture() {
+    const form = document.getElementById("order-form") as HTMLFormElement | null;
+    if (!form) return;
+    const fulfillment = fulfillmentFromPath(location.pathname);
+    bindOrderCapture(form, {
+      nextHref: form.dataset.nextHref ?? "/",
+      seed: fulfillment ? { fulfillment } : undefined,
     });
-
-    // Form validation on submit — ensure both date and time are selected
-    const form = dateInput.closest("form");
-    if (form) {
-      form.addEventListener("submit", (e) => {
-        let valid = true;
-
-        // Clear previous errors
-        const dateError = document.getElementById("delivery-orderDate-error");
-        const timeError = document.getElementById("delivery-orderTime-error");
-        if (dateError) dateError.textContent = "";
-        if (timeError) timeError.textContent = "";
-
-        if (!dateInput.value) {
-          valid = false;
-          const dateErrorEl = document.getElementById("delivery-orderDate-error");
-          if (dateErrorEl) dateErrorEl.textContent = "Please select a date.";
-        }
-
-        if (!timeSelect.value) {
-          valid = false;
-          const timeErrorEl = document.getElementById("delivery-orderTime-error");
-          if (timeErrorEl) timeErrorEl.textContent = "Please select a time.";
-        }
-
-        if (!valid) {
-          e.preventDefault();
-        }
-      });
-    }
   }
 
-  document.addEventListener("astro:page-load", initOrderFormScheduling);
+  document.addEventListener("astro:page-load", initOrderCapture);
 </script>

@@ -246,6 +246,8 @@ const activeUnderlineClass =
 </header>
 
 <script>
+  import { initCartBadgeStore, applyCartBadge } from "../../lib/snipcart/cartBadge";
+
   // Mobile popout menu open/close wiring. Re-runs on Astro view
   // transitions via astro:page-load so the handlers always bind.
   function initMobileMenu() {
@@ -289,31 +291,7 @@ const activeUnderlineClass =
 
   initMobileMenu();
   document.addEventListener("astro:page-load", initMobileMenu);
-
-  function initCartBadge() {
-    document.querySelectorAll<HTMLElement>('.cart-container').forEach((container) => {
-      const badge = container.querySelector<HTMLElement>('.snipcart-items-count');
-      const cartLink = container.querySelector<HTMLAnchorElement>('.cart-link');
-      if (!badge || !cartLink || badge.dataset.observerBound) return;
-      badge.dataset.observerBound = "1";
-
-      const sync = () => {
-        const count = badge.textContent?.trim() ?? "";
-        const empty = count === "0" || count === "";
-        badge.hidden = empty;
-        badge.setAttribute("aria-hidden", String(empty));
-        cartLink.setAttribute(
-          "aria-label",
-          empty ? "Shopping cart" : `Shopping cart (${count} item${count === "1" ? "" : "s"})`
-        );
-      };
-
-      new MutationObserver(sync).observe(badge, { childList: true, characterData: true, subtree: true });
-      sync();
-    });
-  }
-
-  initCartBadge();
-  document.addEventListener("astro:page-load", initCartBadge);
+  document.addEventListener("snipcart.ready", initCartBadgeStore);
+  document.addEventListener("astro:page-load", applyCartBadge);
 </script>
 

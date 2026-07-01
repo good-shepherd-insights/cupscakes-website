@@ -159,14 +159,21 @@ const activeUnderlineClass =
         aria-label="Account / favorites"
       ></a>
 
-      <a
-        href={cartHref}
-        data-astro-reload
-        class="nav-icon bg-cart-icon h-5 sm:h-6 md:h-7 lg:h-8 aspect-[41.479/46.541]"
-        data-node-id="3311:1695"
-        data-name="C&C_CART_ICON"
-        aria-label="Shopping cart"
-      ></a>
+      <div class="cart-container relative inline-flex shrink-0">
+        <a
+          href={cartHref}
+          data-astro-reload
+          class="cart-link nav-icon bg-cart-icon h-5 sm:h-6 md:h-7 lg:h-8 aspect-[41.479/46.541]"
+          data-node-id="3311:1695"
+          data-name="C&C_CART_ICON"
+          aria-label="Shopping cart"
+        ></a>
+        <span
+          class="snipcart-items-count pointer-events-none absolute -top-1.5 -right-1.5 flex min-w-4 h-4 items-center justify-center rounded-full px-0.5 bg-brand-pink text-white text-[10px] font-bold leading-none"
+          aria-hidden="true"
+          hidden
+        ></span>
+      </div>
     </nav>
   </div>
 
@@ -239,6 +246,8 @@ const activeUnderlineClass =
 </header>
 
 <script>
+  import { initCartBadgeStore, applyCartBadge } from "../../lib/snipcart/cartBadge";
+
   // Mobile popout menu open/close wiring. Re-runs on Astro view
   // transitions via astro:page-load so the handlers always bind.
   function initMobileMenu() {
@@ -282,5 +291,7 @@ const activeUnderlineClass =
 
   initMobileMenu();
   document.addEventListener("astro:page-load", initMobileMenu);
+  document.addEventListener("snipcart.ready", initCartBadgeStore);
+  document.addEventListener("astro:page-load", applyCartBadge);
 </script>
 

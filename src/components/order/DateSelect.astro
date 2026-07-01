@@ -24,7 +24,7 @@ interface Props {
   changeHref: string;
   dateHeading: string;
   helperNote: string;
-  options: DateOption[];
+  options?: DateOption[];
   nextLabel: string;
   nextHref: string;
   /** Used for `data-node-id` traceability ("3311:6708" / "3311:6423"). */
@@ -58,6 +58,8 @@ const pillBase =
   "hover:brightness-95 hover:-translate-y-px " +
   "peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark " +
   "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark";
+
+const useDynamic = !options || options.length === 0;
 ---
 
 <article
@@ -107,25 +109,32 @@ const pillBase =
                text-sm sm:text-base md:text-lg lg:text-xl xl:text-[30px]"
       >{helperNote}</p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-x-[42px] xl:gap-y-[49px]">
-        {options.map((option, i) => {
-          const id = `order-date-${i}`;
-          return (
-            <div class="relative">
-              <input
-                type="radio"
-                name="date"
-                id={id}
-                value={option.value}
-                required
-                class="peer sr-only"
-                data-other={option.other ? "true" : undefined}
-              />
-              <label for={id} class={pillBase}>{option.label}</label>
-            </div>
-          );
-        })}
-      </div>
+      {useDynamic ? (
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-x-[42px] xl:gap-y-[49px]"
+          data-dynamic-dates
+        ></div>
+      ) : (
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-x-[42px] xl:gap-y-[49px]">
+          {options!.map((option, i) => {
+            const id = `order-date-${i}`;
+            return (
+              <div class="relative">
+                <input
+                  type="radio"
+                  name="date"
+                  id={id}
+                  value={option.value}
+                  required
+                  class="peer sr-only"
+                  data-other={option.other ? "true" : undefined}
+                />
+                <label for={id} class={pillBase}>{option.label}</label>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </fieldset>
 
     {/* NEXT pill. */}
@@ -146,11 +155,39 @@ const pillBase =
   </form>
 </article>
 
+<template id="date-pill-template">
+  <div class="relative">
+    <input type="radio" name="date" id="" value="" required class="peer sr-only" />
+    <label for="" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"></label>
+  </div>
+</template>
+
 <script>
-  // Capture the chosen date as it's entered and advance client-side — no
-  // form POST (which 405s on Vercel), no PII in the URL. See bindOrderCapture.
   import { bindOrderCapture } from "../../lib/order/bindOrderCapture";
   import { fulfillmentFromPath } from "../../lib/order/draftStore";
+  import { generateDateOptions } from "../../lib/order/generateDateOptions";
+
+  function hydrateDates() {
+    const grid = document.querySelector<HTMLElement>('[data-dynamic-dates]');
+    const template = document.getElementById('date-pill-template') as HTMLTemplateElement | null;
+    if (!grid || !template) return;
+
+    const options = generateDateOptions(new Date(), 1, 5);
+    grid.innerHTML = '';
+
+    options.forEach((option, i) => {
+      const id = `order-date-${i}`;
+      const clone = template.content.cloneNode(true) as DocumentFragment;
+      const input = clone.querySelector('input')!;
+      const label = clone.querySelector('label')!;
+      input.id = id;
+      input.value = option.value;
+      if (option.other) input.dataset.other = 'true';
+      label.htmlFor = id;
+      label.textContent = option.label;
+      grid.appendChild(clone);
+    });
+  }
 
   function initDateCapture() {
     const form = document.getElementById("order-date-form") as HTMLFormElement | null;
@@ -162,5 +199,6 @@ const pillBase =
     });
   }
 
+  document.addEventListener("astro:page-load", hydrateDates);
   document.addEventListener("astro:page-load", initDateCapture);
 </script>

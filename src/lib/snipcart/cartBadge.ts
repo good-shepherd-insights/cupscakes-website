@@ -8,7 +8,8 @@ interface SnipcartCartState {
 
 interface SnipcartInstance {
   store: {
-    subscribe(listener: (state: SnipcartCartState) => void): void;
+    subscribe(listener: () => void): void;
+    getState(): SnipcartCartState;
   };
 }
 
@@ -21,8 +22,8 @@ declare global {
 let itemCount = 0;
 
 export function initCartBadgeStore(): void {
-  window.Snipcart.store.subscribe((state) => {
-    itemCount = state.cart.items.count;
+  window.Snipcart.store.subscribe(() => {
+    itemCount = window.Snipcart.store.getState().cart.items.count;
     applyCartBadge();
   });
 }

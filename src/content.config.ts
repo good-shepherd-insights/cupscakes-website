@@ -171,7 +171,7 @@ const orderPickupDateSchema = z.object({
   changeHref: z.string(),
   dateHeading: z.string(),
   helperNote: z.string(),
-  options: z.array(orderDateOptionSchema).min(1).max(6),
+  options: z.array(orderDateOptionSchema).max(6).optional(),
   nextLabel: z.string(),
   nextHref: z.string(),
 });
@@ -183,7 +183,7 @@ const orderDeliveryDateSchema = z.object({
   changeHref: z.string(),
   dateHeading: z.string(),
   helperNote: z.string(),
-  options: z.array(orderDateOptionSchema).min(1).max(6),
+  options: z.array(orderDateOptionSchema).max(6).optional(),
   nextLabel: z.string(),
   nextHref: z.string(),
 });
@@ -203,6 +203,7 @@ const cartSchema = z.object({
   editLabel: z.string(),
   saveLabel: z.string(),
   cancelLabel: z.string(),
+  removeLabel: z.string(),
   subtotalLabel: z.string(),
   checkoutLabel: z.string(),
   emptyMessage: z.string(),

@@ -10,5 +10,6 @@
   "cancelLabel": "Cancel",
   "subtotalLabel": "Subtotal:",
   "checkoutLabel": "CHECKOUT",
-  "emptyMessage": "Your cart is empty."
+  "emptyMessage": "Your cart is empty.",
+  "removeLabel": "Remove"
 }

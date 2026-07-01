@@ -203,6 +203,7 @@ const cartSchema = z.object({
   editLabel: z.string(),
   saveLabel: z.string(),
   cancelLabel: z.string(),
+  removeLabel: z.string(),
   subtotalLabel: z.string(),
   checkoutLabel: z.string(),
   emptyMessage: z.string(),

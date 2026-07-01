@@ -137,6 +137,7 @@ interface Props {
   editLabel: string;
   saveLabel: string;
   cancelLabel: string;
+  removeLabel: string;
   subtotalLabel: string;
   checkoutLabel: string;
   emptyMessage: string;
@@ -151,6 +152,7 @@ export default function LiveCart({
   editLabel,
   saveLabel,
   cancelLabel,
+  removeLabel,
   subtotalLabel,
   checkoutLabel,
   emptyMessage,
@@ -161,6 +163,7 @@ export default function LiveCart({
   const [productOptions, setProductOptions] = useState<Record<string, ProductOptionsMeta>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftValues, setDraftValues] = useState<Record<string, string>>({});
+  const [removing, setRemoving] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     let cancelled = false;
@@ -241,6 +244,21 @@ export default function LiveCart({
     }
     return order.map((name) => ({ name, items: bySection.get(name)! }));
   }, [items]);
+
+  async function removeItem(uniqueId: string) {
+    const snipcart = (window as unknown as { Snipcart?: any }).Snipcart;
+    if (!snipcart?.api?.cart?.items) return;
+    setRemoving((prev) => new Set(prev).add(uniqueId));
+    try {
+      await snipcart.api.cart.items.remove(uniqueId);
+    } finally {
+      setRemoving((prev) => {
+        const next = new Set(prev);
+        next.delete(uniqueId);
+        return next;
+      });
+    }
+  }
 
   function startEdit(item: DisplayItem) {
     setEditingId(item.uniqueId);
@@ -469,13 +487,23 @@ export default function LiveCart({
                                   </button>
                                 </>
                               ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => startEdit(item)}
-                                  className={actionBtnClass}
-                                >
-                                  {editLabel}
-                                </button>
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => startEdit(item)}
+                                    className={actionBtnClass}
+                                  >
+                                    {editLabel}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeItem(item.uniqueId)}
+                                    disabled={removing.has(item.uniqueId)}
+                                    className={actionBtnClass}
+                                  >
+                                    {removing.has(item.uniqueId) ? '...' : removeLabel}
+                                  </button>
+                                </>
                               )}
                             </div>
                           </div>

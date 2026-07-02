@@ -60,7 +60,7 @@ const cleanDescription = description ? stegaClean(description) : undefined;
       import { syncDraftToCart } from "../lib/snipcart/syncDraftToCart";
       document.addEventListener('snipcart.ready', () => {
         syncDraftToCart();
-        document.addEventListener('item.added', syncDraftToCart);
+        document.addEventListener('snipcart.item.added', syncDraftToCart);
       });
       document.addEventListener('astro:page-load', () => {
         if ((window as unknown as { Snipcart?: { api?: { cart?: unknown } } }).Snipcart?.api?.cart) {

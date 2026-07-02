@@ -45,6 +45,7 @@ interface Props {
   dateLabel?: string;
   timeLabel?: string;
   schedulingNote?: string;
+  deliveryNote?: string;
   nextLabel: string;
   nextHref: string;
 }
@@ -60,6 +61,7 @@ const {
   dateLabel,
   timeLabel,
   schedulingNote,
+  deliveryNote,
   nextLabel,
   nextHref,
 } = Astro.props;
@@ -250,6 +252,12 @@ const inputClass =
         )}
       </div>
     </fieldset>
+    )}
+
+    {deliveryNote && (
+      <p class="m-0 -mt-2 sm:-mt-4 italic text-sm sm:text-base md:text-lg text-black/70 leading-snug">
+        {deliveryNote}
+      </p>
     )}
 
     {/* Scheduling — date picker and time slot selector. Rendered when

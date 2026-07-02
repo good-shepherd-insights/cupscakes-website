@@ -242,3 +242,19 @@
 @media (prefers-reduced-motion: reduce) {
   .loading-dot { animation: none; opacity: 0.85; }
 }
+
+@keyframes cart-shake {
+  0%, 100% { transform: rotate(0deg); }
+  20%       { transform: rotate(-14deg); }
+  40%       { transform: rotate(14deg); }
+  60%       { transform: rotate(-8deg); }
+  80%       { transform: rotate(4deg); }
+}
+.cart-shake {
+  animation: cart-shake 0.5s ease-in-out;
+  /* Converts the dark SVG cart icon (bg-cart-icon background-image on .cart-link) to brand-pink */
+  filter: brightness(0) saturate(100%) invert(71%) sepia(28%) saturate(600%) hue-rotate(295deg) brightness(105%) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-shake { animation: none; filter: none !important; }
+}

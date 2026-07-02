@@ -6,13 +6,14 @@ interface Props {
   productsHref: string;
   favoritesHref: string;
   cartHref: string;
+  shopHref: string;
   /**
    * Marks one of the top-level nav links as the current page so the
    * navbar renders a brand-pink underline beneath that link (Figma
    * 3311:3222 / Rectangle 35). Defaults to `undefined` so existing
    * call sites render no indicator.
    */
-  activeLink?: "who" | "order" | "products";
+  activeLink?: "who" | "order" | "products" | "shop";
   /**
    * "store" swaps the "WHO WE ARE" / "ORDER NOW" links for a single
    * "PRODUCTS" link back to the catalog. Both of those links lead away
@@ -34,6 +35,7 @@ const {
   productsHref,
   favoritesHref,
   cartHref,
+  shopHref,
   activeLink,
   mode = "site",
   facebookHref = "#",
@@ -148,6 +150,17 @@ const activeUnderlineClass =
               ></span>
             )}
           </a>
+
+          <a
+            href={shopHref}
+            class="nav-link relative hidden md:inline-block"
+            aria-current={activeLink === "shop" ? "page" : undefined}
+          >
+            <span>OUR SHOP</span>
+            {activeLink === "shop" && (
+              <span aria-hidden="true" class={activeUnderlineClass}></span>
+            )}
+          </a>
         </>
       )}
 
@@ -224,6 +237,7 @@ const activeUnderlineClass =
             <>
               <a href={whoHref} class="mobile-menu-link">WHO WE ARE</a>
               <a href={orderHref} class="mobile-menu-link">ORDER NOW</a>
+              <a href={shopHref} class="mobile-menu-link">OUR SHOP</a>
             </>
           )}
         </nav>
@@ -246,7 +260,7 @@ const activeUnderlineClass =
 </header>
 
 <script>
-  import { initCartBadgeStore, applyCartBadge } from "../../lib/snipcart/cartBadge";
+  import { initCartBadgeStore, applyCartBadge, initCartShakeAnimation } from "../../lib/snipcart/cartBadge";
 
   // Mobile popout menu open/close wiring. Re-runs on Astro view
   // transitions via astro:page-load so the handlers always bind.
@@ -292,6 +306,7 @@ const activeUnderlineClass =
   initMobileMenu();
   document.addEventListener("astro:page-load", initMobileMenu);
   document.addEventListener("snipcart.ready", initCartBadgeStore);
+  document.addEventListener("snipcart.ready", initCartShakeAnimation);
   document.addEventListener("astro:page-load", applyCartBadge);
 </script>
 

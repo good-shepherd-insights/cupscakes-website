@@ -43,3 +43,17 @@ export function applyCartBadge(): void {
     );
   });
 }
+
+export function initCartShakeAnimation(): void {
+  if ((document as unknown as Record<string, unknown>)['_cartShakeInit']) return;
+  (document as unknown as Record<string, unknown>)['_cartShakeInit'] = true;
+
+  document.addEventListener('snipcart.item.added', () => {
+    document.querySelectorAll<HTMLElement>('.cart-link').forEach((el) => {
+      el.classList.remove('cart-shake');
+      void el.offsetWidth; // force reflow so animation restarts if triggered twice quickly
+      el.classList.add('cart-shake');
+      el.addEventListener('animationend', () => el.classList.remove('cart-shake'), { once: true });
+    });
+  });
+}

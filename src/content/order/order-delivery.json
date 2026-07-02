@@ -61,6 +61,7 @@
   "dateLabel": "Delivery Date",
   "timeLabel": "Delivery Time",
   "schedulingNote": "We'll confirm your time slot after ordering",
+  "deliveryNote": "We deliver up to 10 miles from Gaithersburg/Shady Grove area",
   "nextLabel": "NEXT",
   "nextHref": "/order/delivery/date"
 }

@@ -118,6 +118,7 @@ const orderDeliverySchema = z.object({
   dateLabel: z.string().optional(),
   timeLabel: z.string().optional(),
   schedulingNote: z.string().optional(),
+  deliveryNote: z.string().optional(),
   nextLabel: z.string(),
   nextHref: z.string(),
 });

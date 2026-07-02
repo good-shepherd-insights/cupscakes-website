@@ -1,15 +1,11 @@
 import { getDraft } from '../order/draftStore';
 
-// Maps the order draft (captured during /order/* flow) into the Snipcart cart,
-// pre-populating the customer's email and billing address in Snipcart's own
-// checkout form so they don't have to type it again.
-//
-// Billing address: Snipcart requires all fields at once — no partial update.
-// Only sent when name + address1 + city + postalCode are all present (delivery
-// orders). Pickup orders get at least the email synced.
+interface CartApi {
+  update(payload: Record<string, unknown>): Promise<void>;
+}
+
 export function syncDraftToCart(): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const api = (window as any).Snipcart?.api?.cart;
+  const api = (window as unknown as { Snipcart?: { api?: { cart?: CartApi } } }).Snipcart?.api?.cart;
   if (!api?.update) return;
 
   const draft = getDraft();
@@ -32,5 +28,9 @@ export function syncDraftToCart(): void {
 
   if (Object.keys(payload).length === 0) return;
 
-  void api.update(payload).catch(() => {/* best-effort */});
+  if (import.meta.env.DEV) console.debug('[syncDraftToCart] sending:', payload);
+
+  void api.update(payload).catch((err: unknown) => {
+    if (import.meta.env.DEV) console.warn('[syncDraftToCart] failed:', err);
+  });
 }

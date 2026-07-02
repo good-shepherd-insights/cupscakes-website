@@ -58,9 +58,10 @@ const cleanDescription = description ? stegaClean(description) : undefined;
     </script>
     <script>
       import { syncDraftToCart } from "../lib/snipcart/syncDraftToCart";
-      // Fires once when Snipcart finishes initializing (lazy load on first interaction).
-      document.addEventListener('snipcart.ready', syncDraftToCart);
-      // On subsequent ClientRouter navigations Snipcart is already up — sync immediately.
+      document.addEventListener('snipcart.ready', () => {
+        syncDraftToCart();
+        document.addEventListener('item.added', syncDraftToCart);
+      });
       document.addEventListener('astro:page-load', () => {
         if ((window as unknown as { Snipcart?: { api?: { cart?: unknown } } }).Snipcart?.api?.cart) {
           syncDraftToCart();

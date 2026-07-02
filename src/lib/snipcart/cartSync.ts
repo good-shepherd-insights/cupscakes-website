@@ -49,6 +49,14 @@ export function bindAddToCartSync(): void {
     button.addEventListener('click', () => {
       const form = button.closest('form');
       if (!form) return;
+      // Snipcart v3 price-validation crawler requires a fully-qualified URL;
+      // a relative path silently fails the add. Rewrite to absolute using the
+      // page's actual origin so the crawler always reaches the right server
+      // (dev or prod), regardless of what Astro.site is set to at build time.
+      const itemUrl = button.getAttribute('data-item-url');
+      if (itemUrl && !/^https?:\/\//i.test(itemUrl)) {
+        button.setAttribute('data-item-url', new URL(itemUrl, location.origin).href);
+      }
       // Price is owned by Snipcart now (native option modifiers declared in
       // each field's data-item-customN-options); we only sync each field's
       // value from the live form selection.

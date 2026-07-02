@@ -24,6 +24,7 @@ const flavors = [
   {
     key: "chocolate",
     name: "Chocolate",
+    description: "Rich and indulgent with a smooth, chocolatey finish.",
     cardClass: `bg-flavor-chocolate ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1477",
     nodePhoto: "3311:1521",
@@ -32,6 +33,7 @@ const flavors = [
   {
     key: "butter-pecan",
     name: "Butter Pecan",
+    description: "Warm and buttery with toasted pecans, topped with cream cheese frosting.",
     cardClass: `bg-flavor-butter-pecan ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1476",
     nodePhoto: "3311:1517",
@@ -40,6 +42,7 @@ const flavors = [
   {
     key: "carrot",
     name: "Carrot",
+    description: "Sweetened just right and topped with cream cheese frosting.",
     cardClass: `bg-flavor-carrot ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1475",
     nodePhoto: "3311:1513",
@@ -47,8 +50,7 @@ const flavors = [
   },
 ];
 
-const description = "Sweetened just right and topped with cream cheese frosting.";
-const price = "$3.25 each";
+const price = "$3.50 each";
 const orderLabel = "ORDER NOW";
 ---
 
@@ -99,7 +101,7 @@ const orderLabel = "ORDER NOW";
           <p
             class="text-sm sm:text-base md:text-lg lg:text-xl
                    font-medium leading-snug max-w-sm m-0"
-          >{description}</p>
+          >{f.description}</p>
 
           <p
             class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl

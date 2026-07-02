@@ -172,7 +172,7 @@ const useDynamic = !options || options.length === 0;
     const template = document.getElementById('date-pill-template') as HTMLTemplateElement | null;
     if (!grid || !template) return;
 
-    const options = generateDateOptions(new Date(), 1, 5);
+    const options = generateDateOptions(new Date(), 3, 5);
     grid.innerHTML = '';
 
     options.forEach((option, i) => {

@@ -5,5 +5,6 @@
   "orderHref": "/order",
   "productsHref": "/products",
   "favoritesHref": "#favorites",
-  "cartHref": "/cart"
+  "cartHref": "/cart",
+  "shopHref": "/products"
 }

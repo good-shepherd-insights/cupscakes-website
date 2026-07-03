@@ -46,12 +46,24 @@ export function fulfillmentFromPath(pathname: string): 'pickup' | 'delivery' | u
  *  flow can redirect back to that product page instead of the generic
  *  fallback destination. */
 export function recordProductSelection(productSlug: string, variantSlug?: string): void {
-  updateDraft(variantSlug ? { productSlug, variantSlug } : { productSlug });
+  updateDraft(variantSlug !== undefined ? { productSlug, variantSlug } : { productSlug });
 }
 
 /** Reads back a product/variant recorded by `recordProductSelection`, if any. */
 export function getProductSelection(): { productSlug: string; variantSlug?: string } | undefined {
   const draft = getDraft();
-  if (!draft.productSlug) return undefined;
+  if (draft.productSlug === undefined) return undefined;
   return { productSlug: draft.productSlug, variantSlug: draft.variantSlug };
+}
+
+/** Clears only the product/variant selection recorded by
+ *  `recordProductSelection`, leaving the rest of the draft (email, address,
+ *  fulfillment, etc.) intact — unlike `clearDraft`, which wipes everything. */
+export function clearProductSelection(): void {
+  const { productSlug: _productSlug, variantSlug: _variantSlug, ...rest } = getDraft();
+  try {
+    sessionStorage.setItem(KEY, JSON.stringify(rest));
+  } catch {
+    /* noop */
+  }
 }

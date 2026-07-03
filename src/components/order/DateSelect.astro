@@ -164,7 +164,7 @@ const useDynamic = !options || options.length === 0;
 
 <script>
   import { bindOrderCapture } from "../../lib/order/bindOrderCapture";
-  import { fulfillmentFromPath, getProductSelection } from "../../lib/order/draftStore";
+  import { clearProductSelection, fulfillmentFromPath, getProductSelection } from "../../lib/order/draftStore";
   import { generateDateOptions } from "../../lib/order/generateDateOptions";
   import { routes } from "../../lib/routes";
 
@@ -201,6 +201,10 @@ const useDynamic = !options || options.length === 0;
     // (`form.dataset.nextHref`, sourced from the order-*-date content JSON,
     // today "/products").
     const selection = getProductSelection();
+    // Clear it immediately after reading so a later, unrelated order attempt
+    // in the same tab (e.g. the generic Navbar "Order Now", with no flavor
+    // selected) doesn't inherit this flow's product/variant redirect.
+    if (selection) clearProductSelection();
     const nextHref = selection
       ? selection.variantSlug
         ? routes.productVariant(selection.productSlug, selection.variantSlug)

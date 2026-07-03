@@ -5,12 +5,12 @@ import PickupOrDelivery from "../components/order/PickupOrDelivery.astro";
 import { loadHomeContent } from "../lib/content/home";
 import { loadOrderContent } from "../lib/content/order";
 
-const { navbar, followUs } = await loadHomeContent();
+const { navbar } = await loadHomeContent();
 const { pickupOrDelivery } = await loadOrderContent();
 ---
 <Layout title="Order — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} />
     <PickupOrDelivery {...pickupOrDelivery} />
   </div>
 </Layout>

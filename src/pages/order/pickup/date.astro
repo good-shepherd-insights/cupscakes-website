@@ -5,12 +5,12 @@ import DateSelect from "../../../components/order/DateSelect.astro";
 import { loadHomeContent } from "../../../lib/content/home";
 import { loadOrderContent } from "../../../lib/content/order";
 
-const { navbar, followUs } = await loadHomeContent();
+const { navbar } = await loadHomeContent();
 const { pickupDate } = await loadOrderContent();
 ---
 <Layout title="Pick-Up Date — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} activeLink="order" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} activeLink="order" />
 
     {/* Brand-pink page band (Figma 3311:6742). The decorative
         translucent C&C logo (3311:6746) sits behind the white card. */}

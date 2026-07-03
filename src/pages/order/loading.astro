@@ -7,12 +7,12 @@ import Loading from "../../components/order/Loading.astro";
 import { loadHomeContent } from "../../lib/content/home";
 import { loadOrderContent } from "../../lib/content/order";
 
-const { navbar, followUs } = await loadHomeContent();
+const { navbar } = await loadHomeContent();
 const { loading } = await loadOrderContent();
 ---
 <Layout title="Loading [WIP] — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} activeLink="order" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} activeLink="order" />
     <Loading {...loading} />
     <noscript>
       <p class="px-4 py-3 text-center text-sm text-black">

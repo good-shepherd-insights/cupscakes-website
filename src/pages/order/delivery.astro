@@ -5,12 +5,12 @@ import DeliveryForm from "../../components/order/OrderForm.astro";
 import { loadHomeContent } from "../../lib/content/home";
 import { loadOrderContent } from "../../lib/content/order";
 
-const { navbar, followUs } = await loadHomeContent();
+const { navbar } = await loadHomeContent();
 const { delivery } = await loadOrderContent();
 ---
 <Layout title="Delivery — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} activeLink="order" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} activeLink="order" />
 
     {/* Brand-pink page band (Figma 3311:6352). The decorative
         translucent C&C logo (3311:6356) sits behind the white card

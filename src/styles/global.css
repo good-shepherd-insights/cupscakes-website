@@ -37,10 +37,10 @@
   --background-image-cart-icon: url("/assets/cart-icon.svg");
   /* Named "-icon" (not bare "facebook"/"instagram") because those bare
      names are already used elsewhere as bg-facebook/bg-instagram modifier
-     classes in the mask-image-based mobile-menu-social/footer-social
-     utilities below — a colliding name here would make Tailwind generate
-     a real background-image utility under the same class name those
-     compound mask selectors match on. */
+     classes in the mask-image-based footer-social utility below — a
+     colliding name here would make Tailwind generate a real
+     background-image utility under the same class name that compound
+     mask selector matches on. */
   --background-image-facebook-icon: url("/assets/facebook.svg");
   --background-image-instagram-icon: url("/assets/instagram.svg");
 
@@ -103,31 +103,12 @@
   @apply focus-visible:-translate-y-px focus-visible:opacity-90 focus-visible:outline-hidden;
 }
 
-/* Mobile popout menu — social icons rendered in white via mask so the
-   blue source SVGs read against the pink panel. */
-@utility mobile-menu-social {
-  @apply inline-block h-9 w-9 bg-white;
-  @apply transition-[transform,opacity] duration-150 ease-out;
-  @apply hover:-translate-y-px hover:opacity-90;
-  @apply focus-visible:-translate-y-px focus-visible:opacity-90 focus-visible:outline-hidden;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-position: center;
-  mask-size: contain;
-  -webkit-mask-size: contain;
-}
-.mobile-menu-social.bg-facebook {
-  mask-image: url("/assets/facebook.svg");
-  -webkit-mask-image: url("/assets/facebook.svg");
-}
-.mobile-menu-social.bg-instagram {
-  mask-image: url("/assets/instagram.svg");
-  -webkit-mask-image: url("/assets/instagram.svg");
-}
-
-/* Footer social icons — same white-mask technique as mobile-menu-social so
-   the light-blue source SVGs read against the brand-blue footer background. */
+/* Footer social icons — white-mask technique so the light-blue source
+   SVGs read against the brand-blue footer background. (The navbar's own
+   Facebook/Instagram icons use the plain bg-facebook-icon/bg-instagram-icon
+   background-image utilities instead — see the @theme block above — since
+   the top navbar is white and the source SVGs' light-blue fill already
+   reads fine there without masking.) */
 @utility footer-social {
   @apply inline-block h-6 sm:h-7 md:h-8 w-6 sm:w-7 md:w-8 bg-white shrink-0;
   @apply transition-[transform,opacity] duration-150 ease-out;

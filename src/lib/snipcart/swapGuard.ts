@@ -61,6 +61,20 @@ export function installSnipcartSwapGuard(): void {
         if (child.id !== 'snipcart') oldBody.appendChild(child);
       });
 
+      // Astro's default swap replaces the whole <body> node, so any inline
+      // style JS had set on the old body (e.g. the mobile nav's scroll
+      // lock, which sets document.body.style.overflow = "hidden" while
+      // open) is naturally wiped away — the new body is a fresh node with
+      // no style attribute. Because this custom swap deliberately keeps
+      // the *same* body node alive (see file header), that inline style
+      // survives the navigation instead. If the mobile menu was open when
+      // the user tapped a nav link — which never calls the menu's close()
+      // handler, since it's just a plain <a href> navigation — the next
+      // page would otherwise load with scrolling permanently disabled.
+      // Reset just this one property (not a blanket style wipe) to
+      // replicate what a real body replacement would have done for free.
+      oldBody.style.overflow = '';
+
       restoreFocus();
     };
   });

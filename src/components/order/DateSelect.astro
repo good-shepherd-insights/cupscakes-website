@@ -164,8 +164,9 @@ const useDynamic = !options || options.length === 0;
 
 <script>
   import { bindOrderCapture } from "../../lib/order/bindOrderCapture";
-  import { fulfillmentFromPath } from "../../lib/order/draftStore";
+  import { clearProductSelection, fulfillmentFromPath, getProductSelection } from "../../lib/order/draftStore";
   import { generateDateOptions } from "../../lib/order/generateDateOptions";
+  import { routes } from "../../lib/routes";
 
   function hydrateDates() {
     const grid = document.querySelector<HTMLElement>('[data-dynamic-dates]');
@@ -193,8 +194,25 @@ const useDynamic = !options || options.length === 0;
     const form = document.getElementById("order-date-form") as HTMLFormElement | null;
     if (!form) return;
     const fulfillment = fulfillmentFromPath(location.pathname);
+
+    // If the customer started this flow from a specific flavor card's
+    // "Order Now" link, `draftStore` will have a recorded product/variant —
+    // send them back to that product page instead of the generic fallback
+    // (`form.dataset.nextHref`, sourced from the order-*-date content JSON,
+    // today "/products").
+    const selection = getProductSelection();
+    // Clear it immediately after reading so a later, unrelated order attempt
+    // in the same tab (e.g. the generic Navbar "Order Now", with no flavor
+    // selected) doesn't inherit this flow's product/variant redirect.
+    if (selection) clearProductSelection();
+    const nextHref = selection
+      ? selection.variantSlug
+        ? routes.productVariant(selection.productSlug, selection.variantSlug)
+        : routes.product(selection.productSlug)
+      : (form.dataset.nextHref ?? "/");
+
     bindOrderCapture(form, {
-      nextHref: form.dataset.nextHref ?? "/",
+      nextHref,
       seed: fulfillment ? { fulfillment } : undefined,
     });
   }

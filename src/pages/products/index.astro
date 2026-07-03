@@ -8,16 +8,16 @@ import PersonalCakeGrid from "../../components/product/PersonalCakeGrid.astro";
 import { loadHomeContent } from "../../lib/content/home";
 import { loadProductsContent } from "../../lib/content/products";
 
-const { navbar, footer } = await loadHomeContent();
+const { navbar, footer, followUs } = await loadHomeContent();
 const { categoryHeader, cupcakes, personalCakes } =
   await loadProductsContent();
 ---
 <Layout title="Cupcakes & Personal Cakes — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" />
+    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <CategoryHeader {...categoryHeader} />
     <CupcakeGrid {...cupcakes} />
     <PersonalCakeGrid {...personalCakes} />
-    <Footer {...footer} />
+    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>
 </Layout>

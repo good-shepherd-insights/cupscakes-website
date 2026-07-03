@@ -4,7 +4,6 @@
   "whoHref": "/#who-we-are",
   "orderHref": "/order",
   "productsHref": "/products",
-  "favoritesHref": "#favorites",
   "cartHref": "/cart",
   "shopHref": "/products"
 }

@@ -6,12 +6,12 @@ import Footer from "../../components/home/Footer.astro";
 import PersonalCakeProduct from "../../components/product/PersonalCakeProduct.astro";
 import { loadHomeContent } from "../../lib/content/home";
 
-const { navbar, footer } = await loadHomeContent();
+const { navbar, footer, followUs } = await loadHomeContent();
 ---
 
 <Layout title="Personal Cake — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" />
+    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
       breadcrumbHrefProducts={navbar.productsHref}
@@ -35,6 +35,6 @@ const { navbar, footer } = await loadHomeContent();
       ]}
       price="$25.00"
     />
-    <Footer {...footer} />
+    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>
 </Layout>

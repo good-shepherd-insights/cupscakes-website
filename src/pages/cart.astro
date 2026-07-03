@@ -5,12 +5,12 @@ import LiveCart from "../components/cart/LiveCart.tsx";
 import { loadHomeContent } from "../lib/content/home";
 import { loadCartContent } from "../lib/content/cart";
 
-const { navbar } = await loadHomeContent();
+const { navbar, followUs } = await loadHomeContent();
 const { cart } = await loadCartContent();
 ---
 <Layout title="Shopping Cart — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} />
+    <Navbar {...navbar} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <LiveCart
       client:only="react"
       heading={cart.heading}

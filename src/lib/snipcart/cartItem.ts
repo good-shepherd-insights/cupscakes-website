@@ -57,6 +57,14 @@ export function buildProductCartAttributes(input: ProductCartItemInput): Record<
   const fields: CustomField[] = [];
   const syncDescriptors: string[] = [];
 
+  // Groups that get an extra free-text "note" field alongside their normal
+  // field, for the message textarea PersonalCakeProduct.astro reveals when
+  // a non-default (Occasion) or "Custom" (Frosting Color, Quantity) option
+  // is selected — see MESSAGE_TRIGGER_GROUPS in that file and cartSync.ts's
+  // bindMessageFields() for the matching client-side reveal/sync logic.
+  // Matched by name string, same convention as DEFAULT_OPTION_LABEL above.
+  const MESSAGE_FIELD_GROUPS = new Set(['occasion', 'frosting color', 'quantity']);
+
   for (const group of customFieldGroups) {
     const groupName = stegaClean(group.name);
     if (group.inputType === 'checkbox') {
@@ -86,6 +94,13 @@ export function buildProductCartAttributes(input: ProductCartItemInput): Record<
         value: '',
       });
       syncDescriptors.push(`single:${groupName}`);
+    }
+
+    if (MESSAGE_FIELD_GROUPS.has(groupName.trim().toLowerCase())) {
+      // Free-text note field. No `options` -> Snipcart treats it as
+      // unvalidated free input, same as the checkbox display field above.
+      fields.push({ name: `${groupName} Message`, type: 'textarea', value: '' });
+      syncDescriptors.push(`text:${groupName}`);
     }
   }
 

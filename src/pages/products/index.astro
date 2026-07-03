@@ -14,7 +14,7 @@ const { categoryHeader, cupcakes, personalCakes } =
 ---
 <Layout title="Cupcakes & Personal Cakes — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" />
+    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <CategoryHeader {...categoryHeader} />
     <CupcakeGrid {...cupcakes} />
     <PersonalCakeGrid {...personalCakes} />

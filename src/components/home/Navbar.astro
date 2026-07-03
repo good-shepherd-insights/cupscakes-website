@@ -23,6 +23,9 @@ interface Props {
    * "site" so every other page's navbar is unchanged.
    */
   mode?: "site" | "store";
+  /** Social links surfaced at the bottom of the mobile popout menu. */
+  facebookHref?: string;
+  instagramHref?: string;
 }
 
 const {
@@ -35,6 +38,8 @@ const {
   shopHref,
   activeLink,
   mode = "site",
+  facebookHref = "#",
+  instagramHref = "#",
 } = Astro.props;
 
 // Active-link underline shared classes. Absolutely positioned below the
@@ -158,6 +163,22 @@ const activeUnderlineClass =
           </a>
         </>
       )}
+
+      <a
+        href={facebookHref}
+        class="nav-icon bg-facebook-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
+        aria-label="Facebook"
+        target="_blank"
+        rel="noopener noreferrer"
+      ></a>
+
+      <a
+        href={instagramHref}
+        class="nav-icon bg-instagram-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
+        aria-label="Instagram"
+        target="_blank"
+        rel="noopener noreferrer"
+      ></a>
 
       <a
         href={favoritesHref}

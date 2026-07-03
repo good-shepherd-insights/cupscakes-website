@@ -136,6 +136,29 @@ const DEFAULT_OPTION_LABEL: Record<string, string> = {
   occasion: "Regular",
 };
 
+// Groups that get a free-text message textarea beneath their options,
+// revealed client-side by cartSync.ts's bindMessageFields() (see
+// MESSAGE_TRIGGERS there for exactly which selection reveals each one) and
+// wired into cart data by cartItem.ts's matching MESSAGE_FIELD_GROUPS.
+// Matched by name string, same convention as DEFAULT_OPTION_LABEL above.
+// Every group here has an always-"safe" default (Regular / no Custom
+// checked / 1 Dozen), so the textarea can always start server-rendered
+// `hidden` with no flash of an incorrectly-visible box.
+const MESSAGE_FIELD_GROUPS: Record<string, { label: string; placeholder: string }> = {
+  occasion: {
+    label: "Message",
+    placeholder: 'e.g. "Happy 30th Birthday Sarah!"',
+  },
+  "frosting color": {
+    label: "Custom Color Request",
+    placeholder: "Tell us the custom frosting color you'd like",
+  },
+  quantity: {
+    label: "Custom Quantity",
+    placeholder: "Tell us how much you'd like (over 4 dozen)",
+  },
+};
+
 // Every radio group is required before checkout can begin. Flavor is
 // excluded — it renders as `<a>` variant links, not form inputs, so it's
 // always "selected" via the route itself. A group only starts pre-satisfied
@@ -292,6 +315,7 @@ const selectionBtn = [
             for the before/after and rationale. */}
         {customOptions.map((group, i) => {
           const needsSpacer = group.options.length % 3 === 2;
+          const messageField = MESSAGE_FIELD_GROUPS[stegaClean(group.name).trim().toLowerCase()];
           return (
             <fieldset
               class={`m-0 p-0 border-0 ${
@@ -339,6 +363,34 @@ const selectionBtn = [
                 )}
                 {needsSpacer && <span class="hidden sm:block" aria-hidden="true"></span>}
               </div>
+
+              {/* Message textarea — hidden by default (every group above
+                  starts on a "safe" default selection, see
+                  MESSAGE_FIELD_GROUPS), revealed/cleared client-side by
+                  cartSync.ts's bindMessageFields() as the group's selection
+                  changes. */}
+              {messageField && (
+                <div
+                  data-message-wrapper={stegaClean(group.name)}
+                  hidden
+                  class="mt-[11px] sm:mt-[14px] md:mt-[18px] lg:mt-[23px] xl:mt-[32px] max-w-[580px]"
+                >
+                  <label
+                    class="block p-0 m-0 text-black leading-[1.15]
+                           text-[11px] sm:text-[11px] md:text-[13px] lg:text-[18px] xl:text-[22px]"
+                  >
+                    {messageField.label}
+                  </label>
+                  <textarea
+                    data-message-for={stegaClean(group.name)}
+                    placeholder={messageField.placeholder}
+                    rows={3}
+                    class="w-full bg-white border border-[#707070] text-black
+                           mt-[6px] p-[9px]
+                           text-[11px] sm:text-[11px] md:text-[11px] lg:text-[12px] xl:text-[14px]"
+                  ></textarea>
+                </div>
+              )}
             </fieldset>
           );
         })}
@@ -380,8 +432,9 @@ const selectionBtn = [
 </main>
 
 <script>
-  import { bindAddToCartSync, bindPriceDisplay } from "../../lib/snipcart/cartSync";
+  import { bindAddToCartSync, bindPriceDisplay, bindMessageFields } from "../../lib/snipcart/cartSync";
 
   document.addEventListener("astro:page-load", bindAddToCartSync);
   document.addEventListener("astro:page-load", bindPriceDisplay);
+  document.addEventListener("astro:page-load", bindMessageFields);
 </script>

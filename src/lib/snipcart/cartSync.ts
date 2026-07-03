@@ -102,6 +102,8 @@ function bindRequiredGroupsGate(button: HTMLButtonElement): void {
 //   single:<group>          -> the checked radio's value in <group>
 //   multi:<group>           -> comma-joined checked labels in <group>
 //   flag:<group>:<option>   -> 'true' if <option> is checked in <group>, else 'false'
+//   text:<group>            -> the live value of that group's message textarea
+//     (see bindMessageFields() below), '' if absent
 // Each produces exactly the value its native field type expects, so the
 // submitted value always matches a declared (validatable) option.
 function syncCustomFields(button: HTMLButtonElement, form: HTMLElement): void {
@@ -123,10 +125,65 @@ function syncCustomFields(button: HTMLButtonElement, form: HTMLElement): void {
         `input[name="${group}"][value="${option}"]`
       );
       value = target?.checked ? 'true' : 'false';
+    } else if (kind === 'text') {
+      const textarea = form.querySelector<HTMLTextAreaElement>(
+        `textarea[data-message-for="${group}"]`
+      );
+      value = textarea?.value.trim() ?? '';
     }
     button.setAttribute(`data-item-custom${n}-value`, value);
     n++;
   }
+}
+
+// Which selections reveal a group's message textarea (see
+// PersonalCakeProduct.astro's MESSAGE_FIELD_GROUPS, which renders the
+// textarea markup, always initially `hidden` since every group's default
+// selection is "safe" — Occasion defaults to Regular, Frosting Color and
+// Quantity default to nothing/1 Dozen with no Custom checked). Matched by
+// group name string, same convention as DEFAULT_OPTION_LABEL elsewhere.
+//   occasion       -> any option other than "Regular"
+//   frosting color -> "Custom" checked (alongside up to one other color)
+//   quantity       -> "Custom" selected (once authored in Sanity)
+const MESSAGE_TRIGGERS: Record<string, (checkedLabels: string[]) => boolean> = {
+  occasion: (labels) => labels.some((label) => label !== 'Regular'),
+  'frosting color': (labels) => labels.includes('Custom'),
+  quantity: (labels) => labels.includes('Custom'),
+};
+
+// Reveals/hides each group's message textarea (rendered by
+// PersonalCakeProduct.astro as `<textarea data-message-for="<group>">`
+// inside a `[data-message-wrapper]` container) as that group's selection
+// changes, and clears the textarea's value whenever it hides — so a
+// customer can't leave stale text in a field they can no longer see, and
+// syncCustomFields() above never sends a message for a group that isn't
+// actually in its "needs a note" state.
+export function bindMessageFields(): void {
+  document.querySelectorAll<HTMLTextAreaElement>('textarea[data-message-for]').forEach((textarea) => {
+    // Same double-fire guard as bindAddToCartSync/bindPriceDisplay above.
+    if (textarea.dataset.syncBound === 'true') return;
+    textarea.dataset.syncBound = 'true';
+
+    const groupName = textarea.dataset.messageFor ?? '';
+    const wrapper = textarea.closest<HTMLElement>('[data-message-wrapper]');
+    const form = textarea.closest('form');
+    const trigger = MESSAGE_TRIGGERS[groupName.trim().toLowerCase()];
+    if (!wrapper || !form || !trigger) return;
+
+    const groupInputs = Array.from(
+      form.querySelectorAll<HTMLInputElement>(`input[name="${groupName}"]`)
+    );
+
+    const update = () => {
+      const checkedLabels = groupInputs.filter((input) => input.checked).map((input) => input.value);
+      const shouldShow = trigger(checkedLabels);
+      wrapper.hidden = !shouldShow;
+      if (!shouldShow) textarea.value = '';
+    };
+
+    groupInputs.forEach((input) => input.addEventListener('change', update));
+    update();
+  });
 }
 
 /**

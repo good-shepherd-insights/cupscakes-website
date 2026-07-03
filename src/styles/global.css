@@ -35,6 +35,14 @@
   --background-image-cups-icon: url("/assets/cups-icon.svg");
   --background-image-heart-group: url("/assets/heart-group.svg");
   --background-image-cart-icon: url("/assets/cart-icon.svg");
+  /* Named "-icon" (not bare "facebook"/"instagram") because those bare
+     names are already used elsewhere as bg-facebook/bg-instagram modifier
+     classes in the mask-image-based mobile-menu-social/footer-social
+     utilities below — a colliding name here would make Tailwind generate
+     a real background-image utility under the same class name those
+     compound mask selectors match on. */
+  --background-image-facebook-icon: url("/assets/facebook.svg");
+  --background-image-instagram-icon: url("/assets/instagram.svg");
 
   /* Hero (Figma 3311:1437) */
   --background-image-hero-cupcakes: url("/assets/hero-cupcakes.jpg");

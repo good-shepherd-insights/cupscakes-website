@@ -53,9 +53,16 @@ export function bindAddToCartSync(): void {
       // a relative path silently fails the add. Rewrite to absolute using the
       // page's actual origin so the crawler always reaches the right server
       // (dev or prod), regardless of what Astro.site is set to at build time.
+      // data-item-url is always server-rendered against Astro.site (a fixed
+      // production URL — see astro.config.mjs), so it's already absolute even
+      // in dev; the origin must be force-replaced, not just filled in when
+      // missing, or the crawler is sent to production while testing locally.
       const itemUrl = button.getAttribute('data-item-url');
-      if (itemUrl && !/^https?:\/\//i.test(itemUrl)) {
-        button.setAttribute('data-item-url', new URL(itemUrl, location.origin).href);
+      if (itemUrl) {
+        const absoluteUrl = new URL(itemUrl, location.origin);
+        absoluteUrl.protocol = location.protocol;
+        absoluteUrl.host = location.host;
+        button.setAttribute('data-item-url', absoluteUrl.href);
       }
       // Price is owned by Snipcart now (native option modifiers declared in
       // each field's data-item-customN-options); we only sync each field's

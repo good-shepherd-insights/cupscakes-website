@@ -48,12 +48,23 @@ export function initCartShakeAnimation(): void {
   if ((document as unknown as Record<string, unknown>)['_cartShakeInit']) return;
   (document as unknown as Record<string, unknown>)['_cartShakeInit'] = true;
 
-  document.addEventListener('snipcart.item.added', () => {
-    document.querySelectorAll<HTMLElement>('.cart-link').forEach((el) => {
-      el.classList.remove('cart-shake');
-      void el.offsetWidth; // force reflow so animation restarts if triggered twice quickly
-      el.classList.add('cart-shake');
-      el.addEventListener('animationend', () => el.classList.remove('cart-shake'), { once: true });
-    });
+  // Driven by the store, not the 'snipcart.item.added' DOM event: this
+  // Snipcart build never dispatches that event on `document` (confirmed by
+  // injecting a listener before Snipcart loads and adding an item — it
+  // never fires), so anything waiting on it silently never runs. The cart
+  // badge already reacts correctly via store.subscribe(), so shaking on
+  // every item-count increase reuses that same proven-working signal.
+  let lastCount = window.Snipcart.store.getState().cart.items.count;
+  window.Snipcart.store.subscribe(() => {
+    const count = window.Snipcart.store.getState().cart.items.count;
+    if (count > lastCount) {
+      document.querySelectorAll<HTMLElement>('.cart-link').forEach((el) => {
+        el.classList.remove('cart-shake');
+        void el.offsetWidth; // force reflow so animation restarts if triggered twice quickly
+        el.classList.add('cart-shake');
+        el.addEventListener('animationend', () => el.classList.remove('cart-shake'), { once: true });
+      });
+    }
+    lastCount = count;
   });
 }

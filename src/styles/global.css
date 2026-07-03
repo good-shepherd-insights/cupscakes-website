@@ -33,7 +33,6 @@
 
   /* Navbar assets */
   --background-image-cups-icon: url("/assets/cups-icon.svg");
-  --background-image-heart-group: url("/assets/heart-group.svg");
   --background-image-cart-icon: url("/assets/cart-icon.svg");
   /* Named "-icon" (not bare "facebook"/"instagram") because those bare
      names are already used elsewhere as bg-facebook/bg-instagram modifier

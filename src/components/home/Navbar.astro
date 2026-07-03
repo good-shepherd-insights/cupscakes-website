@@ -4,7 +4,6 @@ interface Props {
   whoHref: string;
   orderHref: string;
   productsHref: string;
-  favoritesHref: string;
   cartHref: string;
   shopHref: string;
   /**
@@ -33,7 +32,6 @@ const {
   whoHref,
   orderHref,
   productsHref,
-  favoritesHref,
   cartHref,
   shopHref,
   activeLink,
@@ -178,14 +176,6 @@ const activeUnderlineClass =
         aria-label="Instagram"
         target="_blank"
         rel="noopener noreferrer"
-      ></a>
-
-      <a
-        href={favoritesHref}
-        class="nav-icon bg-heart-group h-4 sm:h-5 md:h-5 lg:h-6 aspect-[111.961/36]"
-        data-node-id="3311:1689"
-        data-name="Group 49"
-        aria-label="Account / favorites"
       ></a>
 
       <div class="cart-container relative inline-flex shrink-0">

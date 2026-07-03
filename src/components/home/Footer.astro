@@ -4,9 +4,11 @@ interface Props {
   orderHref: string;
   topHref: string;
   copyright: string;
+  facebookHref: string;
+  instagramHref: string;
 }
 
-const { whoHref, orderHref, topHref, copyright } = Astro.props;
+const { whoHref, orderHref, topHref, copyright, facebookHref, instagramHref } = Astro.props;
 ---
 
 <footer
@@ -69,6 +71,23 @@ const { whoHref, orderHref, topHref, copyright } = Astro.props;
       data-node-id="3311:1639"
     >BACK TO TOP</a>
   </nav>
+
+  <div class="flex items-center justify-center gap-4 sm:gap-5 md:gap-6">
+    <a
+      href={facebookHref}
+      class="footer-social bg-facebook"
+      aria-label="Follow us on Facebook"
+      target="_blank"
+      rel="noopener noreferrer"
+    ></a>
+    <a
+      href={instagramHref}
+      class="footer-social bg-instagram"
+      aria-label="Follow us on Instagram"
+      target="_blank"
+      rel="noopener noreferrer"
+    ></a>
+  </div>
 
   <p
     class="m-0 text-center text-white font-normal

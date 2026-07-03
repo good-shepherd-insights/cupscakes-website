@@ -4,7 +4,6 @@ interface Props {
   whoHref: string;
   orderHref: string;
   productsHref: string;
-  favoritesHref: string;
   cartHref: string;
   shopHref: string;
   /**
@@ -33,7 +32,6 @@ const {
   whoHref,
   orderHref,
   productsHref,
-  favoritesHref,
   cartHref,
   shopHref,
   activeLink,
@@ -165,11 +163,19 @@ const activeUnderlineClass =
       )}
 
       <a
-        href={favoritesHref}
-        class="nav-icon bg-heart-group h-4 sm:h-5 md:h-5 lg:h-6 aspect-[111.961/36]"
-        data-node-id="3311:1689"
-        data-name="Group 49"
-        aria-label="Account / favorites"
+        href={facebookHref}
+        class="nav-icon bg-facebook-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
+        aria-label="Facebook"
+        target="_blank"
+        rel="noopener noreferrer"
+      ></a>
+
+      <a
+        href={instagramHref}
+        class="nav-icon bg-instagram-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
+        aria-label="Instagram"
+        target="_blank"
+        rel="noopener noreferrer"
       ></a>
 
       <div class="cart-container relative inline-flex shrink-0">
@@ -241,19 +247,6 @@ const activeUnderlineClass =
             </>
           )}
         </nav>
-
-        <div class="flex items-center justify-center gap-6 pb-6">
-          <a
-            href={facebookHref}
-            class="mobile-menu-social bg-facebook"
-            aria-label="Facebook"
-          ></a>
-          <a
-            href={instagramHref}
-            class="mobile-menu-social bg-instagram"
-            aria-label="Instagram"
-          ></a>
-        </div>
       </div>
     </div>
   </div>

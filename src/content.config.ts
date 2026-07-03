@@ -14,7 +14,6 @@ const navbarSchema = z.object({
   whoHref: z.string(),
   orderHref: z.string(),
   productsHref: z.string(),
-  favoritesHref: z.string(),
   cartHref: z.string(),
   shopHref: z.string(),
 });

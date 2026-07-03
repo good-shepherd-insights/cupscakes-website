@@ -40,3 +40,18 @@ export function fulfillmentFromPath(pathname: string): 'pickup' | 'delivery' | u
   if (pathname.includes('/delivery')) return 'delivery';
   return undefined;
 }
+
+/** Records which product/variant a customer started the order flow from
+ *  (e.g. clicking "Order Now" on a specific flavor card), so the end of the
+ *  flow can redirect back to that product page instead of the generic
+ *  fallback destination. */
+export function recordProductSelection(productSlug: string, variantSlug?: string): void {
+  updateDraft(variantSlug ? { productSlug, variantSlug } : { productSlug });
+}
+
+/** Reads back a product/variant recorded by `recordProductSelection`, if any. */
+export function getProductSelection(): { productSlug: string; variantSlug?: string } | undefined {
+  const draft = getDraft();
+  if (!draft.productSlug) return undefined;
+  return { productSlug: draft.productSlug, variantSlug: draft.variantSlug };
+}

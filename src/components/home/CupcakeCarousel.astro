@@ -111,6 +111,8 @@ const orderLabel = "ORDER NOW";
           <a
             href={routes.order}
             class="cupcake-cta"
+            data-product-slug="cupcakes"
+            data-variant-slug={f.key}
             aria-label={`Order ${f.name} cupcakes now`}
           ><span>{orderLabel}</span></a>
         </article>
@@ -125,3 +127,30 @@ const orderLabel = "ORDER NOW";
     ><span>{otherOptionsLabel}</span></a>
   </div>
 </section>
+
+<script>
+  // A specific flavor card's "Order Now" still starts the same generic
+  // /order flow — but records which product/variant was clicked so the end
+  // of the flow (see DateSelect.astro) can redirect back to that product's
+  // page instead of the generic fallback. The "Other Options" link and the
+  // Navbar/Hero/Footer's generic "Order Now" links carry no
+  // data-product-slug, so nothing is recorded for those — unchanged
+  // fallback behavior.
+  import { recordProductSelection } from "../../lib/order/draftStore";
+
+  function initCupcakeCtaCapture() {
+    document
+      .querySelectorAll<HTMLAnchorElement>(".cupcake-cta[data-product-slug]")
+      .forEach((link) => {
+        if (link.dataset.captureBound) return;
+        link.dataset.captureBound = "true";
+        link.addEventListener("click", () => {
+          const productSlug = link.dataset.productSlug;
+          if (!productSlug) return;
+          recordProductSelection(productSlug, link.dataset.variantSlug || undefined);
+        });
+      });
+  }
+
+  document.addEventListener("astro:page-load", initCupcakeCtaCapture);
+</script>

@@ -3,7 +3,11 @@ import { fetchProductOptionsBySlug, type ProductOptionsMeta } from '../../lib/sa
 
 interface SnipcartCustomField {
   name: string;
-  value: string;
+  // Not guaranteed at runtime: items created before a field existed, or
+  // re-created through saveEdit(), can surface fields with no value —
+  // treat it as optional everywhere or the whole cart render crashes on
+  // one bad field.
+  value?: string;
 }
 
 interface SnipcartCartItem {
@@ -82,7 +86,7 @@ function toDisplayItem(item: SnipcartCartItem): DisplayItem {
   // and were rendering as empty columns. A field reappears the moment it
   // actually carries a value.
   const otherFields = customFields.filter(
-    (f) => f.name !== 'Quantity' && f.name !== 'Occasion' && f.value.trim() !== ''
+    (f) => f.name !== 'Quantity' && f.name !== 'Occasion' && (f.value ?? '').trim() !== ''
   );
   // Snipcart now owns price math (option modifiers are declared natively, not
   // baked into data-item-price), so the unit price must come from Snipcart's
@@ -123,7 +127,7 @@ function computeItemPrice(meta: ProductOptionsMeta, customFields: SnipcartCustom
   for (const field of customFields) {
     const group = meta.groups.find((g) => g.name === field.name);
     if (!group) continue;
-    const selectedLabels = field.value
+    const selectedLabels = (field.value ?? '')
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean);

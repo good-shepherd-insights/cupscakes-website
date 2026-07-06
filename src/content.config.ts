@@ -201,6 +201,7 @@ const cartSchema = z.object({
   flavorHeading: z.string(),
   occasionHeading: z.string(),
   priceHeading: z.string(),
+  qtyHeading: z.string(),
   editLabel: z.string(),
   saveLabel: z.string(),
   cancelLabel: z.string(),

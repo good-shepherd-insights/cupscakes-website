@@ -73,27 +73,52 @@ export function bindAddToCartSync(): void {
   });
 }
 
-// Every single-choice (radio) group is required: PersonalCakeProduct.astro
-// renders the button already `disabled` whenever any such group has no
-// default-checked option (so there's no flash of an enabled button before
-// this runs). This re-enables it once every radio group has a checked
-// option, and disables it again if any selection is ever cleared. Checkbox
-// groups (e.g. Frosting Color) stay optional — they're excluded because
-// they aren't `input[type="radio"]`. Flavor is also excluded: it renders as
-// `<a>` variant links, not form inputs, so it's always "selected" via route.
+// Checkbox groups that require a minimum number of checked options before
+// checkout can begin. Radio groups are all implicitly required (below),
+// but checkbox groups default to optional — opt one in by name here. Same
+// name-matched convention as SELECTION_CAPS in cartToast.ts; mirrored by
+// REQUIRED_CHECKBOX_GROUPS in PersonalCakeProduct.astro for the
+// server-rendered initial disabled state.
+const REQUIRED_CHECKBOX_MINIMUMS: Record<string, number> = {
+  'frosting color': 1,
+};
+
+// Every single-choice (radio) group is required, plus any checkbox group
+// with a REQUIRED_CHECKBOX_MINIMUMS entry (e.g. Frosting Color needs at
+// least one color): PersonalCakeProduct.astro renders the button already
+// `disabled` whenever any such group starts unsatisfied (so there's no
+// flash of an enabled button before this runs). This re-enables it once
+// every required group is satisfied, and disables it again if a selection
+// is ever cleared. Flavor is excluded: it renders as `<a>` variant links,
+// not form inputs, so it's always "selected" via the route itself.
 function bindRequiredGroupsGate(button: HTMLButtonElement): void {
   const form = button.closest('form');
   if (!form) return;
   const radioInputs = Array.from(form.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
-  if (radioInputs.length === 0) return;
-  const groupNames = Array.from(new Set(radioInputs.map((input) => input.name)));
+  const radioGroupNames = Array.from(new Set(radioInputs.map((input) => input.name)));
+  const requiredCheckboxInputs = Array.from(
+    form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+  ).filter((input) => REQUIRED_CHECKBOX_MINIMUMS[input.name.trim().toLowerCase()] !== undefined);
+  const checkboxGroupNames = Array.from(new Set(requiredCheckboxInputs.map((input) => input.name)));
+  if (radioInputs.length === 0 && requiredCheckboxInputs.length === 0) return;
 
   const updateDisabled = () => {
-    button.disabled = groupNames.some(
+    // While cartToast.ts has the button add-locked ("ADDING…"/"ADDED!"),
+    // a selection change must not re-enable it mid-lock — the lock's own
+    // restore re-enables when it expires.
+    if (button.dataset.addLock === 'true') return;
+    const missingRadio = radioGroupNames.some(
       (name) => !form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)
     );
+    const missingCheckbox = checkboxGroupNames.some((name) => {
+      const min = REQUIRED_CHECKBOX_MINIMUMS[name.trim().toLowerCase()] ?? 0;
+      return form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`).length < min;
+    });
+    button.disabled = missingRadio || missingCheckbox;
   };
-  radioInputs.forEach((input) => input.addEventListener('change', updateDisabled));
+  [...radioInputs, ...requiredCheckboxInputs].forEach((input) =>
+    input.addEventListener('change', updateDisabled)
+  );
   updateDisabled();
 }
 

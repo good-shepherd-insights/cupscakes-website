@@ -1,0 +1,36 @@
+---
+/**
+ * Add-to-cart confirmation toast (CUP-49). Fixed to the bottom-right,
+ * invisible at rest; cartToast.ts flips .cart-toast-show when a click on
+ * an add button is confirmed by the store's item count increasing, then
+ * auto-dismisses. Deliberately its own lightweight element — Snipcart's
+ * drawer confirmation stays disabled (addProductBehavior="none" in
+ * Layout.astro, per CUP-42), and the navbar cart-shake runs alongside.
+ *
+ * role="status" + aria-live="polite": the name/text swap on show is
+ * announced by screen readers without stealing focus.
+ */
+---
+<div
+  id="cart-toast"
+  class="cart-toast fixed bottom-[18px] right-[18px] z-[60]
+         flex items-center gap-[16px]
+         bg-white border border-brand-border rounded-md shadow-xl
+         py-[16px] pl-[16px] pr-[28px]
+         max-w-[calc(100vw-36px)]"
+  role="status"
+  aria-live="polite"
+>
+  <img class="cart-toast-image block w-[80px] h-[80px] object-cover rounded-sm" alt="" hidden />
+  <div class="min-w-0">
+    <p class="cart-toast-name m-0 text-black font-medium leading-[1.2] text-[20px] truncate"></p>
+    <p class="m-0 text-black font-light leading-[1.2] text-[16px]">Added to your cart</p>
+  </div>
+</div>
+
+<script>
+  import { bindCartToastClickCapture, initCartToastStore } from "../../lib/snipcart/cartToast";
+
+  bindCartToastClickCapture();
+  document.addEventListener("snipcart.ready", initCartToastStore);
+</script>

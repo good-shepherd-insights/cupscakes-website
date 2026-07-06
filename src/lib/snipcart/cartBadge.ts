@@ -1,7 +1,13 @@
 interface SnipcartCartState {
   cart: {
     items: {
+      /** Number of distinct line items — NOT total quantity. Re-adding a
+          product already in the cart bumps that line's quantity and
+          leaves this unchanged, so add-detection must sum quantities
+          instead (see initCartShakeAnimation and cartToast.ts). */
       count: number;
+      /** Line items currently in the cart (Snipcart v3 SDK store shape). */
+      items: { name: string; quantity: number }[];
     };
   };
 }
@@ -23,7 +29,12 @@ let itemCount = 0;
 
 export function initCartBadgeStore(): void {
   window.Snipcart.store.subscribe(() => {
-    itemCount = window.Snipcart.store.getState().cart.items.count;
+    // Total quantity, not cart.items.count (distinct line items) — matches
+    // what Snipcart's own snipcart-items-count binding displays, so our
+    // re-stamp below can never disagree with a Snipcart-written value.
+    itemCount = window.Snipcart.store
+      .getState()
+      .cart.items.items.reduce((sum, item) => sum + item.quantity, 0);
     applyCartBadge();
   });
 }
@@ -35,6 +46,13 @@ export function applyCartBadge(): void {
     if (!badge || !cartLink) return;
 
     const empty = itemCount === 0;
+    // Stamp the number ourselves: Snipcart's own snipcart-items-count
+    // binding only writes to the DOM when the value *changes*, so a badge
+    // element swapped in by a ClientRouter navigation stays blank until
+    // the next cart change — one page shows the real count while every
+    // page visited afterwards looks empty. This runs on astro:page-load
+    // (module itemCount survives swaps) and on every store emission.
+    badge.textContent = empty ? '' : String(itemCount);
     badge.hidden = empty;
     badge.setAttribute('aria-hidden', String(empty));
     cartLink.setAttribute(
@@ -52,11 +70,19 @@ export function initCartShakeAnimation(): void {
   // Snipcart build never dispatches that event on `document` (confirmed by
   // injecting a listener before Snipcart loads and adding an item — it
   // never fires), so anything waiting on it silently never runs. The cart
-  // badge already reacts correctly via store.subscribe(), so shaking on
-  // every item-count increase reuses that same proven-working signal.
-  let lastCount = window.Snipcart.store.getState().cart.items.count;
+  // badge already reacts correctly via store.subscribe(), so shaking
+  // reuses that same proven-working signal. Total quantity, not
+  // items.count: count only counts distinct line items, so re-adding a
+  // product already in the cart (quantity bump, count unchanged) would
+  // never shake on a count-based signal.
+  const totalQuantity = (): number =>
+    window.Snipcart.store
+      .getState()
+      .cart.items.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  let lastCount = totalQuantity();
   window.Snipcart.store.subscribe(() => {
-    const count = window.Snipcart.store.getState().cart.items.count;
+    const count = totalQuantity();
     if (count > lastCount) {
       document.querySelectorAll<HTMLElement>('.cart-link').forEach((el) => {
         el.classList.remove('cart-shake');

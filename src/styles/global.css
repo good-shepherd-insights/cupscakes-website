@@ -269,3 +269,34 @@
 @media (prefers-reduced-motion: reduce) {
   .cart-shake { animation: none; filter: none !important; }
 }
+
+/* Add-to-cart toast (CartToast.astro) — invisible/inert at rest;
+   cartToast.ts adds .cart-toast-show on a confirmed add and removes it
+   again on auto-dismiss. */
+.cart-toast {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+.cart-toast-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cart-toast { transition: none; transform: none; }
+}
+
+/* Add-to-cart button click feedback (cartToast.ts) — quick press pulse
+   applied while the button is add-locked ("ADDING…"/"ADDED!"). */
+@keyframes add-feedback-pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+.add-feedback-pulse {
+  animation: add-feedback-pulse 0.3s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .add-feedback-pulse { animation: none; }
+}

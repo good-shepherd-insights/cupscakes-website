@@ -5,6 +5,7 @@
   "flavorHeading": "Flavor",
   "occasionHeading": "Occassion",
   "priceHeading": "Price",
+  "qtyHeading": "Qty",
   "editLabel": "Edit",
   "saveLabel": "Save",
   "cancelLabel": "Cancel",

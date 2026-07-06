@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import { stegaClean } from '@sanity/client/stega';
 import Snipcart from '../components/snipcart/Snipcart.astro';
+import CartToast from '../components/snipcart/CartToast.astro';
 import '../styles/global.css';
 import '../styles/snipcart-overrides.css';
 
@@ -41,6 +42,7 @@ const cleanDescription = description ? stegaClean(description) : undefined;
   </head>
   <body class="m-0 p-0 bg-white font-sans antialiased">
     <slot />
+    <CartToast />
     {/* Snipcart's loader (lib/snipcart/loader.ts) reuses this div if it
         already exists rather than creating its own. A custom swap
         (lib/snipcart/swapGuard.ts) excludes this element from Astro's

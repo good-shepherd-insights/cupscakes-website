@@ -159,15 +159,25 @@ const MESSAGE_FIELD_GROUPS: Record<string, { label: string; placeholder: string 
   },
 };
 
-// Every radio group is required before checkout can begin. Flavor is
-// excluded — it renders as `<a>` variant links, not form inputs, so it's
-// always "selected" via the route itself. A group only starts pre-satisfied
-// if one of its options matches DEFAULT_OPTION_LABEL above; otherwise the
-// button renders already `disabled` so there's no flash of an enabled
-// button before cartSync.ts's change listeners take over.
+// Checkbox groups that require at least one checked option before checkout
+// — mirrors cartSync.ts's REQUIRED_CHECKBOX_MINIMUMS (same name-matched
+// convention). Used here only for the server-rendered initial disabled
+// state: checkboxes never render pre-checked, so a required checkbox group
+// always starts unsatisfied.
+const REQUIRED_CHECKBOX_GROUPS = new Set(["frosting color"]);
+
+// Every radio group is required before checkout can begin, plus checkbox
+// groups in REQUIRED_CHECKBOX_GROUPS. Flavor is excluded — it renders as
+// `<a>` variant links, not form inputs, so it's always "selected" via the
+// route itself. A radio group only starts pre-satisfied if one of its
+// options matches DEFAULT_OPTION_LABEL above; otherwise the button renders
+// already `disabled` so there's no flash of an enabled button before
+// cartSync.ts's change listeners take over.
 const hasUnselectedRequiredGroup = customOptions.some((g) => {
-  if (g.inputType !== "radio" || g.definesVariantRoute) return false;
-  const defaultLabel = DEFAULT_OPTION_LABEL[stegaClean(g.name).trim().toLowerCase()];
+  if (g.definesVariantRoute) return false;
+  const key = stegaClean(g.name).trim().toLowerCase();
+  if (g.inputType === "checkbox") return REQUIRED_CHECKBOX_GROUPS.has(key);
+  const defaultLabel = DEFAULT_OPTION_LABEL[key];
   return !g.options.some((o) => stegaClean(o.label) === defaultLabel);
 });
 

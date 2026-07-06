@@ -348,7 +348,11 @@ const selectionBtn = [
                       {option.label}
                     </a>
                   ) : (
-                    <label class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!`}>
+                    <label
+                      class={`${selectionBtn} has-checked:bg-brand-pink! has-checked:text-white!
+                              has-disabled:opacity-40 has-disabled:cursor-not-allowed
+                              has-disabled:hover:brightness-100 has-disabled:hover:translate-y-0`}
+                    >
                       <input
                         type={group.inputType}
                         name={stegaClean(group.name)}
@@ -432,9 +436,15 @@ const selectionBtn = [
 </main>
 
 <script>
-  import { bindAddToCartSync, bindPriceDisplay, bindMessageFields } from "../../lib/snipcart/cartSync";
+  import {
+    bindAddToCartSync,
+    bindPriceDisplay,
+    bindMessageFields,
+    bindSelectionCaps,
+  } from "../../lib/snipcart/cartSync";
 
   document.addEventListener("astro:page-load", bindAddToCartSync);
   document.addEventListener("astro:page-load", bindPriceDisplay);
   document.addEventListener("astro:page-load", bindMessageFields);
+  document.addEventListener("astro:page-load", bindSelectionCaps);
 </script>

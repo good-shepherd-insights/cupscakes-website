@@ -186,6 +186,44 @@ export function bindMessageFields(): void {
   });
 }
 
+// Maximum checked options allowed per multi-select (checkbox) group.
+// Matched by group name string, same convention as MESSAGE_TRIGGERS above —
+// the "(please choose up to 2 colors)" helper copy is authored in Sanity,
+// but the enforced cap lives here, so keep the two in agreement.
+const SELECTION_CAPS: Record<string, number> = {
+  'frosting color': 2,
+};
+
+// Enforces SELECTION_CAPS: once a capped checkbox group has its maximum
+// number of options checked, every remaining unchecked box in the group is
+// disabled (PersonalCakeProduct.astro dims them via has-disabled: label
+// variants) until one is unchecked again. Checked boxes are never disabled,
+// so the customer can always swap a selection by unchecking first.
+export function bindSelectionCaps(): void {
+  document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => {
+    // Same double-fire guard as bindAddToCartSync/bindPriceDisplay above.
+    if (input.dataset.capBound === 'true') return;
+    input.dataset.capBound = 'true';
+
+    const cap = SELECTION_CAPS[input.name.trim().toLowerCase()];
+    const form = input.closest('form');
+    if (!cap || !form) return;
+
+    const update = () => {
+      const groupInputs = Array.from(
+        form.querySelectorAll<HTMLInputElement>(`input[name="${input.name}"]`)
+      );
+      const atCap = groupInputs.filter((box) => box.checked).length >= cap;
+      groupInputs.forEach((box) => {
+        if (!box.checked) box.disabled = atCap;
+      });
+    };
+
+    input.addEventListener('change', update);
+    update();
+  });
+}
+
 /**
  * Keeps the on-page price display (the "$0.00" text below ADD TO CART)
  * in sync with the live form selection (base price plus the

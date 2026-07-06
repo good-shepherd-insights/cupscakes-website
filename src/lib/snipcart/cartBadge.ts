@@ -2,6 +2,9 @@ interface SnipcartCartState {
   cart: {
     items: {
       count: number;
+      /** Line items currently in the cart (Snipcart v3 SDK store shape);
+          used by cartToast.ts to verify a pending add actually landed. */
+      items: { name: string }[];
     };
   };
 }

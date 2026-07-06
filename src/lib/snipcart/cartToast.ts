@@ -54,9 +54,22 @@ export function initCartToastStore(): void {
 
   let lastCount = window.Snipcart.store.getState().cart.items.count;
   window.Snipcart.store.subscribe(() => {
-    const count = window.Snipcart.store.getState().cart.items.count;
-    if (count > lastCount && pending && Date.now() - pending.at < PENDING_MAX_AGE_MS) {
-      showToast(pending);
+    const state = window.Snipcart.store.getState();
+    const count = state.cart.items.count;
+    if (count > lastCount) {
+      // Show only when the pending item verifiably landed in the cart —
+      // a count increase alone isn't proof this click succeeded (the add
+      // could have failed and the increase come from a drawer-side
+      // quantity bump), so also require a line item matching the pending
+      // name. Consume pending on every increase either way, so a stale
+      // record from a failed add can never claim a later increase.
+      if (
+        pending &&
+        Date.now() - pending.at < PENDING_MAX_AGE_MS &&
+        state.cart.items.items.some((item) => item.name === pending!.name)
+      ) {
+        showToast(pending);
+      }
       pending = null;
     }
     lastCount = count;

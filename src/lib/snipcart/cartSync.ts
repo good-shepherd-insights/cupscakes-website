@@ -143,7 +143,7 @@ function syncCustomFields(button: HTMLButtonElement, form: HTMLElement): void {
 // Quantity default to nothing/1 Dozen with no Custom checked). Matched by
 // group name string, same convention as DEFAULT_OPTION_LABEL elsewhere.
 //   occasion       -> any option other than "Regular"
-//   frosting color -> "Custom" checked (alongside up to one other color)
+//   frosting color -> "Custom" checked (exclusive — see EXCLUSIVE_OPTIONS)
 //   quantity       -> "Custom" selected (once authored in Sanity)
 const MESSAGE_TRIGGERS: Record<string, (checkedLabels: string[]) => boolean> = {
   occasion: (labels) => labels.some((label) => label !== 'Regular'),
@@ -182,6 +182,72 @@ export function bindMessageFields(): void {
     };
 
     groupInputs.forEach((input) => input.addEventListener('change', update));
+    update();
+  });
+}
+
+// Maximum checked options allowed per multi-select (checkbox) group.
+// Matched by group name string, same convention as MESSAGE_TRIGGERS above —
+// the "(please choose up to 2 colors)" helper copy is authored in Sanity,
+// but the enforced cap lives here, so keep the two in agreement.
+const SELECTION_CAPS: Record<string, number> = {
+  'frosting color': 2,
+};
+
+// Option (by label) that can't be combined with any other in its checkbox
+// group: checking it unchecks and disables the rest of the group until it's
+// unchecked again. Same name-matched convention as SELECTION_CAPS.
+//   frosting color -> "Custom" stands alone (its +$3 modifier and message
+//                     textarea describe the whole custom request, so pairing
+//                     it with a stock color would be contradictory)
+const EXCLUSIVE_OPTIONS: Record<string, string> = {
+  'frosting color': 'Custom',
+};
+
+// Enforces SELECTION_CAPS and EXCLUSIVE_OPTIONS on checkbox groups:
+//   - While the group's exclusive option is checked, every other box is
+//     unchecked (dispatching 'change' so the price display and message
+//     fields stay in sync) and disabled.
+//   - Otherwise, once the cap is reached, the remaining unchecked boxes are
+//     disabled until one is unchecked again.
+// Disabled boxes are dimmed by PersonalCakeProduct.astro's has-disabled:
+// label variants. Checked boxes are never disabled, so the customer can
+// always swap a selection by unchecking first.
+export function bindSelectionConstraints(): void {
+  document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => {
+    // Same double-fire guard as bindAddToCartSync/bindPriceDisplay above.
+    if (input.dataset.capBound === 'true') return;
+    input.dataset.capBound = 'true';
+
+    const groupKey = input.name.trim().toLowerCase();
+    const cap = SELECTION_CAPS[groupKey];
+    const exclusiveLabel = EXCLUSIVE_OPTIONS[groupKey];
+    const form = input.closest('form');
+    if ((!cap && !exclusiveLabel) || !form) return;
+
+    const update = () => {
+      const groupInputs = Array.from(
+        form.querySelectorAll<HTMLInputElement>(`input[name="${input.name}"]`)
+      );
+      const exclusiveBox = groupInputs.find((box) => box.value === exclusiveLabel);
+      if (exclusiveBox?.checked) {
+        groupInputs.forEach((box) => {
+          if (box === exclusiveBox) return;
+          if (box.checked) {
+            box.checked = false;
+            box.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+          box.disabled = true;
+        });
+        return;
+      }
+      const atCap = cap != null && groupInputs.filter((box) => box.checked).length >= cap;
+      groupInputs.forEach((box) => {
+        if (!box.checked) box.disabled = atCap;
+      });
+    };
+
+    input.addEventListener('change', update);
     update();
   });
 }

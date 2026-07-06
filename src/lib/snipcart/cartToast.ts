@@ -60,6 +60,27 @@ export function bindCartToastClickCapture(): void {
     };
     lockButton(button);
   });
+
+  // Capture-phase re-entry guard. lockButton() disables the button a tick
+  // late (deferred so Snipcart's own handler still sees the first click),
+  // which leaves a sliver where a genuine double-click gets BOTH clicks
+  // through to Snipcart — a real double add. Capture runs before every
+  // bubble listener, so swallowing the event here means neither Snipcart's
+  // handler nor the pending-setter above ever sees the extra click. The
+  // first click always passes: pending is only set during its bubble phase,
+  // after this guard has already run for that event.
+  document.addEventListener(
+    'click',
+    (e) => {
+      const button = (e.target as HTMLElement).closest<HTMLButtonElement>('.snipcart-add-item');
+      if (!button) return;
+      if (pending && Date.now() - pending.at < BUTTON_LOCK_MS) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    true
+  );
 }
 
 // Locks the clicked button for BUTTON_LOCK_MS: disabled, pressed-pulse

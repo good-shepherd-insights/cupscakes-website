@@ -3,11 +3,21 @@ import { fetchProductOptionsBySlug, type ProductOptionsMeta } from '../../lib/sa
 
 interface SnipcartCustomField {
   name: string;
-  // Not guaranteed at runtime: items created before a field existed, or
-  // re-created through saveEdit(), can surface fields with no value —
-  // treat it as optional everywhere or the whole cart render crashes on
-  // one bad field.
-  value?: string;
+  // NOT guaranteed to be a string at runtime: Snipcart surfaces checkbox
+  // flag fields (e.g. "Frosting Color: Custom") as real booleans, and
+  // items created before a field existed (or re-created via saveEdit) can
+  // omit the value entirely. Never call string methods on this directly —
+  // go through fieldDisplayText() below, or the whole cart render crashes
+  // on one bad field.
+  value?: unknown;
+}
+
+// Reduces any custom-field value shape to the text a customer would see.
+// Booleans count as empty: they're internal flags (the "Frosting Color:
+// Custom" checkbox field), and React renders them as nothing anyway.
+function fieldDisplayText(value: unknown): string {
+  if (value == null || typeof value === 'boolean') return '';
+  return String(value).trim();
 }
 
 interface SnipcartCartItem {
@@ -86,7 +96,7 @@ function toDisplayItem(item: SnipcartCartItem): DisplayItem {
   // and were rendering as empty columns. A field reappears the moment it
   // actually carries a value.
   const otherFields = customFields.filter(
-    (f) => f.name !== 'Quantity' && f.name !== 'Occasion' && (f.value ?? '').trim() !== ''
+    (f) => f.name !== 'Quantity' && f.name !== 'Occasion' && fieldDisplayText(f.value) !== ''
   );
   // Snipcart now owns price math (option modifiers are declared natively, not
   // baked into data-item-price), so the unit price must come from Snipcart's
@@ -108,8 +118,8 @@ function toDisplayItem(item: SnipcartCartItem): DisplayItem {
     customFields,
     product: metadata.product ?? item.name,
     flavor: metadata.flavor ?? '',
-    quantityValue: quantityField?.value ?? '',
-    occasionValue: occasionField?.value ?? '',
+    quantityValue: fieldDisplayText(quantityField?.value),
+    occasionValue: fieldDisplayText(occasionField?.value),
     otherFields,
     price: `$${lineTotal.toFixed(2)}`,
     lineTotal,
@@ -127,7 +137,7 @@ function computeItemPrice(meta: ProductOptionsMeta, customFields: SnipcartCustom
   for (const field of customFields) {
     const group = meta.groups.find((g) => g.name === field.name);
     if (!group) continue;
-    const selectedLabels = (field.value ?? '')
+    const selectedLabels = fieldDisplayText(field.value)
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean);
@@ -290,7 +300,7 @@ export default function LiveCart({
     const updatedFields = meta.groups.map((group) => {
       const existing = item.customFields.find((f) => f.name === group.name);
       const value =
-        group.name in draftValues ? draftValues[group.name] : existing?.value ?? '';
+        group.name in draftValues ? draftValues[group.name] : fieldDisplayText(existing?.value);
       return {
         name: group.name,
         type: 'dropdown',
@@ -431,7 +441,7 @@ export default function LiveCart({
                               {item.otherFields.map((field) => (
                                 <div key={field.name}>
                                   <span className={labelClass}>{field.name}</span>
-                                  <span className={valueClass}>{field.value}</span>
+                                  <span className={valueClass}>{fieldDisplayText(field.value)}</span>
                                 </div>
                               ))}
 

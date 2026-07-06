@@ -76,7 +76,14 @@ function toDisplayItem(item: SnipcartCartItem): DisplayItem {
   const customFields = item.customFields ?? [];
   const quantityField = customFields.find((f) => f.name === 'Quantity');
   const occasionField = customFields.find((f) => f.name === 'Occasion');
-  const otherFields = customFields.filter((f) => f.name !== 'Quantity' && f.name !== 'Occasion');
+  // Empty-valued fields are display noise, not information — e.g. the
+  // "Quantity Message" / "Occasion Message" / "Frosting Color Message"
+  // textarea fields (cartItem.ts) are sent on every add but usually blank,
+  // and were rendering as empty columns. A field reappears the moment it
+  // actually carries a value.
+  const otherFields = customFields.filter(
+    (f) => f.name !== 'Quantity' && f.name !== 'Occasion' && f.value.trim() !== ''
+  );
   // Snipcart now owns price math (option modifiers are declared natively, not
   // baked into data-item-price), so the unit price must come from Snipcart's
   // post-modifier figure. unitPrice includes custom field modifiers; fall back

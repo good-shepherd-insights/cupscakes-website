@@ -134,6 +134,7 @@ interface Props {
   flavorHeading: string;
   occasionHeading: string;
   priceHeading: string;
+  qtyHeading: string;
   editLabel: string;
   saveLabel: string;
   cancelLabel: string;
@@ -149,6 +150,7 @@ export default function LiveCart({
   flavorHeading,
   occasionHeading,
   priceHeading,
+  qtyHeading,
   editLabel,
   saveLabel,
   cancelLabel,
@@ -469,6 +471,17 @@ export default function LiveCart({
                               <div>
                                 <span className={labelClass}>{priceHeading}</span>
                                 <span className={valueClass}>{item.price}</span>
+                              </div>
+
+                              {/* Snipcart line quantity (how many of this
+                                  exact configuration, bumped by repeat
+                                  adds) — distinct from the "Quantity"
+                                  custom field above (e.g. "1 Dozen").
+                                  item.price is already the line total
+                                  (unitPrice × this figure). */}
+                              <div>
+                                <span className={labelClass}>{qtyHeading}</span>
+                                <span className={valueClass}>{item.rawQuantity}</span>
                               </div>
                             </div>
 

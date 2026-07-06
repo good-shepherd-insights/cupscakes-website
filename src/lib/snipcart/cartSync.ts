@@ -89,6 +89,10 @@ function bindRequiredGroupsGate(button: HTMLButtonElement): void {
   const groupNames = Array.from(new Set(radioInputs.map((input) => input.name)));
 
   const updateDisabled = () => {
+    // While cartToast.ts has the button add-locked ("ADDING…"/"ADDED!"),
+    // a radio change must not re-enable it mid-lock — the lock's own
+    // restore re-enables when it expires.
+    if (button.dataset.addLock === 'true') return;
     button.disabled = groupNames.some(
       (name) => !form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)
     );

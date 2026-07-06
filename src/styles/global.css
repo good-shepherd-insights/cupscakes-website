@@ -286,3 +286,17 @@
 @media (prefers-reduced-motion: reduce) {
   .cart-toast { transition: none; transform: none; }
 }
+
+/* Add-to-cart button click feedback (cartToast.ts) — quick press pulse
+   applied while the button is add-locked ("ADDING…"/"ADDED!"). */
+@keyframes add-feedback-pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+.add-feedback-pulse {
+  animation: add-feedback-pulse 0.3s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .add-feedback-pulse { animation: none; }
+}

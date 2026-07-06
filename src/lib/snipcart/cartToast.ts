@@ -1,15 +1,22 @@
 /**
- * Add-to-cart confirmation toast (CUP-49).
+ * Add-to-cart confirmation feedback (CUP-49): a toast with the item's
+ * image/name, plus a temporary lock on the clicked button ("ADDING…" →
+ * "ADDED!") so the customer gets immediate feedback and can't double-add
+ * while the first add is in flight.
  *
- * Trigger: the same store-subscription signal as initCartShakeAnimation()
+ * Trigger: a store subscription like initCartShakeAnimation()
  * (cartBadge.ts) — this Snipcart build never dispatches
- * 'snipcart.item.added' on document, but the store's item count
- * increasing is the proven-working add signal.
+ * 'snipcart.item.added' on document. The signal is TOTAL QUANTITY, not
+ * cart.items.count: count is the number of distinct line items, and
+ * re-adding a product already in the cart only bumps that line's
+ * quantity, leaving count unchanged — count-based detection silently
+ * misses every repeat add. Snipcart's own "snipcart-items-count" HTML
+ * binding sums item quantities for the same reason.
  *
  * Which item: read off the clicked .snipcart-add-item button's
  * data-item-name / data-item-image at click time (both already emitted by
  * attributes.ts) and held as a short-lived "pending" record until the
- * count increase confirms the add. Requiring a recent click means
+ * quantity increase confirms the add. Requiring a recent click means
  * drawer-side quantity bumps never produce a mislabeled toast.
  */
 
@@ -17,16 +24,23 @@ interface PendingAdd {
   name: string;
   image: string;
   at: number;
+  button: HTMLButtonElement;
 }
 
-// A click older than this can no longer claim a count increase (e.g. the
-// add failed Snipcart validation and a later, unrelated increase arrives)
-// — prevents showing a stale name/image.
+// A click older than this can no longer claim a quantity increase (e.g.
+// the add failed Snipcart validation and a later, unrelated increase
+// arrives) — prevents showing a stale name/image.
 const PENDING_MAX_AGE_MS = 8000;
 const TOAST_DISMISS_MS = 4000;
+// How long the clicked button stays locked ("ADDING…"/"ADDED!") before
+// returning to normal — long enough to absorb impatient re-clicks, short
+// enough not to block an intentional second add.
+const BUTTON_LOCK_MS = 3500;
 
 let pending: PendingAdd | null = null;
 let dismissTimer: ReturnType<typeof setTimeout> | undefined;
+let restoreTimer: ReturnType<typeof setTimeout> | undefined;
+let lockedButton: HTMLButtonElement | null = null;
 
 // Delegated on document so it survives ClientRouter swaps — add buttons
 // are replaced wholesale on navigation, so a per-button listener would
@@ -42,37 +56,77 @@ export function bindCartToastClickCapture(): void {
       name: button.getAttribute('data-item-name') ?? '',
       image: button.getAttribute('data-item-image') ?? '',
       at: Date.now(),
+      button,
     };
+    lockButton(button);
   });
 }
 
-// Same count-increase detection as initCartShakeAnimation (cartBadge.ts);
-// both subscriptions coexist on the same store without interfering.
+// Locks the clicked button for BUTTON_LOCK_MS: disabled, pressed-pulse
+// animation, label swapped to "ADDING…" (then "ADDED!" once the store
+// confirms — see the subscription below). Deferred a tick so Snipcart's
+// own document-delegated click handler — which runs after this bubble
+// listener in the same dispatch — still sees the enabled button it needs
+// to process the add.
+function lockButton(button: HTMLButtonElement): void {
+  setTimeout(() => {
+    if (lockedButton && lockedButton !== button) restoreButton();
+    lockedButton = button;
+    button.dataset.addLock = 'true';
+    button.dataset.addLockLabel = button.textContent ?? '';
+    button.textContent = 'ADDING…';
+    button.disabled = true;
+    button.classList.add('add-feedback-pulse');
+    clearTimeout(restoreTimer);
+    restoreTimer = setTimeout(restoreButton, BUTTON_LOCK_MS);
+  }, 0);
+}
+
+function restoreButton(): void {
+  const button = lockedButton;
+  lockedButton = null;
+  if (!button) return;
+  delete button.dataset.addLock;
+  button.textContent = button.dataset.addLockLabel ?? 'ADD TO CART';
+  delete button.dataset.addLockLabel;
+  button.classList.remove('add-feedback-pulse');
+  button.disabled = false;
+}
+
+// Same store-subscription approach as initCartShakeAnimation
+// (cartBadge.ts); both subscriptions coexist without interfering.
 export function initCartToastStore(): void {
   if ((document as unknown as Record<string, unknown>)['_cartToastInit']) return;
   (document as unknown as Record<string, unknown>)['_cartToastInit'] = true;
 
-  let lastCount = window.Snipcart.store.getState().cart.items.count;
+  const totalQuantity = (): number =>
+    window.Snipcart.store
+      .getState()
+      .cart.items.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  let lastTotal = totalQuantity();
   window.Snipcart.store.subscribe(() => {
-    const state = window.Snipcart.store.getState();
-    const count = state.cart.items.count;
-    if (count > lastCount) {
+    const total = totalQuantity();
+    if (total > lastTotal) {
       // Show only when the pending item verifiably landed in the cart —
-      // a count increase alone isn't proof this click succeeded (the add
-      // could have failed and the increase come from a drawer-side
-      // quantity bump), so also require a line item matching the pending
-      // name. Consume pending on every increase either way, so a stale
-      // record from a failed add can never claim a later increase.
+      // an increase alone isn't proof this click succeeded (the add could
+      // have failed and the increase come from a drawer-side quantity
+      // bump), so also require a line item matching the pending name.
+      // Consume pending on every increase either way, so a stale record
+      // from a failed add can never claim a later increase.
       if (
         pending &&
         Date.now() - pending.at < PENDING_MAX_AGE_MS &&
-        state.cart.items.items.some((item) => item.name === pending!.name)
+        window.Snipcart.store
+          .getState()
+          .cart.items.items.some((item) => item.name === pending!.name)
       ) {
         showToast(pending);
+        if (lockedButton === pending.button) lockedButton.textContent = 'ADDED!';
       }
       pending = null;
     }
-    lastCount = count;
+    lastTotal = total;
   });
 }
 

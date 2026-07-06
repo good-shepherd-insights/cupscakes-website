@@ -1,10 +1,13 @@
 interface SnipcartCartState {
   cart: {
     items: {
+      /** Number of distinct line items — NOT total quantity. Re-adding a
+          product already in the cart bumps that line's quantity and
+          leaves this unchanged, so add-detection must sum quantities
+          instead (see initCartShakeAnimation and cartToast.ts). */
       count: number;
-      /** Line items currently in the cart (Snipcart v3 SDK store shape);
-          used by cartToast.ts to verify a pending add actually landed. */
-      items: { name: string }[];
+      /** Line items currently in the cart (Snipcart v3 SDK store shape). */
+      items: { name: string; quantity: number }[];
     };
   };
 }
@@ -55,11 +58,19 @@ export function initCartShakeAnimation(): void {
   // Snipcart build never dispatches that event on `document` (confirmed by
   // injecting a listener before Snipcart loads and adding an item — it
   // never fires), so anything waiting on it silently never runs. The cart
-  // badge already reacts correctly via store.subscribe(), so shaking on
-  // every item-count increase reuses that same proven-working signal.
-  let lastCount = window.Snipcart.store.getState().cart.items.count;
+  // badge already reacts correctly via store.subscribe(), so shaking
+  // reuses that same proven-working signal. Total quantity, not
+  // items.count: count only counts distinct line items, so re-adding a
+  // product already in the cart (quantity bump, count unchanged) would
+  // never shake on a count-based signal.
+  const totalQuantity = (): number =>
+    window.Snipcart.store
+      .getState()
+      .cart.items.items.reduce((sum, item) => sum + item.quantity, 0);
+
+  let lastCount = totalQuantity();
   window.Snipcart.store.subscribe(() => {
-    const count = window.Snipcart.store.getState().cart.items.count;
+    const count = totalQuantity();
     if (count > lastCount) {
       document.querySelectorAll<HTMLElement>('.cart-link').forEach((el) => {
         el.classList.remove('cart-shake');

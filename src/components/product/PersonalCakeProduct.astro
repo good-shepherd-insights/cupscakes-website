@@ -440,11 +440,11 @@ const selectionBtn = [
     bindAddToCartSync,
     bindPriceDisplay,
     bindMessageFields,
-    bindSelectionCaps,
+    bindSelectionConstraints,
   } from "../../lib/snipcart/cartSync";
 
   document.addEventListener("astro:page-load", bindAddToCartSync);
   document.addEventListener("astro:page-load", bindPriceDisplay);
   document.addEventListener("astro:page-load", bindMessageFields);
-  document.addEventListener("astro:page-load", bindSelectionCaps);
+  document.addEventListener("astro:page-load", bindSelectionConstraints);
 </script>

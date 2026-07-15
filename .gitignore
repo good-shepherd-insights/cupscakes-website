@@ -8,3 +8,7 @@ dist/
 
 .nx/cache
 .nx/workspace-data
+
+.claude/worktrees/
+.plans/
+.mcp.json

@@ -21,21 +21,11 @@
  * element, and a listener bound only once at parse time would be left
  * attached to the old, now-detached element.
  *
- * Also proactively kicks off Snipcart's own script load. Snipcart's
- * `loadStrategy: "on-user-interaction"` (site-wide default, see
- * Snipcart.astro) only treats focus/mouseover/touchmove/scroll/keydown as
- * "start loading" triggers — a plain `click` isn't one of them, and there's
- * a ~2.75s fallback timer otherwise. A customer whose very first
- * interaction with the page is clicking ADD TO CART can click before
- * Snipcart has loaded and attached its own handler, and that click is
- * lost — nothing happens. Calling the loader's exposed `LoadSnipcart()`
- * here starts loading the moment a page with a real add-to-cart button is
- * ready, well before any click can land, without forcing eager loading on
- * pages that never call this function.
+ * Does not itself trigger Snipcart's script load — Snipcart.astro now uses
+ * loadStrategy="manual" and Layout.astro's own astro:page-load listener is
+ * the single, window-guarded call site responsible for that.
  */
 export function bindAddToCartSync(): void {
-  (window as unknown as { LoadSnipcart?: () => void }).LoadSnipcart?.();
-
   document.querySelectorAll<HTMLButtonElement>('.snipcart-add-item').forEach((button) => {
     // `astro:page-load` is documented to fire twice on the initial page
     // load with Astro's ClientRouter. Without this guard, a second call

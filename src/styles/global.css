@@ -77,7 +77,7 @@
   ≈ text-5xl (48px) at xl.
 */
 @utility nav-link {
-  @apply relative inline-block text-center font-semibold text-brand-blue no-underline whitespace-nowrap;
+  @apply relative inline-block text-center font-medium text-brand-blue no-underline whitespace-nowrap;
   @apply text-xs sm:text-sm md:text-base lg:text-lg xl:text-2xl leading-relaxed;
   @apply transition-[color,transform] duration-150 ease-out;
   @apply hover:text-brand-blue-dark hover:-translate-y-px;
@@ -95,7 +95,7 @@
 
 /* Mobile popout menu — links stacked in the pink panel. */
 @utility mobile-menu-link {
-  @apply font-semibold text-white no-underline whitespace-nowrap;
+  @apply font-medium text-white no-underline whitespace-nowrap;
   @apply text-2xl;
   @apply transition-[transform,opacity] duration-150 ease-out;
   @apply hover:-translate-y-px hover:opacity-90;

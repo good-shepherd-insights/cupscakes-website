@@ -1,1 +1,0 @@
-../../../.specify/extensions/implementation-planning/.specify-dev/agent-commands/claude/speckit-implementation-planning-check-approved/SKILL.md

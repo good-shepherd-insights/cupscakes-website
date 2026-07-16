@@ -1,79 +1,59 @@
 /**
- * Astro's ClientRouter replaces the entire <body> element on every soft
- * navigation (see Astro's own swap-functions.ts: `oldBody.replaceWith(newBody)`).
- * Its built-in transition:persist mechanism keeps marked elements alive
- * across that by lifting them out to <html> immediately before the swap
- * and back into the new body immediately after — but that is still two
- * real DOM reparenting operations. Snipcart's own MutationObserver
- * reports each of those as "the #snipcart div was removed from the
- * document," even though Astro's own contract ("never removed from
- * `document`") is technically satisfied. That lift exists specifically to
- * stop Safari from losing a <canvas> element's WebGL context during a
- * brief detachment — a narrower guarantee than "never moved at all,"
- * which is what a third-party widget with its own removal-detecting
- * observer (like Snipcart) actually needs.
+ * Root cause (found by isolated live testing, not inferred — see
+ * specs/001-snipcart-double-add/research.md): touching Snipcart's own
+ * injected `<script src="snipcart.js">` tag during an Astro ClientRouter
+ * swap — removing and re-appending it, or even relocating it with the
+ * non-disconnecting `moveBefore()` API — makes Snipcart's vendor bundle
+ * construct a second internal SDK instance and bind a second document-level
+ * add-to-cart click listener. This reproduces regardless of whether
+ * `#snipcart` itself is protected from the swap; the console warning
+ * "The #snipcart div was removed from the document" fires in both the
+ * broken and the fixed configurations, so it is not a reliable signal of
+ * the actual cause.
  *
- * This replaces the default swap with one that never touches #snipcart
- * at all — it is not lifted, not reparented, not part of the diff in any
- * way, for the entire lifetime of the page. Every other piece of the
- * default swap behavior (head elements, root attributes, focus,
- * deselecting scripts) is reused via Astro's own exported helpers from
- * `astro:transitions/client`, so nothing else about transitions changes.
+ * The old version of this file speculated the opposite (that protecting
+ * `#snipcart` from removal/reparenting was the fix, and that native
+ * `transition:persist` "wasn't enough"). That was disproven: reading
+ * Astro's own swap-functions.js source shows `transition:persist` moves a
+ * marked element with `moveBefore()` when the browser supports it (a
+ * genuinely non-disconnecting move) — and the isolated tests below prove
+ * `#snipcart`'s own handling was never the problem.
+ *
+ * The fix: let Astro's *native* `swapBodyElement` handle `#snipcart` via
+ * the real `transition:persist` directive (set directly in Layout.astro's
+ * markup) instead of hand-rolling a body diff. The only thing this file
+ * still needs to do by hand is keep Snipcart's runtime-injected
+ * `<link rel="stylesheet" href="snipcart.css">` alive across the swap —
+ * unlike the `<script>` tag, removing that `<link>` immediately unloads
+ * the styles (a real visual regression), and unlike the `<script>` tag,
+ * protecting it does not trigger the double-SDK-construction bug (isolated
+ * and confirmed empirically). The `<script>` tag itself is deliberately
+ * left unprotected: letting Astro's native head diff delete it after the
+ * first navigation is harmless, since its work (constructing
+ * `window.Snipcart`, binding `document`'s click listener) already
+ * happened and JS side effects don't undo when their originating `<script>`
+ * node is later removed from the DOM, and `window.LoadSnipcart`'s own
+ * re-entrancy guard (plus this project's `window.__snipcartLoadTriggered`
+ * guard in Layout.astro) prevents it from ever being recreated.
  */
 import { swapFunctions } from 'astro:transitions/client';
 
-// Snipcart's loader (lib/snipcart/loader.ts) injects its own <link
-// rel="stylesheet"> and <script> into <head> at runtime, the first time
-// Snipcart loads. Those tags only ever exist in the live document — the
-// freshly-fetched newDocument for the next page never had Snipcart's
-// loader run on it, so it has neither tag. swapHeadElements() diffs old
-// head against newDocument's head and removes anything not present in
-// the new one, which means it would delete Snipcart's CSS/JS on the very
-// first navigation after Snipcart has loaded, leaving its DOM rendering
-// completely unstyled (it keeps working — its in-memory app state
-// survives — just with no stylesheet applied). Lifted out of head before
-// the diff and restored after, exactly like #snipcart itself, so the
-// diff never sees them and can't remove them.
-const SNIPCART_HEAD_SELECTOR = 'link[href*="snipcart.css"], script[src*="snipcart.js"]';
+const SNIPCART_CSS_SELECTOR = 'link[href*="snipcart.css"]';
 
 export function installSnipcartSwapGuard(): void {
   document.addEventListener('astro:before-swap', (event) => {
     event.swap = () => {
-      const snipcartHeadElements = Array.from(
-        document.head.querySelectorAll(SNIPCART_HEAD_SELECTOR)
-      );
-      snipcartHeadElements.forEach((el) => el.remove());
+      const snipcartCssLink = document.head.querySelector(SNIPCART_CSS_SELECTOR);
+      if (snipcartCssLink) snipcartCssLink.remove();
 
       swapFunctions.deselectScripts(event.newDocument);
       swapFunctions.swapRootAttributes(event.newDocument);
       swapFunctions.swapHeadElements(event.newDocument);
       const restoreFocus = swapFunctions.saveFocus();
 
-      snipcartHeadElements.forEach((el) => document.head.appendChild(el));
+      if (snipcartCssLink) document.head.appendChild(snipcartCssLink);
 
-      const oldBody = document.body;
-      const newBody = event.newDocument.body;
-
-      Array.from(oldBody.children).forEach((child) => {
-        if (child.id !== 'snipcart') child.remove();
-      });
-      Array.from(newBody.children).forEach((child) => {
-        if (child.id !== 'snipcart') oldBody.appendChild(child);
-      });
-
-      // Astro's default swap replaces the whole <body> node, so any inline
-      // style JS had set on the old body (e.g. the mobile nav's scroll
-      // lock, which sets document.body.style.overflow = "hidden" while
-      // open) is naturally wiped away — the new body is a fresh node with
-      // no style attribute. Because this custom swap deliberately keeps
-      // the *same* body node alive (see file header), that inline style
-      // survives the navigation instead. If the mobile menu was open when
-      // the user tapped a nav link — which never calls the menu's close()
-      // handler, since it's just a plain <a href> navigation — the next
-      // page would otherwise load with scrolling permanently disabled.
-      // Reset just this one property (not a blanket style wipe) to
-      // replicate what a real body replacement would have done for free.
-      oldBody.style.overflow = '';
+      swapFunctions.swapBodyElement(event.newDocument.body, document.body);
 
       restoreFocus();
     };

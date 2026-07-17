@@ -8,7 +8,7 @@
       "name": "Chocolate",
       "description": "Rich and indulgent with a smooth, chocolatey finish, layered for a perfectly satisfying bite.",
       "price": "$25",
-      "imageSrc": "/assets/personal-cake-chocolate.png",
+      "imageSrc": "/assets/personal-cake-product.png",
       "imageAlt": "Chocolate personal cake with pink frosting",
       "orderHref": "/products/personal-cakes/chocolate"
     },

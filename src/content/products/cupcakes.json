@@ -24,7 +24,7 @@
     {
       "key": "carrot",
       "name": "Carrot",
-      "description": "Sweetened just right and topped with cream cheese frosting.",
+      "description": "Sweetened just right and finished with a smooth, indulgent touch.",
       "price": "$3.50 each",
       "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/e23461ab4cf2cab6477fcf71a8fd8c406c6a116b-450x450.png",
       "imageAlt": "Carrot cupcake",
@@ -33,7 +33,7 @@
     {
       "key": "butter-pecan",
       "name": "Butter Pecan",
-      "description": "Warm and buttery with toasted pecans, topped with cream cheese frosting.",
+      "description": "Warm and buttery with toasted pecans, finished with a rich, nutty crunch.",
       "price": "$3.50 each",
       "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/d46c722aac8151cbd5b46c793c542a7864f8dd82-4000x4000.webp",
       "imageAlt": "Butter Pecan cupcake",
@@ -42,7 +42,7 @@
     {
       "key": "pumpkin",
       "name": "Pumpkin",
-      "description": "Softly spiced and comforting, topped with cream cheese frosting and a chocolate pumpkin accent.",
+      "description": "Softly spiced and comforting, topped with a chocolate pumpkin accent.",
       "price": "$3.50 each",
       "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/6468091588aa0a3741a7eb36305ecf80ae542e79-4000x4000.webp",
       "imageAlt": "Pumpkin cupcake",

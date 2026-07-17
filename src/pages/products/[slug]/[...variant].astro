@@ -43,14 +43,28 @@ const selectedOption = variant
 if (variant && !selectedOption) return Astro.redirect('/404');
 
 const customOptions = resolveCustomOptionImages(product.customOptions ?? [], IMAGE_WIDTHS.detail);
-const imageUrl = selectedOption?.image
+const personalCakeVariantImages: Record<string, { src: string; alt: string }> = {
+  chocolate: {
+    src: '/assets/personal-cake-chocolate.png',
+    alt: 'Chocolate personal cake with pink frosting',
+  },
+  vanilla: {
+    src: '/assets/personal-cake-vanilla.png',
+    alt: 'Vanilla personal cake with white frosting',
+  },
+};
+const personalCakeVariantImage =
+  product.slug.current === 'personal-cakes' && selectedOption?.slug?.current
+    ? personalCakeVariantImages[selectedOption.slug.current]
+    : undefined;
+const imageUrl = personalCakeVariantImage?.src ?? (selectedOption?.image
   ? urlFor(selectedOption.image as any).width(IMAGE_WIDTHS.detail).url()
   : product.image
     ? urlFor(product.image as any).width(IMAGE_WIDTHS.detail).url()
-    : undefined;
+    : undefined);
 
 const computedAlt = selectedOption ? `${selectedOption.label} ${product.name}` : product.name;
-const imageAlt = selectedOption?.image?.alt ?? product.image?.alt ?? computedAlt;
+const imageAlt = personalCakeVariantImage?.alt ?? selectedOption?.image?.alt ?? product.image?.alt ?? computedAlt;
 const canonicalPath = variant
   ? routes.productVariant(slug!, variant)
   : defaultOption

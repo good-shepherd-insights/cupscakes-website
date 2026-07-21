@@ -27,6 +27,21 @@ export async function getProductsByCategorySlug(categorySlug: string): Promise<P
   );
 }
 
+export async function getRequiredProductPriceBySlug(productSlug: string): Promise<number> {
+  const price = await sanityClient.fetch<unknown>(
+    `*[_type == "product" && slug.current == $productSlug][0].price`,
+    { productSlug }
+  );
+
+  if (typeof price !== 'number' || !Number.isFinite(price) || price < 0) {
+    throw new Error(
+      `Product "${productSlug}" is missing a valid non-negative price in Sanity.`
+    );
+  }
+
+  return price;
+}
+
 export async function getAllProductCategories(): Promise<ProductCategory[]> {
   return sanityClient.fetch<ProductCategory[]>(
     `*[_type == "productCategory"] | order(displayOrder == null asc, displayOrder asc) { _id, title, slug, heading, caption, displayOrder }`

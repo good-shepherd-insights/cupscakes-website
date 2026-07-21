@@ -7,6 +7,7 @@
  * CategoryHeader link.
  */
 import CupcakeFlavorCard from "./CupcakeFlavorCard.astro";
+import { formatProductPriceEach } from "../../lib/format/productPrice";
 
 type FlavorKey =
   | "chocolate"
@@ -21,7 +22,6 @@ interface Flavor {
   key: FlavorKey;
   name: string;
   description: string;
-  price: string;
   imageSrc: string;
   imageAlt: string;
   orderHref: string;
@@ -31,9 +31,11 @@ interface Props {
   heading: string;
   caption: string;
   flavors: ReadonlyArray<Flavor>;
+  price: number;
 }
 
-const { heading, caption, flavors } = Astro.props;
+const { heading, caption, flavors, price } = Astro.props;
+const formattedPrice = formatProductPriceEach(price);
 ---
 
 <section
@@ -73,7 +75,7 @@ const { heading, caption, flavors } = Astro.props;
           flavorKey={f.key}
           name={f.name}
           description={f.description}
-          price={f.price}
+          price={formattedPrice}
           imageSrc={f.imageSrc}
           imageAlt={f.imageAlt}
           orderHref={f.orderHref}

@@ -1,13 +1,15 @@
 ---
 import { routes } from "../../lib/routes";
+import { formatProductPriceEach } from "../../lib/format/productPrice";
 
 interface Props {
   caption: string;
   otherOptionsHref: string;
   otherOptionsLabel: string;
+  price: number;
 }
 
-const { caption, otherOptionsHref, otherOptionsLabel } = Astro.props;
+const { caption, otherOptionsHref, otherOptionsLabel, price } = Astro.props;
 
 // Each card's full class string is a literal so Tailwind's content
 // scanner can statically see `bg-flavor-chocolate`,
@@ -50,7 +52,7 @@ const flavors = [
   },
 ];
 
-const price = "$4.00 each";
+const formattedPrice = formatProductPriceEach(price);
 const orderLabel = "ORDER NOW";
 ---
 
@@ -106,7 +108,7 @@ const orderLabel = "ORDER NOW";
           <p
             class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl
                    font-medium leading-none drop-shadow-sm m-0"
-          >{price}</p>
+          >{formattedPrice}</p>
 
           <a
             href={routes.order}

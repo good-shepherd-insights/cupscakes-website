@@ -5,8 +5,11 @@ import Navbar from "../../components/home/Navbar.astro";
 import Footer from "../../components/home/Footer.astro";
 import PersonalCakeProduct from "../../components/product/PersonalCakeProduct.astro";
 import { loadHomeContent } from "../../lib/content/home";
+import { formatProductPrice } from "../../lib/format/productPrice";
+import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
 
 const { navbar, footer, followUs } = await loadHomeContent();
+const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
 ---
 
 <Layout title="Personal Cake — Cups & Cakes">
@@ -33,7 +36,7 @@ const { navbar, footer, followUs } = await loadHomeContent();
         },
         { name: "Occasion", inputType: "radio", options: ["Regular", "Birthday", "Wedding", "Holiday", "Other"].map((label) => ({ label })) },
       ]}
-      price="$25.00"
+      price={formatProductPrice(personalCakePrice)}
     />
     <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>

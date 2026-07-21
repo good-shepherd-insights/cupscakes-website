@@ -41,12 +41,11 @@ const { name, description, price, imageSrc, imageAlt, orderHref } = Astro.props;
 
 <article
   class="flex flex-col items-center text-center
-         w-full max-w-[312px] mx-auto
-         gap-[0.9rem] sm:gap-[1.1rem] md:gap-[1.35rem] lg:gap-[1.8rem]"
+         w-full max-w-[312px] mx-auto"
   data-name="Personal cake card"
 >
   {/* Image — 389/305, ~16% inset from cell-left to match Figma. */}
-  <div class="w-full max-w-[214px] aspect-[389/305] overflow-hidden rounded-2xl sm:rounded-3xl" data-node-id="3311:3257">
+  <div class="w-full max-w-[214px] aspect-[389/305] overflow-hidden rounded-2xl sm:rounded-3xl mb-4 sm:mb-5 md:mb-6" data-node-id="3311:3257">
     <img
       src={imageSrc}
       alt={imageAlt}
@@ -54,31 +53,32 @@ const { name, description, price, imageSrc, imageAlt, orderHref } = Astro.props;
     />
   </div>
 
-  {/* Name — black, centered, very large. */}
+  {/* Name — the card's primary identifier. */}
   <h3
-    class="m-0 text-black font-medium leading-none
+    class="m-0 text-[#111111] font-medium leading-[1.1]
            text-[1.54rem] sm:text-[1.85rem] md:text-[2.16rem] lg:text-[2.46rem] xl:text-[2.77rem]"
     data-name="Personal cake name"
   >{name}</h3>
 
-  {/* Description — black, centered, 27px → fluid base..2xl. */}
+  {/* Description — readable supporting copy with quieter contrast. */}
   <p
-    class="m-0 w-[71%] text-black font-medium leading-snug
-           text-[0.63rem] sm:text-[0.77rem] md:text-[0.92rem] lg:text-[1.08rem]"
+    class="m-0 mt-2.5 sm:mt-3 w-[80%] max-w-[28ch]
+           text-[#555555] font-normal leading-[1.5]
+           text-base md:text-[1.0625rem]"
     data-name="Personal cake description"
   >{description}</p>
 
-  {/* Price — black, centered, even larger than the name (85 vs 75 px). */}
+  {/* Price — secondary emphasis after the supporting description. */}
   <p
-    class="m-0 text-black font-medium leading-none
-           text-[0.77rem] sm:text-[0.92rem] md:text-[1.08rem] lg:text-[1.23rem] xl:text-[1.39rem]"
+    class="m-0 mt-3 sm:mt-4 text-[#333333] font-semibold leading-tight
+           text-lg sm:text-xl md:text-[1.3125rem] lg:text-[1.375rem]"
     data-name="Personal cake price"
   >{price}</p>
 
   {/* ORDER NOW — soft border treatment shared with the homepage cupcake CTA. */}
   <a
     href={orderHref}
-    class="inline-flex items-center justify-center
+    class="mt-4 sm:mt-5 md:mt-6 inline-flex items-center justify-center
            bg-white border border-brand-border rounded-sm no-underline
            text-brand-pink font-medium text-center
            h-[32px] sm:h-[39px] md:h-[45px] lg:h-[50px]

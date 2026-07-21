@@ -11,9 +11,6 @@ const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 
 export default defineConfig({
   site: 'https://cupscakes.com',
-  devToolbar: {
-    enabled: false,
-  },
   env: {
     schema: {
       PUBLIC_SANITY_PROJECT_ID: envField.string({ context: 'client', access: 'public' }),

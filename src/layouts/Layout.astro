@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import { stegaClean } from '@sanity/client/stega';
 import Snipcart from '../components/snipcart/Snipcart.astro';
 import CartToast from '../components/snipcart/CartToast.astro';
+import CheckoutCustomFields from '../components/snipcart/CheckoutCustomFields.astro';
 import '../styles/global.css';
 import '../styles/snipcart-overrides.css';
 
@@ -51,7 +52,9 @@ const cleanDescription = description ? stegaClean(description) : undefined;
         div's handling was never the source of the double-add bug; see
         swapGuard.ts's header comment and
         specs/001-snipcart-double-add/research.md for what actually was. */}
-    <div id="snipcart" hidden transition:persist></div>
+    <div id="snipcart" hidden transition:persist>
+      <CheckoutCustomFields />
+    </div>
     <script>
       import { installSnipcartSwapGuard } from "../lib/snipcart/swapGuard";
       installSnipcartSwapGuard();

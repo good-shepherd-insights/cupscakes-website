@@ -4,6 +4,17 @@ interface CartApi {
   update(payload: Record<string, unknown>): Promise<void>;
 }
 
+interface OrderCustomField {
+  name: string;
+  value: string;
+  type: 'textbox' | 'hidden';
+}
+
+function getPickupDate(draft: Record<string, string>): string | undefined {
+  if (draft.fulfillment !== 'pickup') return undefined;
+  return draft.date === 'other' ? draft.otherDate : draft.date;
+}
+
 export function syncDraftToCart(): void {
   try {
     const api = (window as unknown as { Snipcart?: { api?: { cart?: CartApi } } }).Snipcart?.api?.cart;
@@ -25,6 +36,29 @@ export function syncDraftToCart(): void {
         ...(draft.apt ? { address2: draft.apt } : {}),
         ...(draft.phone ? { phone: draft.phone } : {}),
       };
+    }
+
+    const customFields: OrderCustomField[] = [];
+
+    if (draft.phone) {
+      customFields.push({
+        name: 'phoneNumber',
+        value: draft.phone,
+        type: 'textbox',
+      });
+    }
+
+    const pickupDate = getPickupDate(draft);
+    if (pickupDate) {
+      customFields.push({
+        name: 'pickupDate',
+        value: pickupDate,
+        type: 'hidden',
+      });
+    }
+
+    if (customFields.length > 0) {
+      payload.customFields = customFields;
     }
 
     if (Object.keys(payload).length === 0) return;

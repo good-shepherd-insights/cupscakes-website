@@ -32,11 +32,23 @@ function toJsonProduct(attributes: Record<string, string>): SnipcartJsonProduct 
     customFields.push(field);
   }
 
+  const id = attributes['data-item-id'];
+  const name = attributes['data-item-name'];
+  const rawPrice = attributes['data-item-price'];
+  const url = attributes['data-item-url'];
+  const price = Number(rawPrice);
+
+  if (!id || !name || !url || rawPrice === undefined || !Number.isFinite(price) || price < 0) {
+    throw new Error(
+      `Snipcart import: missing or invalid required attribute (id=${id}, name=${name}, price=${rawPrice}, url=${url}).`
+    );
+  }
+
   return {
-    id: attributes['data-item-id'],
-    name: attributes['data-item-name'],
-    price: Number(attributes['data-item-price']),
-    url: attributes['data-item-url'],
+    id,
+    name,
+    price,
+    url,
     customFields,
   };
 }
@@ -49,6 +61,12 @@ export const GET: APIRoute = async ({ site }) => {
   const products = await getAllProducts();
   const definitions = products.flatMap((product) => {
     const productSlug = product.slug.current;
+    if (typeof product.price !== 'number' || !Number.isFinite(product.price) || product.price < 0) {
+      throw new Error(
+        `Product "${product.name}" (slug "${productSlug}") is missing a valid non-negative price in Sanity.`
+      );
+    }
+
     const customOptions = product.customOptions ?? [];
     const routeGroup = customOptions.find((group) => group.definesVariantRoute);
     const routeVariants =

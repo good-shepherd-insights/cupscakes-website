@@ -45,6 +45,8 @@ As a customer, I do not see or navigate to the administrative import document du
 - Products without valid slugs are excluded consistently with existing product-page generation.
 - Route-defining options without slugs are not emitted as importable variants.
 - A missing configured site origin stops generation rather than producing relative validation URLs.
+- A missing or invalid required Snipcart attribute stops generation with a descriptive error rather than emitting malformed JSON.
+- A Sanity product with a missing, non-numeric, infinite, or negative price stops generation with a descriptive product-specific error.
 - The document is unlinked, but because it contains public catalog data on a static site it remains technically retrievable by someone who already knows the URL.
 
 ## Requirements *(mandatory)*

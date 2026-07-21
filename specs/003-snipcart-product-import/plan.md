@@ -36,6 +36,7 @@ specs/003-snipcart-product-import/       # feature artifacts
 - JSON import is chosen because Snipcart officially supports fetching an array of product objects from a JSON document.
 - Existing canonical product pages remain validation URLs; the JSON endpoint is discovery only, not a replacement validation endpoint.
 - The endpoint derives JSON from `buildProductCartAttributes` so existing ID, name, price, URL, and custom-field formatting remains authoritative.
+- Invalid Sanity prices and missing required checkout attributes stop generation with descriptive errors instead of emitting malformed JSON.
 - No route is added to navigation or content.
 - Optional image data is omitted to avoid duplicating product-page image-selection rules.
 

@@ -115,3 +115,50 @@ new file mode 100644
 ## Review log
 
 - **2026-07-21**: Replaced the rejected HTML design with the Snipcart-documented JSON crawler/import representation. The implementation remains one isolated static endpoint and derives all product definitions from the existing checkout builder. User explicitly approved this JSON execution sequence.
+- **2026-07-21**: Kody review remediation approved by the user's instruction to apply its suggestions. Add explicit validation at both runtime trust boundaries so invalid Sanity prices and malformed checkout attributes fail with descriptive errors instead of producing invalid JSON.
+
+## Approved review-remediation diff
+
+```diff
+diff --git a/src/pages/snipcart-products.json.ts b/src/pages/snipcart-products.json.ts
+--- a/src/pages/snipcart-products.json.ts
++++ b/src/pages/snipcart-products.json.ts
+@@
+ function toJsonProduct(attributes: Record<string, string>): SnipcartJsonProduct {
+   const customFields: SnipcartJsonCustomField[] = [];
+@@
+-  return {
+-    id: attributes['data-item-id'],
+-    name: attributes['data-item-name'],
+-    price: Number(attributes['data-item-price']),
+-    url: attributes['data-item-url'],
++  const id = attributes['data-item-id'];
++  const name = attributes['data-item-name'];
++  const rawPrice = attributes['data-item-price'];
++  const url = attributes['data-item-url'];
++  const price = Number(rawPrice);
++
++  if (!id || !name || !url || rawPrice === undefined || !Number.isFinite(price) || price < 0) {
++    throw new Error(
++      `Snipcart import: missing or invalid required attribute (id=${id}, name=${name}, price=${rawPrice}, url=${url}).`
++    );
++  }
++
++  return {
++    id,
++    name,
++    price,
++    url,
+     customFields,
+   };
+@@
+   const definitions = products.flatMap((product) => {
+     const productSlug = product.slug.current;
++    if (typeof product.price !== 'number' || !Number.isFinite(product.price) || product.price < 0) {
++      throw new Error(
++        `Product "${product.name}" (slug "${productSlug}") is missing a valid non-negative price in Sanity.`
++      );
++    }
++
+     const customOptions = product.customOptions ?? [];
+```

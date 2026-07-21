@@ -94,7 +94,7 @@ const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).toString() 
       currentVariantSlug={selectedOption?.slug?.current}
       price={`$${product.price.toFixed(2)}`}
     />
-    <Footer {...footer} />
+    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>
 </Layout>
 

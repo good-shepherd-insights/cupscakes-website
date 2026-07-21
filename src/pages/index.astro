@@ -10,7 +10,12 @@ import CupcakeCarousel from '../components/home/CupcakeCarousel.astro';
 import PersonalCakes from '../components/home/PersonalCakes.astro';
 import FollowUs from '../components/home/FollowUs.astro';
 import Footer from '../components/home/Footer.astro';
-import { getRequiredProductPriceBySlug } from '../lib/sanity/queries/products';
+import {
+  getRequiredProductBySlug,
+  getRequiredProductPriceBySlug,
+} from '../lib/sanity/queries/products';
+import { resolveRequiredVariantImageUrls } from '../lib/sanity/image';
+import { IMAGE_WIDTHS } from '../lib/constants';
 
 // Load the whole home collection and index by section discriminator.
 // Each component's Props are required, so the JSON under
@@ -41,10 +46,11 @@ const cupcakeCarousel = requireSection('cupcake-carousel');
 const personalCakes = requireSection('personal-cakes');
 const followUs = requireSection('follow-us');
 const footer = requireSection('footer');
-const [cupcakePrice, personalCakePrice] = await Promise.all([
-  getRequiredProductPriceBySlug('cupcakes'),
+const [cupcakeProduct, personalCakePrice] = await Promise.all([
+  getRequiredProductBySlug('cupcakes'),
   getRequiredProductPriceBySlug('personal-cakes'),
 ]);
+const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDTHS.card);
 ---
 <Layout title="Cups & Cakes">
   <Navbar
@@ -73,7 +79,8 @@ const [cupcakePrice, personalCakePrice] = await Promise.all([
     caption={cupcakeCarousel.caption}
     otherOptionsHref={cupcakeCarousel.otherOptionsHref}
     otherOptionsLabel={cupcakeCarousel.otherOptionsLabel}
-    price={cupcakePrice}
+    price={cupcakeProduct.price}
+    images={cupcakeImages}
   />
   <PersonalCakes
     heading={personalCakes.heading}

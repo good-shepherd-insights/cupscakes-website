@@ -27,6 +27,25 @@ export async function getProductsByCategorySlug(categorySlug: string): Promise<P
   );
 }
 
+export async function getRequiredProductBySlug(productSlug: string): Promise<Product> {
+  const product = await sanityClient.fetch<Product | null>(
+    `*[_type == "product" && slug.current == $productSlug][0]{ ${PRODUCT_FIELDS} }`,
+    { productSlug }
+  );
+
+  if (!product) {
+    throw new Error(`Product "${productSlug}" is missing from Sanity.`);
+  }
+
+  if (typeof product.price !== 'number' || !Number.isFinite(product.price) || product.price < 0) {
+    throw new Error(
+      `Product "${productSlug}" is missing a valid non-negative price in Sanity.`
+    );
+  }
+
+  return product;
+}
+
 export async function getRequiredProductPriceBySlug(productSlug: string): Promise<number> {
   const price = await sanityClient.fetch<unknown>(
     `*[_type == "product" && slug.current == $productSlug][0].price`,

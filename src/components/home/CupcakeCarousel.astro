@@ -7,9 +7,18 @@ interface Props {
   otherOptionsHref: string;
   otherOptionsLabel: string;
   price: number;
+  images: ReadonlyMap<string, string>;
 }
 
-const { caption, otherOptionsHref, otherOptionsLabel, price } = Astro.props;
+const { caption, otherOptionsHref, otherOptionsLabel, price, images } = Astro.props;
+
+function requireFlavorImage(flavorKey: string): string {
+  const image = images.get(flavorKey);
+  if (!image) {
+    throw new Error(`Homepage cupcake flavor "${flavorKey}" is missing its Sanity image.`);
+  }
+  return image;
+}
 
 // Each card's full class string is a literal so Tailwind's content
 // scanner can statically see `bg-flavor-chocolate`,
@@ -30,7 +39,7 @@ const flavors = [
     cardClass: `bg-flavor-chocolate ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1477",
     nodePhoto: "3311:1521",
-    photoSrc: "https://cdn.sanity.io/images/9dxxafms/production/597f878577be518cf74a34d6fb062b576d55acb9-4000x4000.webp",
+    photoSrc: requireFlavorImage("chocolate"),
   },
   {
     key: "butter-pecan",
@@ -39,7 +48,7 @@ const flavors = [
     cardClass: `bg-flavor-butter-pecan ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1476",
     nodePhoto: "3311:1517",
-    photoSrc: "https://cdn.sanity.io/images/9dxxafms/production/d46c722aac8151cbd5b46c793c542a7864f8dd82-4000x4000.webp",
+    photoSrc: requireFlavorImage("butter-pecan"),
   },
   {
     key: "carrot",
@@ -48,7 +57,7 @@ const flavors = [
     cardClass: `bg-flavor-carrot ${CARD_CLASS_BASE}`,
     nodeCard: "3311:1475",
     nodePhoto: "3311:1513",
-    photoSrc: "https://cdn.sanity.io/images/9dxxafms/production/e23461ab4cf2cab6477fcf71a8fd8c406c6a116b-450x450.png",
+    photoSrc: requireFlavorImage("carrot"),
   },
 ];
 

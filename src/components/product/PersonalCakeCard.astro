@@ -75,12 +75,11 @@ const { name, description, price, imageSrc, imageAlt, orderHref } = Astro.props;
     data-name="Personal cake price"
   >{price}</p>
 
-  {/* ORDER NOW — exact Figma button: white, #707070 border, 238x65,
-      pink label. No rounded corners. */}
+  {/* ORDER NOW — soft border treatment shared with the homepage cupcake CTA. */}
   <a
     href={orderHref}
     class="inline-flex items-center justify-center
-           bg-white border border-[#707070] no-underline
+           bg-white border border-brand-border rounded-sm no-underline
            text-brand-pink font-medium text-center
            h-[32px] sm:h-[39px] md:h-[45px] lg:h-[50px]
            w-[123px] sm:w-[147px] md:w-[165px] lg:w-[183px]

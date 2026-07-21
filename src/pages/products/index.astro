@@ -7,21 +7,34 @@ import CupcakeGrid from "../../components/product/CupcakeGrid.astro";
 import PersonalCakeGrid from "../../components/product/PersonalCakeGrid.astro";
 import { loadHomeContent } from "../../lib/content/home";
 import { loadProductsContent } from "../../lib/content/products";
-import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
+import {
+  getRequiredProductBySlug,
+  getRequiredProductPriceBySlug,
+} from "../../lib/sanity/queries/products";
+import { resolveRequiredVariantImageUrls } from "../../lib/sanity/image";
+import { IMAGE_WIDTHS } from "../../lib/constants";
 
 const { navbar, footer, followUs } = await loadHomeContent();
 const { categoryHeader, cupcakes, personalCakes } =
   await loadProductsContent();
-const [cupcakePrice, personalCakePrice] = await Promise.all([
-  getRequiredProductPriceBySlug("cupcakes"),
+const [cupcakeProduct, personalCakePrice] = await Promise.all([
+  getRequiredProductBySlug("cupcakes"),
   getRequiredProductPriceBySlug("personal-cakes"),
 ]);
+const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDTHS.card);
+const cupcakeFlavors = cupcakes.flavors.map((flavor) => {
+  const imageSrc = cupcakeImages.get(flavor.key);
+  if (!imageSrc) {
+    throw new Error(`Cupcake flavor "${flavor.key}" is missing its Sanity image.`);
+  }
+  return { ...flavor, imageSrc };
+});
 ---
 <Layout title="Cupcakes & Personal Cakes — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <CategoryHeader {...categoryHeader} />
-    <CupcakeGrid {...cupcakes} price={cupcakePrice} />
+    <CupcakeGrid {...cupcakes} flavors={cupcakeFlavors} price={cupcakeProduct.price} />
     <PersonalCakeGrid {...personalCakes} price={personalCakePrice} />
     <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>

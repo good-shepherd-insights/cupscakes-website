@@ -7,7 +7,6 @@
       "key": "chocolate",
       "name": "Chocolate",
       "description": "Rich and indulgent with a smooth, chocolatey finish.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/597f878577be518cf74a34d6fb062b576d55acb9-4000x4000.webp",
       "imageAlt": "Chocolate cupcake",
       "orderHref": "/products/cupcakes/chocolate"
     },
@@ -15,7 +14,6 @@
       "key": "vanilla",
       "name": "Vanilla",
       "description": "Light, classic, perfectly sweet finished with a white chocolate accent.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/5d81289bac3a7f27006198fed2e2c2c83b2720ed-4000x4000.webp",
       "imageAlt": "Vanilla cupcake",
       "orderHref": "/products/cupcakes/vanilla"
     },
@@ -23,7 +21,6 @@
       "key": "carrot",
       "name": "Carrot",
       "description": "Sweetened just right and finished with a smooth, indulgent touch.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/e23461ab4cf2cab6477fcf71a8fd8c406c6a116b-450x450.png",
       "imageAlt": "Carrot cupcake",
       "orderHref": "/products/cupcakes/carrot"
     },
@@ -31,7 +28,6 @@
       "key": "butter-pecan",
       "name": "Butter Pecan",
       "description": "Warm and buttery with toasted pecans, finished with a rich, nutty crunch.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/d46c722aac8151cbd5b46c793c542a7864f8dd82-4000x4000.webp",
       "imageAlt": "Butter Pecan cupcake",
       "orderHref": "/products/cupcakes/butter-pecan"
     },
@@ -39,7 +35,6 @@
       "key": "pumpkin",
       "name": "Pumpkin",
       "description": "Softly spiced and comforting, topped with a chocolate pumpkin accent.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/6468091588aa0a3741a7eb36305ecf80ae542e79-4000x4000.webp",
       "imageAlt": "Pumpkin cupcake",
       "orderHref": "/products/cupcakes/pumpkin"
     },
@@ -47,7 +42,6 @@
       "key": "lemon",
       "name": "Lemon",
       "description": "Bright and refreshing with a zesty citrus kick.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/2e8ec128af2570877c031d0295ff9cf1e87ecdb7-4000x4000.webp",
       "imageAlt": "Lemon cupcake",
       "orderHref": "/products/cupcakes/lemon"
     },
@@ -55,9 +49,15 @@
       "key": "strawberry",
       "name": "Strawberry",
       "description": "Fresh and fruity with a naturally sweet strawberry taste.",
-      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/60eede0332a4e0202848778487f2015a00b74cdb-4000x4000.webp",
       "imageAlt": "Strawberry cupcake",
       "orderHref": "/products/cupcakes/strawberry"
+    },
+    {
+      "key": "guava",
+      "name": "Guava",
+      "description": "Tropical and fruity with a bright, sweet guava flavor.",
+      "imageAlt": "Guava cupcake with pink frosting",
+      "orderHref": "/products/cupcakes/guava"
     }
   ]
 }

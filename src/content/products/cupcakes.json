@@ -58,6 +58,14 @@
       "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/60eede0332a4e0202848778487f2015a00b74cdb-4000x4000.webp",
       "imageAlt": "Strawberry cupcake",
       "orderHref": "/products/cupcakes/strawberry"
+    },
+    {
+      "key": "guava",
+      "name": "Guava",
+      "description": "Tropical and fruity with a bright, sweet guava flavor.",
+      "imageSrc": "https://cdn.sanity.io/images/9dxxafms/production/fa0b217d6dd22b1bc6c707290a7fe9ed35b7f148-4000x4000.png",
+      "imageAlt": "Guava cupcake with pink frosting",
+      "orderHref": "/products/cupcakes/guava"
     }
   ]
 }

@@ -226,8 +226,8 @@ const productsCategoryHeaderSchema = z.object({
   personalCakesHref: z.string(),
 });
 
-// One flavor card on the products page. `key` must match a Tailwind
-// `bg-flavor-<key>` token declared in src/styles/global.css.
+// One flavor card on the products page. Keep this closed key list aligned
+// with the local FlavorKey unions in the cupcake catalog components.
 const productsCupcakeFlavorSchema = z.object({
   key: z.enum([
     "chocolate",
@@ -237,6 +237,7 @@ const productsCupcakeFlavorSchema = z.object({
     "pumpkin",
     "lemon",
     "strawberry",
+    "guava",
   ]),
   name: z.string(),
   description: z.string(),

@@ -6,12 +6,12 @@
  * anchor target (#personal-cakes) used by the CategoryHeader link.
  */
 import PersonalCakeCard from "./PersonalCakeCard.astro";
+import { formatProductPrice } from "../../lib/format/productPrice";
 
 interface Item {
   key: "chocolate" | "vanilla";
   name: string;
   description: string;
-  price: string;
   imageSrc: string;
   imageAlt: string;
   orderHref: string;
@@ -21,9 +21,11 @@ interface Props {
   heading: string;
   caption: string;
   items: ReadonlyArray<Item>;
+  price: number;
 }
 
-const { heading, caption, items } = Astro.props;
+const { heading, caption, items, price } = Astro.props;
+const formattedPrice = formatProductPrice(price);
 ---
 
 <section
@@ -63,7 +65,7 @@ const { heading, caption, items } = Astro.props;
         <PersonalCakeCard
           name={c.name}
           description={c.description}
-          price={c.price}
+          price={formattedPrice}
           imageSrc={c.imageSrc}
           imageAlt={c.imageAlt}
           orderHref={c.orderHref}

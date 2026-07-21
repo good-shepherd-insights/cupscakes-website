@@ -7,17 +7,22 @@ import CupcakeGrid from "../../components/product/CupcakeGrid.astro";
 import PersonalCakeGrid from "../../components/product/PersonalCakeGrid.astro";
 import { loadHomeContent } from "../../lib/content/home";
 import { loadProductsContent } from "../../lib/content/products";
+import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
 
 const { navbar, footer, followUs } = await loadHomeContent();
 const { categoryHeader, cupcakes, personalCakes } =
   await loadProductsContent();
+const [cupcakePrice, personalCakePrice] = await Promise.all([
+  getRequiredProductPriceBySlug("cupcakes"),
+  getRequiredProductPriceBySlug("personal-cakes"),
+]);
 ---
 <Layout title="Cupcakes & Personal Cakes — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <CategoryHeader {...categoryHeader} />
-    <CupcakeGrid {...cupcakes} />
-    <PersonalCakeGrid {...personalCakes} />
+    <CupcakeGrid {...cupcakes} price={cupcakePrice} />
+    <PersonalCakeGrid {...personalCakes} price={personalCakePrice} />
     <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>
 </Layout>

@@ -10,6 +10,7 @@ import CupcakeCarousel from '../components/home/CupcakeCarousel.astro';
 import PersonalCakes from '../components/home/PersonalCakes.astro';
 import FollowUs from '../components/home/FollowUs.astro';
 import Footer from '../components/home/Footer.astro';
+import { getRequiredProductPriceBySlug } from '../lib/sanity/queries/products';
 
 // Load the whole home collection and index by section discriminator.
 // Each component's Props are required, so the JSON under
@@ -40,6 +41,10 @@ const cupcakeCarousel = requireSection('cupcake-carousel');
 const personalCakes = requireSection('personal-cakes');
 const followUs = requireSection('follow-us');
 const footer = requireSection('footer');
+const [cupcakePrice, personalCakePrice] = await Promise.all([
+  getRequiredProductPriceBySlug('cupcakes'),
+  getRequiredProductPriceBySlug('personal-cakes'),
+]);
 ---
 <Layout title="Cups & Cakes">
   <Navbar
@@ -68,12 +73,13 @@ const footer = requireSection('footer');
     caption={cupcakeCarousel.caption}
     otherOptionsHref={cupcakeCarousel.otherOptionsHref}
     otherOptionsLabel={cupcakeCarousel.otherOptionsLabel}
+    price={cupcakePrice}
   />
   <PersonalCakes
     heading={personalCakes.heading}
     caption={personalCakes.caption}
     flavorHeadline={personalCakes.flavorHeadline}
-    price={personalCakes.price}
+    price={personalCakePrice}
     chocolateHref={personalCakes.chocolateHref}
     chocolateLabel={personalCakes.chocolateLabel}
     vanillaHref={personalCakes.vanillaHref}

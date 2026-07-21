@@ -7,7 +7,6 @@
       "key": "chocolate",
       "name": "Chocolate",
       "description": "Rich and indulgent with a smooth, chocolatey finish, layered for a perfectly satisfying bite.",
-      "price": "$25",
       "imageSrc": "/assets/personal-cake-product.png",
       "imageAlt": "Chocolate personal cake with pink frosting",
       "orderHref": "/products/personal-cakes/chocolate"
@@ -16,7 +15,6 @@
       "key": "vanilla",
       "name": "Vanilla",
       "description": "Smooth and delicately sweet with a rich vanilla flavor.",
-      "price": "$25",
       "imageSrc": "/assets/personal-cake-vanilla.png",
       "imageAlt": "Vanilla personal cake with white frosting",
       "orderHref": "/products/personal-cakes/vanilla"

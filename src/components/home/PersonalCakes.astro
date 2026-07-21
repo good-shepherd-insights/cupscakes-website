@@ -1,9 +1,11 @@
 ---
+import { formatProductPrice } from "../../lib/format/productPrice";
+
 interface Props {
   heading: string;
   caption: string;
   flavorHeadline: string;
-  price: string;
+  price: number;
   chocolateHref: string;
   chocolateLabel: string;
   vanillaHref: string;
@@ -20,6 +22,8 @@ const {
   vanillaHref,
   vanillaLabel,
 } = Astro.props;
+
+const formattedPrice = formatProductPrice(price);
 ---
 
 <section
@@ -132,7 +136,7 @@ const {
             class="m-0 text-center text-white font-medium leading-none drop-shadow-md
                    text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
             data-node-id="3311:1716"
-          >{price}</p>
+          >{formattedPrice}</p>
         </div>
 
         <a

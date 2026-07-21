@@ -7,9 +7,9 @@
  * helper note, 2-column grid of rounded date pills (last cell is the
  * "Other Date" cell), and the NEXT submit pill.
  *
- * Each pill is a `<label>` wrapping a hidden radio. The selected pill
- * gets the brand-blue tint via the `peer-checked:` modifier so the
- * page works without JS.
+ * Each pill uses a hidden radio followed by its label. The selected pill
+ * gets the brand-blue tint via the `peer-checked:` modifier so the page
+ * works without JS.
  */
 
 interface DateOption {
@@ -59,7 +59,13 @@ const pillBase =
   "peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark " +
   "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark";
 
+const otherDateInputClass =
+  "absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer " +
+  "text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark";
+
 const useDynamic = !options || options.length === 0;
+const minimumDate = options?.find((option) => !option.other)?.value;
 ---
 
 <article
@@ -129,7 +135,19 @@ const useDynamic = !options || options.length === 0;
                   class="peer sr-only"
                   data-other={option.other ? "true" : undefined}
                 />
-                <label for={id} class={pillBase}>{option.label}</label>
+                <label for={id} class={pillBase} data-other-date-label={option.other ? "true" : undefined}>
+                  {option.other ? <span class="sr-only">Other date</span> : option.label}
+                </label>
+                {option.other && (
+                  <input
+                    type="date"
+                    name="otherDate"
+                    min={minimumDate}
+                    data-other-date
+                    aria-label="Choose another date"
+                    class={otherDateInputClass}
+                  />
+                )}
               </div>
             );
           })}
@@ -162,6 +180,14 @@ const useDynamic = !options || options.length === 0;
   </div>
 </template>
 
+<template id="other-date-pill-template">
+  <div class="relative">
+    <input type="radio" name="date" id="" value="other" required class="peer sr-only" data-other="true" />
+    <label for="" data-other-date-label="true" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"><span class="sr-only">Other date</span></label>
+    <input type="date" name="otherDate" data-other-date aria-label="Choose another date" class="absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark" />
+  </div>
+</template>
+
 <script>
   import { bindOrderCapture } from "../../lib/order/bindOrderCapture";
   import { clearProductSelection, fulfillmentFromPath, getProductSelection } from "../../lib/order/draftStore";
@@ -171,23 +197,73 @@ const useDynamic = !options || options.length === 0;
   function hydrateDates() {
     const grid = document.querySelector<HTMLElement>('[data-dynamic-dates]');
     const template = document.getElementById('date-pill-template') as HTMLTemplateElement | null;
-    if (!grid || !template) return;
+    const otherTemplate = document.getElementById('other-date-pill-template') as HTMLTemplateElement | null;
+    if (!grid || !template || !otherTemplate) return;
 
     const options = generateDateOptions(new Date(), 3, 5);
     grid.innerHTML = '';
 
     options.forEach((option, i) => {
       const id = `order-date-${i}`;
-      const clone = template.content.cloneNode(true) as DocumentFragment;
+      const clone = (option.other ? otherTemplate : template).content.cloneNode(true) as DocumentFragment;
       const input = clone.querySelector('input')!;
       const label = clone.querySelector('label')!;
       input.id = id;
       input.value = option.value;
-      if (option.other) input.dataset.other = 'true';
       label.htmlFor = id;
-      label.textContent = option.label;
+      if (option.other) {
+        const otherDate = clone.querySelector<HTMLInputElement>('[data-other-date]')!;
+        otherDate.min = options[0]?.value ?? '';
+      } else {
+        label.textContent = option.label;
+      }
       grid.appendChild(clone);
     });
+  }
+
+  function bindOtherDateInput(form: HTMLFormElement): () => boolean {
+    const otherRadio = form.querySelector<HTMLInputElement>('input[name="date"][data-other="true"]');
+    const otherDate = form.querySelector<HTMLInputElement>('[data-other-date]');
+    const otherDateLabel = form.querySelector<HTMLLabelElement>('[data-other-date-label="true"]');
+    const standardRadios = Array.from(
+      form.querySelectorAll<HTMLInputElement>('input[name="date"]:not([data-other="true"])'),
+    );
+
+    if (!otherRadio || !otherDate) return () => true;
+
+    const syncRequiredState = () => {
+      otherDate.required = otherRadio.checked;
+      otherDate.setCustomValidity(otherRadio.checked && !otherDate.value ? 'Choose a date.' : '');
+    };
+
+    const selectOtherDate = () => {
+      otherRadio.checked = true;
+      syncRequiredState();
+    };
+
+    otherDate.addEventListener('pointerdown', selectOtherDate);
+    otherDate.addEventListener('input', selectOtherDate);
+    otherDateLabel?.addEventListener('click', () => {
+      selectOtherDate();
+      otherDate.focus();
+    });
+    otherRadio.addEventListener('change', syncRequiredState);
+    standardRadios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        if (!radio.checked) return;
+        otherDate.value = '';
+        syncRequiredState();
+      });
+    });
+
+    syncRequiredState();
+
+    return () => {
+      syncRequiredState();
+      if (!otherRadio.checked || otherDate.value) return true;
+      otherDate.reportValidity();
+      return false;
+    };
   }
 
   function initDateCapture() {
@@ -211,10 +287,19 @@ const useDynamic = !options || options.length === 0;
         : routes.product(selection.productSlug)
       : (form.dataset.nextHref ?? "/");
 
+    const validateOtherDate = bindOtherDateInput(form);
+
     bindOrderCapture(form, {
       nextHref,
       seed: fulfillment ? { fulfillment } : undefined,
+      validate: validateOtherDate,
     });
+
+    // bindOrderCapture restores the saved radio/date values synchronously;
+    // resync required state without showing validation on page load.
+    form
+      .querySelector<HTMLInputElement>('input[name="date"][data-other="true"]')
+      ?.dispatchEvent(new Event('change'));
   }
 
   document.addEventListener("astro:page-load", hydrateDates);

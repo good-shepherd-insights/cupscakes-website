@@ -7,9 +7,9 @@
  * helper note, 2-column grid of rounded date pills (last cell is the
  * "Other Date" cell), and the NEXT submit pill.
  *
- * Each pill is a `<label>` wrapping a hidden radio. The selected pill
- * gets the brand-blue tint via the `peer-checked:` modifier so the
- * page works without JS.
+ * Each pill uses a hidden radio followed by its label. The selected pill
+ * gets the brand-blue tint via the `peer-checked:` modifier so the page
+ * works without JS.
  */
 
 interface DateOption {
@@ -60,7 +60,7 @@ const pillBase =
   "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark";
 
 const otherDateInputClass =
-  "relative z-10 w-[82%] bg-transparent border-0 p-0 text-center text-current font-inherit cursor-pointer " +
+  "absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer " +
   "text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark";
 
@@ -135,18 +135,19 @@ const minimumDate = options?.find((option) => !option.other)?.value;
                   class="peer sr-only"
                   data-other={option.other ? "true" : undefined}
                 />
-                <label for={id} class={pillBase}>
-                  {option.other ? (
-                    <input
-                      type="date"
-                      name="otherDate"
-                      min={minimumDate}
-                      data-other-date
-                      aria-label="Choose another date"
-                      class={otherDateInputClass}
-                    />
-                  ) : option.label}
+                <label for={id} class={pillBase} data-other-date-label={option.other ? "true" : undefined}>
+                  {option.other ? <span class="sr-only">Other date</span> : option.label}
                 </label>
+                {option.other && (
+                  <input
+                    type="date"
+                    name="otherDate"
+                    min={minimumDate}
+                    data-other-date
+                    aria-label="Choose another date"
+                    class={otherDateInputClass}
+                  />
+                )}
               </div>
             );
           })}
@@ -182,9 +183,8 @@ const minimumDate = options?.find((option) => !option.other)?.value;
 <template id="other-date-pill-template">
   <div class="relative">
     <input type="radio" name="date" id="" value="other" required class="peer sr-only" data-other="true" />
-    <label for="" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark">
-      <input type="date" name="otherDate" data-other-date aria-label="Choose another date" class="relative z-10 w-[82%] bg-transparent border-0 p-0 text-center text-current font-inherit cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark" />
-    </label>
+    <label for="" data-other-date-label="true" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"><span class="sr-only">Other date</span></label>
+    <input type="date" name="otherDate" data-other-date aria-label="Choose another date" class="absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark" />
   </div>
 </template>
 
@@ -224,6 +224,7 @@ const minimumDate = options?.find((option) => !option.other)?.value;
   function bindOtherDateInput(form: HTMLFormElement): () => boolean {
     const otherRadio = form.querySelector<HTMLInputElement>('input[name="date"][data-other="true"]');
     const otherDate = form.querySelector<HTMLInputElement>('[data-other-date]');
+    const otherDateLabel = form.querySelector<HTMLLabelElement>('[data-other-date-label="true"]');
     const standardRadios = Array.from(
       form.querySelectorAll<HTMLInputElement>('input[name="date"]:not([data-other="true"])'),
     );
@@ -232,17 +233,20 @@ const minimumDate = options?.find((option) => !option.other)?.value;
 
     const syncRequiredState = () => {
       otherDate.required = otherRadio.checked;
-      if (!otherRadio.checked) otherDate.setCustomValidity('');
+      otherDate.setCustomValidity(otherRadio.checked && !otherDate.value ? 'Choose a date.' : '');
     };
 
     const selectOtherDate = () => {
       otherRadio.checked = true;
-      if (otherDate.value) otherDate.setCustomValidity('');
       syncRequiredState();
     };
 
-    otherDate.addEventListener('focus', selectOtherDate);
+    otherDate.addEventListener('pointerdown', selectOtherDate);
     otherDate.addEventListener('input', selectOtherDate);
+    otherDateLabel?.addEventListener('click', () => {
+      selectOtherDate();
+      otherDate.focus();
+    });
     otherRadio.addEventListener('change', syncRequiredState);
     standardRadios.forEach((radio) => {
       radio.addEventListener('change', () => {
@@ -255,8 +259,8 @@ const minimumDate = options?.find((option) => !option.other)?.value;
     syncRequiredState();
 
     return () => {
+      syncRequiredState();
       if (!otherRadio.checked || otherDate.value) return true;
-      otherDate.setCustomValidity('Choose a date.');
       otherDate.reportValidity();
       return false;
     };

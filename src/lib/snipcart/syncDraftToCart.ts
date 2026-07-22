@@ -40,14 +40,6 @@ export function syncDraftToCart(): void {
 
     const customFields: OrderCustomField[] = [];
 
-    if (draft.phone) {
-      customFields.push({
-        name: 'phoneNumber',
-        value: draft.phone,
-        type: 'textbox',
-      });
-    }
-
     const pickupDate = getPickupDate(draft);
     if (pickupDate) {
       customFields.push({
@@ -57,8 +49,9 @@ export function syncDraftToCart(): void {
       });
     }
 
-    // Always send the collection, including an empty array, so a previous
-    // pickup/phone value cannot remain on a reused Snipcart cart.
+    // Keep pickup date as an order custom field. Phone is intentionally not
+    // included here: the checkout template uses Snipcart's native `phone`
+    // billing field, which persists to billingAddress.phone.
     payload.customFields = customFields;
 
     if (Object.keys(payload).length === 0) return;

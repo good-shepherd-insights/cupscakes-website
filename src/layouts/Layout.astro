@@ -52,7 +52,8 @@ const cleanDescription = description ? stegaClean(description) : undefined;
         div's handling was never the source of the double-add bug; see
         swapGuard.ts's header comment and
         specs/001-snipcart-double-add/research.md for what actually was. */}
-    <div id="snipcart" hidden transition:persist>
+    <div id="snipcart" hidden transition:persist></div>
+    <div id="snipcart-templates">
       <CheckoutCustomFields />
     </div>
     <script>

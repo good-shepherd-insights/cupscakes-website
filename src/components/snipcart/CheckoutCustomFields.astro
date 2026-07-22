@@ -1,20 +1,22 @@
-<billing section="bottom">
+<address-fields section="top">
   <fieldset class="snipcart-form__set">
     <div class="snipcart-form__field">
       <snipcart-label for="phone" class="snipcart__font--tiny">
         Phone Number
       </snipcart-label>
-      <!-- `phone` is Snipcart's native billing-address field. Using a
-           custom name here would store the value only in order.customFields. -->
+      <!-- `phone` is Snipcart's native billing-address field. It must live
+           in the address-fields component, not the billing custom-field slot. -->
       <snipcart-input name="phone" type="tel" required></snipcart-input>
       <snipcart-field-error name="phone"></snipcart-field-error>
     </div>
-
-    <!--
-      Pickup Date is synchronized from the existing order draft. Keep it
-      hidden in checkout so delivery orders never display a misleading pickup
-      field; it remains part of the completed order's customFields data.
-    -->
-    <snipcart-input name="pickupDate" type="hidden"></snipcart-input>
   </fieldset>
+</address-fields>
+
+<billing section="bottom">
+  <!--
+    Pickup Date is synchronized from the existing order draft. Keep it
+    hidden in checkout so delivery orders never display a misleading pickup
+    field; it remains part of the completed order's customFields data.
+  -->
+  <snipcart-input name="pickupDate" type="hidden"></snipcart-input>
 </billing>

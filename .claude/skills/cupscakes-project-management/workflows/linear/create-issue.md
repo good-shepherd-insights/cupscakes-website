@@ -2,7 +2,7 @@
 
 ## Steps
 
-1. **Identify the project.** Never assume. If the user names it, use that. If they don't, and it isn't obvious from context, ask which project before doing anything else.
+1. **Identify the project.** If the user names a project, use it. Otherwise use the configured default project, **Cups & Cake Web - Online Ordering**. Ask only if the workspace configuration indicates genuine ambiguity.
 2. **Classify the issue into exactly one category** from the Title Categories table. If it's not clear which one fits, ask rather than guessing.
 3. **Build the title** in the exact form `<Category>: <Component> – <Outcome>`, using the category's own pattern below. That dash is an en dash (`–`), not a hyphen, with a space on each side.
 4. **Write the description** using the Description Template below.

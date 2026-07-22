@@ -4,7 +4,7 @@
 
 1. **Pull the latest issues.** Call `list_issues` scoped to `team="CUP"`, `project="Cups & Cake Web - Online Ordering"`, `orderBy="updatedAt"` — "latest" means most recently touched, not most recently created. Default `limit=20`; only go higher (tool max is 250) if the user asks for more.
 
-2. **Confirm the lens before presenting anything, unless the user already named one.** Triage is inherently about the user choosing what to look at — don't silently decide for them. If they didn't specify a filter, ask one question rather than dumping every option:
+2. **Choose the lens.** If the user names a lens, use it. Otherwise use the documented default: **Everything open**.
    - Everything open (default/recommended)
    - Bugs only
    - By priority (ask which tier)

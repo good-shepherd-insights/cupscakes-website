@@ -9,13 +9,15 @@ description: Manages this repo's Linear and GitHub delivery workflow — issue/p
 
 Every action below has its own workflow file. That file is a required procedure, not a suggestion: when you're about to perform an action, open its workflow file and follow it step by step, in order. Do not skip a step, do not substitute a different sequence of Linear MCP calls because it looks equivalent, and do not improvise a shortcut even when the request seems simple.
 
+Before any high-impact or irreversible action—cancelling an issue, changing project data, promoting a release or production deployment, or posting an externally visible comment or status update—summarize the intended change and obtain explicit user confirmation. Read-only inspection and ordinary local edits do not need this gate.
+
 This matters because Linear has no undo for clutter — a duplicate issue, a near-duplicate label ("bug" vs "Bug"), or a status update posted to the wrong place doesn't get cleaned up automatically, and it degrades the tracker for anyone who looks at it later, including future you. The workflows exist to prevent exactly that class of mistake.
 
 If an action's workflow file says **not yet defined**, stop and ask the user rather than guessing a procedure. Do not perform that action freehand.
 
 ## Workspace (fixed)
 
-This workspace currently has exactly one team and one project, so don't ask the user to specify them — use these by default:
+Use team `CUP` by default. For project selection, follow the action's workflow; do not silently assume a project unless that workflow explicitly permits it.
 
 - Team: **Cups & Cakes** (key `CUP`, id `aa9f891f-a630-49c1-9888-b96f43394134`)
 - Project: **Cups & Cake Web - Online Ordering** (id `d5593274-9368-4cd3-8804-43b95dfe0bc7`)

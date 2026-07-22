@@ -1,5 +1,5 @@
 ---
-name: review
+name: pr-review
 description: Run the Cups & Cakes GitHub pull-request review workflow.
 argument-hint: "PR number, URL, or current-PR context"
 user-invocable: true

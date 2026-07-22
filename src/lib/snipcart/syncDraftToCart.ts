@@ -57,9 +57,9 @@ export function syncDraftToCart(): void {
       });
     }
 
-    if (customFields.length > 0) {
-      payload.customFields = customFields;
-    }
+    // Always send the collection, including an empty array, so a previous
+    // pickup/phone value cannot remain on a reused Snipcart cart.
+    payload.customFields = customFields;
 
     if (Object.keys(payload).length === 0) return;
 

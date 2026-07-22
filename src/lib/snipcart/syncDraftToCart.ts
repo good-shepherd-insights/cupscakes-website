@@ -51,8 +51,12 @@ export function syncDraftToCart(): void {
 
     // Keep pickup date as an order custom field. Phone is intentionally not
     // included here: the checkout template uses Snipcart's native `phone`
-    // billing field, which persists to billingAddress.phone.
-    payload.customFields = customFields;
+    // billing field, which persists to billingAddress.phone. Only send the
+    // collection when an order draft exists; an empty draft is the initial
+    // Snipcart bootstrap state and must not clear an existing cart.
+    if (Object.keys(draft).length > 0) {
+      payload.customFields = customFields;
+    }
 
     if (Object.keys(payload).length === 0) return;
 

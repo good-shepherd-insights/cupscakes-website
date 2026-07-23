@@ -36,6 +36,18 @@ Expected:
 
 The authoritative Sanity `Cupcakes` product record is currently `3.75`; do not hardcode this value in storefront components or content.
 
+For the quantity options, the native Snipcart modifier is the package total minus the `$3.75` base item price. The current values are:
+
+| Quantity | Package total | `priceModifier` |
+| --- | ---: | ---: |
+| 1/2 Dozen | `$22.50` | `18.75` |
+| 1 Dozen | `$45.00` | `41.25` |
+| 2 Dozen | `$90.00` | `86.25` |
+| 3 Dozen | `$135.00` | `131.25` |
+| 4 Dozen | `$180.00` | `176.25` |
+
+This correction addresses the prior oversight where the base price was changed but the quantity modifiers remained calculated from the former `$4.00` base.
+
 ## 4. Confirm transactional pricing is unchanged
 
 If CI output is inspected, confirm product detail and product-options data retain current base prices and modifiers for both product types.

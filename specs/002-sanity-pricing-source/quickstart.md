@@ -9,7 +9,7 @@
 ## 1. Confirm duplicate repository pricing is gone
 
 ```sh
-rg -n '\$4(\.00)? each|\$25(\.00)?|"price"' src/components/home/CupcakeCarousel.astro src/content/home/personal-cakes.json src/content/products/cupcakes.json src/content/products/personal-cakes.json src/pages/products/preview-personal-cake.astro
+rg -n '\$3\.75 each|\$25(\.00)?|"price"' src/components/home/CupcakeCarousel.astro src/content/home/personal-cakes.json src/content/products/cupcakes.json src/content/products/personal-cakes.json src/pages/products/preview-personal-cake.astro
 ```
 
 Expected: no numeric cupcake or Personal Cake price and no marketing `price` field is present in the targets.
@@ -23,18 +23,18 @@ Confirm `src/pages/index.astro`, `src/pages/products/index.astro`, and `src/page
 The user explicitly waived another local build for this change. CI may run the normal build; if generated output is inspected there, verify:
 
 ```sh
-rg -n '\$4\.00 each|\$25\.00|"basePrice":(4|25)' dist/index.html dist/products/index.html dist/products/cupcakes dist/products/personal-cakes dist/api/product-options/index.html
+rg -n '\$3\.75 each|\$25\.00|"basePrice":(3\.75|25)' dist/index.html dist/products/index.html dist/products/cupcakes dist/products/personal-cakes dist/api/product-options/index.html
 ```
 
 Expected:
 
-- Homepage cupcake cards show `$4.00 each`.
-- Every products-page cupcake flavor card shows `$4.00 each`.
+- Homepage cupcake cards show `$3.75 each`.
+- Every products-page cupcake flavor card shows `$3.75 each`.
 - Homepage, products-page, preview, and detail Personal Cake surfaces show `$25.00`.
-- Generated cupcake product pages retain base price `4`.
-- Generated product options retain base price `4` and the existing modifiers.
+- Generated cupcake product pages use base price `3.75`.
+- Generated product options use base price `3.75` and the existing modifiers.
 
-If the catalog price is intentionally changed for validation, substitute that amount in the search and restore the catalog afterward.
+The authoritative Sanity `Cupcakes` product record is currently `3.75`; do not hardcode this value in storefront components or content.
 
 ## 4. Confirm transactional pricing is unchanged
 

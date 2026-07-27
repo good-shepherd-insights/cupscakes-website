@@ -3,7 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import Navbar from '../../../components/home/Navbar.astro';
 import Footer from '../../../components/home/Footer.astro';
 import PersonalCakeProduct from '../../../components/product/PersonalCakeProduct.astro';
-import { loadHomeContent } from '../../../lib/content/home';
+import { loadHomePageContent } from '../../../lib/sanity/queries/siteContent';
 import { loadProductsContent } from '../../../lib/content/products';
 import { getAllProducts } from '../../../lib/sanity/queries/products';
 import { urlFor, resolveCustomOptionImages } from '../../../lib/sanity/image';
@@ -34,7 +34,7 @@ export async function getStaticPaths() {
 const { slug, variant } = Astro.params;
 const { product } = Astro.props;
 const [{ navbar, footer, followUs }, { personalCakes }] = await Promise.all([
-  loadHomeContent(),
+  loadHomePageContent(),
   loadProductsContent(),
 ]);
 
@@ -70,12 +70,20 @@ const canonicalPath = variant
     ? routes.productVariant(slug!, defaultOption.slug!.current)
     : routes.product(slug!);
 const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).toString() : canonicalPath;
----
 
+// SEO: prefer per-product SEO fields, fall back so the page still renders for
+// products that haven't been backfilled in Sanity yet.
+const seoTitle = product.seo?.metaTitle?.trim() || product.name;
+const seoDescription = product.seo?.metaDescription?.trim() || product.description;
+const seoImageAsset = product.seo?.metaImage ?? null;
+const seoImageUrl = seoImageAsset
+  ? urlFor(seoImageAsset as any).width(IMAGE_WIDTHS.detail).url()
+  : imageUrl;
+---
 <Layout
-  title={`${product.name} — Cups & Cakes`}
-  description={product.description}
-  image={imageUrl}
+  title={`${seoTitle} — Cups & Cakes`}
+  description={seoDescription}
+  image={seoImageUrl}
   canonicalUrl={canonicalUrl}
 >
   <div class="flex min-h-dvh flex-col">

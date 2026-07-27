@@ -1,9 +1,0 @@
-{
-  "section": "navbar",
-  "homeHref": "/",
-  "whoHref": "/#who-we-are",
-  "orderHref": "/order",
-  "productsHref": "/products",
-  "cartHref": "/cart",
-  "shopHref": "/products"
-}

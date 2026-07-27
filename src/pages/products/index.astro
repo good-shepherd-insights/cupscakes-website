@@ -5,7 +5,7 @@ import Footer from "../../components/home/Footer.astro";
 import CategoryHeader from "../../components/product/CategoryHeader.astro";
 import CupcakeGrid from "../../components/product/CupcakeGrid.astro";
 import PersonalCakeGrid from "../../components/product/PersonalCakeGrid.astro";
-import { loadHomeContent } from "../../lib/content/home";
+import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { loadProductsContent } from "../../lib/content/products";
 import {
   getRequiredProductBySlug,
@@ -14,7 +14,7 @@ import {
 import { resolveRequiredVariantImageUrls } from "../../lib/sanity/image";
 import { IMAGE_WIDTHS } from "../../lib/constants";
 
-const { navbar, footer, followUs } = await loadHomeContent();
+const { navbar, footer, followUs } = await loadHomePageContent();
 const { categoryHeader, cupcakes, personalCakes } =
   await loadProductsContent();
 const [cupcakeProduct, personalCakePrice] = await Promise.all([

@@ -2,11 +2,11 @@
 import Layout from "../../../layouts/Layout.astro";
 import Navbar from "../../../components/home/Navbar.astro";
 import DateSelect from "../../../components/order/DateSelect.astro";
-import { loadHomeContent } from "../../../lib/content/home";
-import { loadOrderContent } from "../../../lib/content/order";
+import { loadHomePageContent } from "../../../lib/sanity/queries/siteContent";
+import { loadOrderFlowContent } from "../../../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomeContent();
-const { deliveryDate } = await loadOrderContent();
+const { navbar, followUs } = await loadHomePageContent();
+const { deliveryDate } = await loadOrderFlowContent();
 ---
 <Layout title="Delivery Date — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">

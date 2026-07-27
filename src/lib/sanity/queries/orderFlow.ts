@@ -1,0 +1,171 @@
+import { sanityClient } from '../client';
+import { deepStegaClean } from '../stega';
+
+type SanityContactField = {
+  id?: string;
+  label?: string;
+  inputType?: 'text' | 'email' | 'tel';
+  required?: boolean;
+  autocomplete?: string;
+};
+
+type SanityOrderFlow = {
+  pickupOrDelivery?: {
+    pickupHref?: string;
+    pickupLabel?: string;
+    pickupAriaLabel?: string;
+    deliveryHref?: string;
+    deliveryLabel?: string;
+    deliveryAriaLabel?: string;
+    logoLargeSrc?: string;
+    logoLargeAlt?: string;
+    logoSmallSrc?: string;
+    logoSmallAlt?: string;
+  };
+  changeLabel?: string;
+  changeHref?: string;
+  nextLabel?: string;
+  contactHeading?: string;
+  contactFields?: SanityContactField[];
+  schedulingNote?: string;
+  leadTimeNote?: string;
+  dateSelectionNextHref?: string;
+  pickup?: {
+    heading?: string;
+    contactInfo?: { dateFieldLabel?: string; timeFieldLabel?: string; nextHref?: string };
+    dateSelection?: { dateSectionHeading?: string };
+  };
+  delivery?: {
+    heading?: string;
+    contactInfo?: {
+      addressHeading?: string;
+      dateFieldLabel?: string;
+      timeFieldLabel?: string;
+      deliveryNote?: string;
+      addressFields?: SanityContactField[];
+      nextHref?: string;
+    };
+    dateSelection?: { dateSectionHeading?: string };
+  };
+  loading?: {
+    loadingLabel?: string;
+    redirectHref?: string;
+    redirectAfterMs?: number;
+  };
+  cart?: {
+    heading?: string;
+    tableHeadings?: {
+      productHeading?: string;
+      flavorHeading?: string;
+      occasionHeading?: string;
+      priceHeading?: string;
+      qtyHeading?: string;
+    };
+    actions?: {
+      editLabel?: string;
+      saveLabel?: string;
+      cancelLabel?: string;
+      removeLabel?: string;
+    };
+    subtotalLabel?: string;
+    checkoutLabel?: string;
+    emptyMessage?: string;
+  };
+};
+
+const ORDER_FLOW_QUERY = `*[_type == "orderFlow"][0]`;
+
+function toComponentField(field: SanityContactField) {
+  return {
+    id: field.id,
+    label: field.label,
+    type: field.inputType,
+    required: field.required,
+    autocomplete: field.autocomplete,
+  };
+}
+
+export async function loadOrderFlowContent() {
+  const orderFlow = await sanityClient.fetch<SanityOrderFlow | null>(ORDER_FLOW_QUERY);
+
+  const changeLabel = orderFlow?.changeLabel;
+  const changeHref = orderFlow?.changeHref;
+  const nextLabel = orderFlow?.nextLabel;
+  const contactFields = (orderFlow?.contactFields ?? []).map(toComponentField);
+
+  return deepStegaClean({
+    pickupOrDelivery: {
+      pickupHref: orderFlow?.pickupOrDelivery?.pickupHref,
+      pickupLabel: orderFlow?.pickupOrDelivery?.pickupLabel,
+      deliveryHref: orderFlow?.pickupOrDelivery?.deliveryHref,
+      deliveryLabel: orderFlow?.pickupOrDelivery?.deliveryLabel,
+      pickupAriaName: orderFlow?.pickupOrDelivery?.pickupAriaLabel,
+      deliveryAriaName: orderFlow?.pickupOrDelivery?.deliveryAriaLabel,
+    },
+    pickup: {
+      heading: orderFlow?.pickup?.heading,
+      changeLabel,
+      changeHref,
+      contactHeading: orderFlow?.contactHeading,
+      contactFields,
+      dateLabel: orderFlow?.pickup?.contactInfo?.dateFieldLabel,
+      timeLabel: orderFlow?.pickup?.contactInfo?.timeFieldLabel,
+      schedulingNote: orderFlow?.schedulingNote,
+      nextLabel,
+      nextHref: orderFlow?.pickup?.contactInfo?.nextHref,
+    },
+    delivery: {
+      heading: orderFlow?.delivery?.heading,
+      changeLabel,
+      changeHref,
+      contactHeading: orderFlow?.contactHeading,
+      addressHeading: orderFlow?.delivery?.contactInfo?.addressHeading,
+      contactFields,
+      addressFields: (orderFlow?.delivery?.contactInfo?.addressFields ?? []).map(toComponentField),
+      dateLabel: orderFlow?.delivery?.contactInfo?.dateFieldLabel,
+      timeLabel: orderFlow?.delivery?.contactInfo?.timeFieldLabel,
+      schedulingNote: orderFlow?.schedulingNote,
+      deliveryNote: orderFlow?.delivery?.contactInfo?.deliveryNote,
+      nextLabel,
+      nextHref: orderFlow?.delivery?.contactInfo?.nextHref,
+    },
+    pickupDate: {
+      heading: orderFlow?.pickup?.heading,
+      changeLabel,
+      changeHref,
+      dateHeading: orderFlow?.pickup?.dateSelection?.dateSectionHeading,
+      helperNote: orderFlow?.leadTimeNote,
+      nextLabel,
+      nextHref: orderFlow?.dateSelectionNextHref,
+    },
+    deliveryDate: {
+      heading: orderFlow?.delivery?.heading,
+      changeLabel,
+      changeHref,
+      dateHeading: orderFlow?.delivery?.dateSelection?.dateSectionHeading,
+      helperNote: orderFlow?.leadTimeNote,
+      nextLabel,
+      nextHref: orderFlow?.dateSelectionNextHref,
+    },
+    loading: {
+      loadingLabel: orderFlow?.loading?.loadingLabel,
+      redirectHref: orderFlow?.loading?.redirectHref,
+      redirectAfterMs: orderFlow?.loading?.redirectAfterMs,
+    },
+    cart: {
+      heading: orderFlow?.cart?.heading,
+      productHeading: orderFlow?.cart?.tableHeadings?.productHeading,
+      flavorHeading: orderFlow?.cart?.tableHeadings?.flavorHeading,
+      occasionHeading: orderFlow?.cart?.tableHeadings?.occasionHeading,
+      priceHeading: orderFlow?.cart?.tableHeadings?.priceHeading,
+      qtyHeading: orderFlow?.cart?.tableHeadings?.qtyHeading,
+      editLabel: orderFlow?.cart?.actions?.editLabel,
+      saveLabel: orderFlow?.cart?.actions?.saveLabel,
+      cancelLabel: orderFlow?.cart?.actions?.cancelLabel,
+      removeLabel: orderFlow?.cart?.actions?.removeLabel,
+      subtotalLabel: orderFlow?.cart?.subtotalLabel,
+      checkoutLabel: orderFlow?.cart?.checkoutLabel,
+      emptyMessage: orderFlow?.cart?.emptyMessage,
+    },
+  });
+}

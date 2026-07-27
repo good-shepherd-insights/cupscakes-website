@@ -2,11 +2,11 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/home/Navbar.astro";
 import OrderForm from "../../components/order/OrderForm.astro";
-import { loadHomeContent } from "../../lib/content/home";
-import { loadOrderContent } from "../../lib/content/order";
+import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
+import { loadOrderFlowContent } from "../../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomeContent();
-const { pickup } = await loadOrderContent();
+const { navbar, followUs } = await loadHomePageContent();
+const { pickup } = await loadOrderFlowContent();
 ---
 <Layout title="Pick-Up — Cups & Cakes">
   <div class="flex min-h-dvh flex-col">

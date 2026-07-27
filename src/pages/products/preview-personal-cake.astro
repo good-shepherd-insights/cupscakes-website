@@ -4,11 +4,11 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/home/Navbar.astro";
 import Footer from "../../components/home/Footer.astro";
 import PersonalCakeProduct from "../../components/product/PersonalCakeProduct.astro";
-import { loadHomeContent } from "../../lib/content/home";
+import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { formatProductPrice } from "../../lib/format/productPrice";
 import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
 
-const { navbar, footer, followUs } = await loadHomeContent();
+const { navbar, footer, followUs } = await loadHomePageContent();
 const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
 ---
 

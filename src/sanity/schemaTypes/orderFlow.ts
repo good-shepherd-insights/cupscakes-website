@@ -76,6 +76,20 @@ export const orderFlow = defineType({
       description: 'Shared by both the pick-up-date and delivery-date screens — identical today ("/products").',
       validation: (R) => R.required(),
     }),
+    defineField({
+      name: 'dateSelectionLeadDays',
+      title: 'Date Selection Lead Days',
+      type: 'number',
+      description: 'Minimum number of days from today before the earliest selectable date.',
+      validation: (R) => R.required().integer().positive(),
+    }),
+    defineField({
+      name: 'dateSelectionCount',
+      title: 'Date Selection Option Count',
+      type: 'number',
+      description: 'Number of date pill options shown (plus one "Other Date" cell).',
+      validation: (R) => R.required().integer().positive(),
+    }),
 
     defineField({
       name: 'pickup',
@@ -144,6 +158,54 @@ export const orderFlow = defineType({
           fields: [
             defineField({ name: 'dateSectionHeading', title: 'Date Section Heading', type: 'string', validation: (R) => R.required() }),
           ],
+        }),
+      ],
+    }),
+
+    defineField({
+      name: 'fulfillmentConfig',
+      title: 'Fulfillment Config',
+      type: 'object',
+      description: 'Lead time, business hours, and slot interval for the full scheduling system in src/lib/fulfillment.ts. Currently unused by any live page — see dateSelectionLeadDays/dateSelectionCount above for what actually drives /order/*/date today.',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({
+          name: 'leadHours',
+          title: 'Lead Hours',
+          type: 'number',
+          description: 'Minimum hours from now before the earliest fulfillment slot.',
+          validation: (R) => R.required().integer().positive(),
+        }),
+        defineField({
+          name: 'slotIntervalMinutes',
+          title: 'Slot Interval (minutes)',
+          type: 'number',
+          validation: (R) => R.required().integer().positive(),
+        }),
+        defineField({
+          name: 'businessHours',
+          title: 'Business Hours',
+          type: 'array',
+          description: 'One entry per open day. A day with no entry is treated as closed.',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              name: 'businessDay',
+              fields: [
+                defineField({
+                  name: 'day',
+                  title: 'Day',
+                  type: 'string',
+                  options: { list: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] },
+                  validation: (R) => R.required(),
+                }),
+                defineField({ name: 'open', title: 'Open Time (HH:MM)', type: 'string', validation: (R) => R.required() }),
+                defineField({ name: 'close', title: 'Close Time (HH:MM)', type: 'string', validation: (R) => R.required() }),
+              ],
+              preview: { select: { title: 'day', subtitle: 'open' } },
+            }),
+          ],
+          validation: (R) => R.required().min(1),
         }),
       ],
     }),

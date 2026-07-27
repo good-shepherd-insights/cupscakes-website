@@ -4,7 +4,6 @@ import Navbar from '../../../components/home/Navbar.astro';
 import Footer from '../../../components/home/Footer.astro';
 import PersonalCakeProduct from '../../../components/product/PersonalCakeProduct.astro';
 import { loadHomePageContent } from '../../../lib/sanity/queries/siteContent';
-import { loadProductsContent } from '../../../lib/content/products';
 import { getAllProducts } from '../../../lib/sanity/queries/products';
 import { urlFor, resolveCustomOptionImages } from '../../../lib/sanity/image';
 import { routes } from '../../../lib/routes';
@@ -33,10 +32,7 @@ export async function getStaticPaths() {
 
 const { slug, variant } = Astro.params;
 const { product } = Astro.props;
-const [{ navbar, footer, followUs }, { personalCakes }] = await Promise.all([
-  loadHomePageContent(),
-  loadProductsContent(),
-]);
+const { navbar, footer, followUs } = await loadHomePageContent();
 
 const routeGroup = product.customOptions?.find((g) => g.definesVariantRoute);
 const defaultOption = routeGroup?.options.find((o) => o.slug);
@@ -47,23 +43,14 @@ const selectedOption = variant
 if (variant && !selectedOption) return Astro.redirect('/404');
 
 const customOptions = resolveCustomOptionImages(product.customOptions ?? [], IMAGE_WIDTHS.detail);
-const personalCakeVariantItem =
-  product.slug.current === 'personal-cakes' && selectedOption?.slug?.current
-    ? personalCakes.items.find((item) => item.key === selectedOption.slug!.current)
-    : undefined;
-const personalCakeVariantImage = personalCakeVariantItem
-  ? { src: personalCakeVariantItem.imageSrc, alt: personalCakeVariantItem.imageAlt }
-  : undefined;
-const sanityImageUrl = selectedOption?.image
+const imageUrl = selectedOption?.image
   ? urlFor(selectedOption.image as any).width(IMAGE_WIDTHS.detail).url()
   : product.image
     ? urlFor(product.image as any).width(IMAGE_WIDTHS.detail).url()
     : undefined;
-const imageUrl = personalCakeVariantImage?.src ?? sanityImageUrl;
 
 const computedAlt = selectedOption ? `${selectedOption.label} ${product.name}` : product.name;
-const imageAlt =
-  personalCakeVariantImage?.alt ?? selectedOption?.image?.alt ?? product.image?.alt ?? computedAlt;
+const imageAlt = selectedOption?.image?.alt ?? product.image?.alt ?? computedAlt;
 const canonicalPath = variant
   ? routes.productVariant(slug!, variant)
   : defaultOption

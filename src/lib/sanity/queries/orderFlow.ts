@@ -30,6 +30,8 @@ type SanityOrderFlow = {
   schedulingNote?: string;
   leadTimeNote?: string;
   dateSelectionNextHref?: string;
+  dateSelectionLeadDays?: number;
+  dateSelectionCount?: number;
   pickup?: {
     heading?: string;
     contactInfo?: { dateFieldLabel?: string; timeFieldLabel?: string; nextHref?: string };
@@ -137,6 +139,8 @@ export async function loadOrderFlowContent() {
       helperNote: orderFlow?.leadTimeNote,
       nextLabel,
       nextHref: orderFlow?.dateSelectionNextHref,
+      leadDays: orderFlow?.dateSelectionLeadDays,
+      dateCount: orderFlow?.dateSelectionCount,
     },
     deliveryDate: {
       heading: orderFlow?.delivery?.heading,
@@ -146,6 +150,8 @@ export async function loadOrderFlowContent() {
       helperNote: orderFlow?.leadTimeNote,
       nextLabel,
       nextHref: orderFlow?.dateSelectionNextHref,
+      leadDays: orderFlow?.dateSelectionLeadDays,
+      dateCount: orderFlow?.dateSelectionCount,
     },
     loading: {
       loadingLabel: orderFlow?.loading?.loadingLabel,

@@ -27,6 +27,9 @@ interface Props {
   options?: DateOption[];
   nextLabel: string;
   nextHref: string;
+  /** Passed through to the dynamic-date generator when `options` isn't provided. */
+  leadDays: number;
+  dateCount: number;
   /** Used for `data-node-id` traceability ("3311:6708" / "3311:6423"). */
   cardNodeId?: string;
   /** Used for `data-node-id` traceability on the heading. */
@@ -44,6 +47,8 @@ const {
   options,
   nextLabel,
   nextHref,
+  leadDays,
+  dateCount,
   cardNodeId,
   headingNodeId,
   dateHeadingNodeId,
@@ -119,6 +124,8 @@ const minimumDate = options?.find((option) => !option.other)?.value;
         <div
           class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-x-[42px] xl:gap-y-[49px]"
           data-dynamic-dates
+          data-lead-days={leadDays}
+          data-date-count={dateCount}
         ></div>
       ) : (
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-x-[42px] xl:gap-y-[49px]">
@@ -200,7 +207,9 @@ const minimumDate = options?.find((option) => !option.other)?.value;
     const otherTemplate = document.getElementById('other-date-pill-template') as HTMLTemplateElement | null;
     if (!grid || !template || !otherTemplate) return;
 
-    const options = generateDateOptions(new Date(), 3, 5);
+    const leadDays = Number(grid.dataset.leadDays);
+    const dateCount = Number(grid.dataset.dateCount);
+    const options = generateDateOptions(new Date(), leadDays, dateCount);
     grid.innerHTML = '';
 
     options.forEach((option, i) => {

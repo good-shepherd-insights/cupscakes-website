@@ -5,10 +5,10 @@ import DateSelect from "../../../components/order/DateSelect.astro";
 import { loadHomePageContent } from "../../../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../../../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomePageContent();
+const { navbar, followUs, decorativeMarks, siteName } = await loadHomePageContent();
 const { deliveryDate } = await loadOrderFlowContent();
 ---
-<Layout title="Delivery Date — Cups & Cakes">
+<Layout title={`${deliveryDate.heading} Date — ${siteName}`}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} activeLink="order" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
 
@@ -26,8 +26,8 @@ const { deliveryDate } = await loadOrderFlowContent();
         data-node-id="3311:6461"
       >
         <img
-          src="/assets/order-logo-large.svg"
-          alt=""
+          src={decorativeMarks.largeSrc}
+          alt={decorativeMarks.largeAlt}
           aria-hidden="true"
           class="block h-[98%] w-auto max-w-none aspect-[1221/1136] object-contain pointer-events-none select-none"
         />

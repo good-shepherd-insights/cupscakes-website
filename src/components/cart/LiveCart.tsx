@@ -156,6 +156,7 @@ interface Props {
   occasionHeading: string;
   priceHeading: string;
   qtyHeading: string;
+  quantityOptionLabel: string;
   editLabel: string;
   saveLabel: string;
   cancelLabel: string;
@@ -172,6 +173,7 @@ export default function LiveCart({
   occasionHeading,
   priceHeading,
   qtyHeading,
+  quantityOptionLabel,
   editLabel,
   saveLabel,
   cancelLabel,
@@ -447,7 +449,7 @@ export default function LiveCart({
 
                               {item.quantityValue && (
                                 <div>
-                                  <span className={labelClass}>Quantity</span>
+                                  <span className={labelClass}>{quantityOptionLabel}</span>
                                   {isEditing && quantityGroup ? (
                                     <select
                                       className={selectClass}

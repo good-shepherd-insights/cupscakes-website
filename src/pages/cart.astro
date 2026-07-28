@@ -5,10 +5,10 @@ import LiveCart from "../components/cart/LiveCart.tsx";
 import { loadHomePageContent } from "../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomePageContent();
+const { navbar, followUs, siteName } = await loadHomePageContent();
 const { cart } = await loadOrderFlowContent();
 ---
-<Layout title="Shopping Cart — Cups & Cakes">
+<Layout title={`${cart.heading} — ${siteName}`}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <LiveCart
@@ -19,6 +19,7 @@ const { cart } = await loadOrderFlowContent();
       occasionHeading={cart.occasionHeading}
       priceHeading={cart.priceHeading}
       qtyHeading={cart.qtyHeading}
+      quantityOptionLabel={cart.quantityOptionLabel}
       editLabel={cart.editLabel}
       saveLabel={cart.saveLabel}
       cancelLabel={cart.cancelLabel}

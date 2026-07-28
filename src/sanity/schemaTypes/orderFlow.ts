@@ -42,16 +42,22 @@ export const orderFlow = defineType({
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
+        defineField({
+          name: 'pageTitle',
+          title: 'Browser Tab Title',
+          type: 'string',
+          description: 'e.g. "Order" — combined with the site name for the <title> tag.',
+          validation: (R) => R.required(),
+        }),
         defineField({ name: 'pickupHref', title: 'Pick-Up URL', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'pickupLabel', title: 'Pick-Up Button Label', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'pickupAriaLabel', title: 'Pick-Up Accessible Name', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'deliveryHref', title: 'Delivery URL', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'deliveryLabel', title: 'Delivery Button Label', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'deliveryAriaLabel', title: 'Delivery Accessible Name', type: 'string', validation: (R) => R.required() }),
-        defineField({ name: 'logoLargeSrc', title: 'Large Logo Image URL', type: 'string', validation: (R) => R.required() }),
-        defineField({ name: 'logoLargeAlt', title: 'Large Logo Alt Text', type: 'string', validation: (R) => R.required() }),
-        defineField({ name: 'logoSmallSrc', title: 'Small Logo Image URL', type: 'string', validation: (R) => R.required() }),
-        defineField({ name: 'logoSmallAlt', title: 'Small Logo Alt Text', type: 'string', validation: (R) => R.required() }),
+        // Logo marks moved to siteSettings.decorativeMarkLarge/SmallSrc —
+        // they're reused across Loading, CategoryHeader, and 4 order pages,
+        // not specific to this one screen.
       ],
     }),
 
@@ -240,6 +246,13 @@ export const orderFlow = defineType({
             defineField({ name: 'occasionHeading', title: 'Occasion Column', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'priceHeading', title: 'Price Column', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'qtyHeading', title: 'Quantity Column', type: 'string', validation: (R) => R.required() }),
+            defineField({
+              name: 'quantityOptionLabel',
+              title: 'Quantity Option Label',
+              type: 'string',
+              description: 'Label for a product\'s own selectable "Quantity" custom option (e.g. Half Dozen/Dozen) when editing a cart line — distinct from the Qty column above, which is the cart line\'s numeric count.',
+              validation: (R) => R.required(),
+            }),
           ],
         }),
         defineField({

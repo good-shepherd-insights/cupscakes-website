@@ -22,9 +22,10 @@ interface Props {
   caption: string;
   items: ReadonlyArray<Item>;
   price: number;
+  ctaLabel: string;
 }
 
-const { heading, caption, items, price } = Astro.props;
+const { heading, caption, items, price, ctaLabel } = Astro.props;
 const formattedPrice = formatProductPrice(price);
 ---
 
@@ -69,6 +70,7 @@ const formattedPrice = formatProductPrice(price);
           imageSrc={c.imageSrc}
           imageAlt={c.imageAlt}
           orderHref={c.orderHref}
+          ctaLabel={ctaLabel}
         />
       ))}
     </div>

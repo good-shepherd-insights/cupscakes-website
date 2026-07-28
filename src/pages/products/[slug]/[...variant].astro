@@ -32,7 +32,7 @@ export async function getStaticPaths() {
 
 const { slug, variant } = Astro.params;
 const { product } = Astro.props;
-const { navbar, footer, followUs } = await loadHomePageContent();
+const { navbar, footer, followUs, addToCartLabel, siteName } = await loadHomePageContent();
 
 const routeGroup = product.customOptions?.find((g) => g.definesVariantRoute);
 const defaultOption = routeGroup?.options.find((o) => o.slug);
@@ -68,7 +68,7 @@ const seoImageUrl = seoImageAsset
   : imageUrl;
 ---
 <Layout
-  title={`${seoTitle} — Cups & Cakes`}
+  title={`${seoTitle} — ${siteName}`}
   description={seoDescription}
   image={seoImageUrl}
   canonicalUrl={canonicalUrl}
@@ -88,6 +88,7 @@ const seoImageUrl = seoImageAsset
       productSlug={slug}
       currentVariantSlug={selectedOption?.slug?.current}
       price={`$${product.price.toFixed(2)}`}
+      addToCartLabel={addToCartLabel}
     />
     <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>

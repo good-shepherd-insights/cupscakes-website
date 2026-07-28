@@ -23,6 +23,10 @@ interface Props {
   cupcakesHref: string;
   personalCakesHeading: string;
   personalCakesHref: string;
+  logoLargeSrc: string;
+  logoLargeAlt: string;
+  ampSrc: string;
+  ampAlt: string;
 }
 
 const {
@@ -30,6 +34,10 @@ const {
   cupcakesHref,
   personalCakesHeading,
   personalCakesHref,
+  logoLargeSrc,
+  logoLargeAlt,
+  ampSrc,
+  ampAlt,
 } = Astro.props;
 
 const pinkBg = "bg-brand-pink";
@@ -88,24 +96,24 @@ const blueBg = "bg-brand-blue";
   */}
   <div class="pointer-events-none absolute inset-0" aria-hidden="true">
     <img
-      src="/assets/order-logo-large.svg"
-      alt=""
+      src={logoLargeSrc}
+      alt={logoLargeAlt}
       aria-hidden="true"
       class="absolute top-[0.254%] h-[99.746%] w-[33.844%] max-w-none object-contain"
       style="left: -8.844%;"
       data-node-id="3311:3233"
     />
     <img
-      src="/assets/order-logo-large.svg"
-      alt=""
+      src={logoLargeSrc}
+      alt={logoLargeAlt}
       aria-hidden="true"
       class="absolute top-[0.254%] h-[99.746%] w-[33.844%] max-w-none object-contain"
       style="left: 34.740%;"
       data-node-id="3311:3232"
     />
     <img
-      src="/assets/order-logo-large.svg"
-      alt=""
+      src={logoLargeSrc}
+      alt={logoLargeAlt}
       aria-hidden="true"
       class="absolute top-[0.254%] h-[99.746%] w-[33.844%] max-w-none object-contain"
       style="left: 81.359%;"
@@ -121,8 +129,8 @@ const blueBg = "bg-brand-blue";
     overlaps both colors.
   */}
   <img
-    src="/assets/category-header-amp.svg"
-    alt=""
+    src={ampSrc}
+    alt={ampAlt}
     aria-hidden="true"
     class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
            z-10 aspect-[170/158] object-contain

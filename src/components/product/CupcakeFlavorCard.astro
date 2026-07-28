@@ -24,6 +24,7 @@ interface Props {
   imageSrc: string;
   imageAlt: string;
   orderHref: string;
+  ctaLabel: string;
 }
 
 const {
@@ -33,6 +34,7 @@ const {
   imageSrc,
   imageAlt,
   orderHref,
+  ctaLabel,
 } = Astro.props;
 ---
 
@@ -82,5 +84,5 @@ const {
            hover:brightness-95 hover:-translate-y-px
            focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
     aria-label={`Order ${name} cupcakes now`}
-  ><span>ORDER NOW</span></a>
+  ><span>{ctaLabel}</span></a>
 </article>

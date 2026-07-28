@@ -31,6 +31,18 @@ export const siteSettings = defineType({
       ],
     }),
     imageField('favicon', 'Favicon'),
+    // Reused as decorative background marks across Loading, the products
+    // CategoryHeader, PickupOrDelivery, and all 4 order sub-pages — one
+    // site-wide home instead of a copy on each consuming page/component.
+    defineField({ name: 'decorativeMarkLargeSrc', title: 'Large Decorative Mark URL', type: 'string', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'decorativeMarkLargeAlt', title: 'Large Decorative Mark Alt Text', type: 'string', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'decorativeMarkSmallSrc', title: 'Small Decorative Mark URL', type: 'string', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'decorativeMarkSmallAlt', title: 'Small Decorative Mark Alt Text', type: 'string', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'categoryHeaderAmpSrc', title: 'Category Header Ampersand URL', type: 'string', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'categoryHeaderAmpAlt', title: 'Category Header Ampersand Alt Text', type: 'string', validation: (Rule) => Rule.required() }),
+    // Same label on every product's detail page — one site-wide value
+    // rather than per-product content.
+    defineField({ name: 'addToCartLabel', title: 'Add To Cart Button Label', type: 'string', validation: (Rule) => Rule.required() }),
     // Site-wide social links — shared by Navbar, Footer, and the Follow Us
     // section, so they live here rather than nested in a single homepage
     // section.

@@ -22,9 +22,15 @@ interface Props {
    * "site" so every other page's navbar is unchanged.
    */
   mode?: "site" | "store";
+  whoLabel: string;
+  orderLabel: string;
+  productsLabel: string;
+  shopLabel: string;
   /** Social links surfaced at the bottom of the mobile popout menu. */
   facebookHref?: string;
   instagramHref?: string;
+  socialLinks?: { platform: string; href: string; iconUrl: string; iconAlt?: string }[];
+  mobileMenuLogoSrc?: string;
 }
 
 const {
@@ -36,9 +42,22 @@ const {
   shopHref,
   activeLink,
   mode = "site",
+  whoLabel,
+  orderLabel,
+  productsLabel,
+  shopLabel,
   facebookHref = "#",
   instagramHref = "#",
+  socialLinks,
+  mobileMenuLogoSrc = "/assets/order-logo-small.svg",
 } = Astro.props;
+const navSocialLinks =
+  socialLinks && socialLinks.length > 0
+    ? socialLinks
+    : [
+        { platform: "Facebook", href: facebookHref, iconUrl: "/assets/facebook.svg", iconAlt: "Facebook" },
+        { platform: "Instagram", href: instagramHref, iconUrl: "/assets/instagram.svg", iconAlt: "Instagram" },
+      ];
 
 // Active-link underline shared classes. Absolutely positioned below the
 // nav link so it does not affect link layout. Tailwind sees the full
@@ -103,7 +122,7 @@ const activeUnderlineClass =
           data-name="Products"
           aria-current={activeLink === "products" ? "page" : undefined}
         >
-          <span>PRODUCTS</span>
+          <span>{productsLabel}</span>
           {activeLink === "products" && (
             <span
               aria-hidden="true"
@@ -121,7 +140,7 @@ const activeUnderlineClass =
             data-node-id="3311:1674"
             aria-current={activeLink === "who" ? "page" : undefined}
           >
-            <span>WHO WE ARE</span>
+            <span>{whoLabel}</span>
             {activeLink === "who" && (
               <span
                 aria-hidden="true"
@@ -138,7 +157,7 @@ const activeUnderlineClass =
             data-node-id="3311:1678"
             aria-current={activeLink === "order" ? "page" : undefined}
           >
-            <span>ORDER NOW</span>
+            <span>{orderLabel}</span>
             {activeLink === "order" && (
               <span
                 aria-hidden="true"
@@ -154,7 +173,7 @@ const activeUnderlineClass =
             class="nav-link relative hidden md:inline-block"
             aria-current={activeLink === "shop" ? "page" : undefined}
           >
-            <span>OUR SHOP</span>
+            <span>{shopLabel}</span>
             {activeLink === "shop" && (
               <span aria-hidden="true" class={activeUnderlineClass}></span>
             )}
@@ -162,21 +181,22 @@ const activeUnderlineClass =
         </>
       )}
 
-      <a
-        href={facebookHref}
-        class="nav-icon bg-facebook-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
-        aria-label="Facebook"
-        target="_blank"
-        rel="noopener noreferrer"
-      ></a>
-
-      <a
-        href={instagramHref}
-        class="nav-icon bg-instagram-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
-        aria-label="Instagram"
-        target="_blank"
-        rel="noopener noreferrer"
-      ></a>
+      {navSocialLinks.map((link) => (
+        <a
+          href={link.href}
+          class="nav-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
+          aria-label={link.platform}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            alt={link.iconAlt ?? ""}
+            aria-hidden={link.iconAlt ? undefined : "true"}
+            class="block size-full object-contain pointer-events-none"
+            src={link.iconUrl}
+          />
+        </a>
+      ))}
 
       <div class="cart-container relative inline-flex shrink-0">
         <a
@@ -226,7 +246,7 @@ const activeUnderlineClass =
           aria-label="Cups & Cakes — home"
         >
           <img
-            src="/assets/order-logo-small.svg"
+            src={mobileMenuLogoSrc}
             alt=""
             aria-hidden="true"
             class="h-full w-full object-contain"
@@ -238,12 +258,12 @@ const activeUnderlineClass =
       <div class="flex flex-1 flex-col items-center bg-brand-pink px-6 py-12 text-center">
         <nav class="flex flex-1 flex-col items-center justify-center gap-12" aria-label="Mobile">
           {mode === "store" ? (
-            <a href={productsHref} class="mobile-menu-link">PRODUCTS</a>
+            <a href={productsHref} class="mobile-menu-link">{productsLabel}</a>
           ) : (
             <>
-              <a href={whoHref} class="mobile-menu-link">WHO WE ARE</a>
-              <a href={orderHref} class="mobile-menu-link">ORDER NOW</a>
-              <a href={shopHref} class="mobile-menu-link">OUR SHOP</a>
+              <a href={whoHref} class="mobile-menu-link">{whoLabel}</a>
+              <a href={orderHref} class="mobile-menu-link">{orderLabel}</a>
+              <a href={shopHref} class="mobile-menu-link">{shopLabel}</a>
             </>
           )}
         </nav>
@@ -302,4 +322,3 @@ const activeUnderlineClass =
   document.addEventListener("snipcart.ready", initCartShakeAnimation);
   document.addEventListener("astro:page-load", applyCartBadge);
 </script>
-

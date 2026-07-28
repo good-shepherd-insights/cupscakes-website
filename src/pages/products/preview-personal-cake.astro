@@ -8,11 +8,11 @@ import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { formatProductPrice } from "../../lib/format/productPrice";
 import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
 
-const { navbar, footer, followUs } = await loadHomePageContent();
+const { navbar, footer, followUs, addToCartLabel, siteName } = await loadHomePageContent();
 const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
 ---
 
-<Layout title="Personal Cake — Cups & Cakes">
+<Layout title={`Personal Cake — ${siteName}`}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
     <PersonalCakeProduct
@@ -37,6 +37,7 @@ const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
         { name: "Occasion", inputType: "radio", options: ["Regular", "Birthday", "Wedding", "Holiday", "Other"].map((label) => ({ label })) },
       ]}
       price={formatProductPrice(personalCakePrice)}
+      addToCartLabel={addToCartLabel}
     />
     <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
   </div>

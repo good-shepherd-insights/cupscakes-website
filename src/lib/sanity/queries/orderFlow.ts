@@ -11,16 +11,13 @@ type SanityContactField = {
 
 type SanityOrderFlow = {
   pickupOrDelivery?: {
+    pageTitle?: string;
     pickupHref?: string;
     pickupLabel?: string;
     pickupAriaLabel?: string;
     deliveryHref?: string;
     deliveryLabel?: string;
     deliveryAriaLabel?: string;
-    logoLargeSrc?: string;
-    logoLargeAlt?: string;
-    logoSmallSrc?: string;
-    logoSmallAlt?: string;
   };
   changeLabel?: string;
   changeHref?: string;
@@ -62,6 +59,7 @@ type SanityOrderFlow = {
       occasionHeading?: string;
       priceHeading?: string;
       qtyHeading?: string;
+      quantityOptionLabel?: string;
     };
     actions?: {
       editLabel?: string;
@@ -97,6 +95,7 @@ export async function loadOrderFlowContent() {
 
   return deepStegaClean({
     pickupOrDelivery: {
+      pageTitle: orderFlow?.pickupOrDelivery?.pageTitle,
       pickupHref: orderFlow?.pickupOrDelivery?.pickupHref,
       pickupLabel: orderFlow?.pickupOrDelivery?.pickupLabel,
       deliveryHref: orderFlow?.pickupOrDelivery?.deliveryHref,
@@ -165,6 +164,7 @@ export async function loadOrderFlowContent() {
       occasionHeading: orderFlow?.cart?.tableHeadings?.occasionHeading,
       priceHeading: orderFlow?.cart?.tableHeadings?.priceHeading,
       qtyHeading: orderFlow?.cart?.tableHeadings?.qtyHeading,
+      quantityOptionLabel: orderFlow?.cart?.tableHeadings?.quantityOptionLabel,
       editLabel: orderFlow?.cart?.actions?.editLabel,
       saveLabel: orderFlow?.cart?.actions?.saveLabel,
       cancelLabel: orderFlow?.cart?.actions?.cancelLabel,

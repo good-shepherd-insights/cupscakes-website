@@ -5,12 +5,18 @@ import PickupOrDelivery from "../components/order/PickupOrDelivery.astro";
 import { loadHomePageContent } from "../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomePageContent();
+const { navbar, followUs, decorativeMarks, siteName } = await loadHomePageContent();
 const { pickupOrDelivery } = await loadOrderFlowContent();
 ---
-<Layout title="Order — Cups & Cakes">
+<Layout title={`${pickupOrDelivery.pageTitle} — ${siteName}`}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
-    <PickupOrDelivery {...pickupOrDelivery} />
+    <PickupOrDelivery
+      {...pickupOrDelivery}
+      logoLargeSrc={decorativeMarks.largeSrc}
+      logoLargeAlt={decorativeMarks.largeAlt}
+      logoSmallSrc={decorativeMarks.smallSrc}
+      logoSmallAlt={decorativeMarks.smallAlt}
+    />
   </div>
 </Layout>

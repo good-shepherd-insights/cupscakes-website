@@ -70,6 +70,8 @@ type SanityNavigation = {
   productsHref?: string;
   cartHref?: string;
   shopHref?: string;
+  productsLabel?: string;
+  shopLabel?: string;
   cupsIcon?: SanityImage;
   cartIcon?: SanityImage;
   mobileMenuLogo?: SanityImage;
@@ -79,6 +81,7 @@ type SanityFooter = {
   whoHref?: string;
   orderHref?: string;
   topHref?: string;
+  topLabel?: string;
   copyright?: string;
 };
 
@@ -90,6 +93,13 @@ type SanitySiteSettings = {
     metaImage?: SanityImage;
   };
   favicon?: SanityImage;
+  decorativeMarkLargeSrc?: string;
+  decorativeMarkLargeAlt?: string;
+  decorativeMarkSmallSrc?: string;
+  decorativeMarkSmallAlt?: string;
+  categoryHeaderAmpSrc?: string;
+  categoryHeaderAmpAlt?: string;
+  addToCartLabel?: string;
   socialLinks?: SanitySocialLink[];
 };
 
@@ -190,6 +200,7 @@ export async function loadHomePageContent() {
   return deepStegaClean({
     siteName: siteSettings?.siteName ?? 'Cups & Cakes',
     faviconUrl: optionalImageUrl(siteSettings?.favicon) ?? LOCAL_ASSETS.cupsIcon,
+    addToCartLabel: siteSettings?.addToCartLabel,
     seo: {
       metaTitle,
       metaDescription,
@@ -221,10 +232,22 @@ export async function loadHomePageContent() {
       productsHref: navigation?.productsHref,
       cartHref: navigation?.cartHref,
       shopHref: navigation?.shopHref,
+      whoLabel: homePage?.ourStory?.heading,
+      orderLabel: homePage?.hero?.ctaLabel,
+      productsLabel: navigation?.productsLabel,
+      shopLabel: navigation?.shopLabel,
       facebookHref: resolvedSocialLinks[0]?.href,
       instagramHref: resolvedSocialLinks[1]?.href,
       socialLinks: resolvedSocialLinks,
       mobileMenuLogoSrc: imageUrl(navigation?.mobileMenuLogo, LOCAL_ASSETS.orderLogoSmall),
+    },
+    decorativeMarks: {
+      largeSrc: siteSettings?.decorativeMarkLargeSrc,
+      largeAlt: siteSettings?.decorativeMarkLargeAlt,
+      smallSrc: siteSettings?.decorativeMarkSmallSrc,
+      smallAlt: siteSettings?.decorativeMarkSmallAlt,
+      categoryHeaderAmpSrc: siteSettings?.categoryHeaderAmpSrc,
+      categoryHeaderAmpAlt: siteSettings?.categoryHeaderAmpAlt,
     },
     hero: {
       headline: homePage?.hero?.headline,
@@ -268,6 +291,9 @@ export async function loadHomePageContent() {
       whoHref: footer?.whoHref,
       orderHref: footer?.orderHref,
       topHref: footer?.topHref,
+      whoLabel: homePage?.ourStory?.heading,
+      orderLabel: homePage?.hero?.ctaLabel,
+      topLabel: footer?.topLabel,
       copyright: footer?.copyright,
       facebookHref: resolvedSocialLinks[0]?.href,
       instagramHref: resolvedSocialLinks[1]?.href,

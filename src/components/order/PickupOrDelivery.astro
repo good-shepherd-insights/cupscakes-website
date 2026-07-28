@@ -8,6 +8,10 @@ interface Props {
   deliveryLabel: string;
   pickupAriaName: string;
   deliveryAriaName: string;
+  logoLargeSrc: string;
+  logoLargeAlt: string;
+  logoSmallSrc: string;
+  logoSmallAlt: string;
 }
 
 const {
@@ -17,6 +21,10 @@ const {
   deliveryLabel,
   pickupAriaName,
   deliveryAriaName,
+  logoLargeSrc,
+  logoLargeAlt,
+  logoSmallSrc,
+  logoSmallAlt,
 } = Astro.props;
 ---
 
@@ -35,8 +43,8 @@ const {
     data-node-id="3311:6191"
   >
     <img
-      src="/assets/order-logo-large.svg"
-      alt=""
+      src={logoLargeSrc}
+      alt={logoLargeAlt}
       aria-hidden="true"
       class="block h-[98%] w-auto max-w-none aspect-[1221/1136] object-contain pointer-events-none select-none"
     />
@@ -48,8 +56,8 @@ const {
       is visibly prominent at every breakpoint while preserving the
       Figma proportion via aspect-ratio + object-contain (no skew). */}
   <img
-    src="/assets/order-logo-small.svg"
-    alt="Cups & Cakes"
+    src={logoSmallSrc}
+    alt={logoSmallAlt}
     width="142"
     height="105"
     class="pointer-events-none select-none absolute z-10

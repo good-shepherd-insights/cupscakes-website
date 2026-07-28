@@ -38,5 +38,12 @@ export const productCategory = defineType({
       type: 'number',
       description: 'Lower numbers render first on /products. Leave blank to sort last.',
     }),
+    defineField({
+      name: 'anchorHref',
+      title: 'Anchor Link',
+      type: 'string',
+      description: 'Jump-nav target on /products, e.g. "#cupcakes".',
+      validation: (Rule) => Rule.required(),
+    }),
   ],
 });

@@ -1,30 +1,34 @@
 import type { Product, ProductCategory } from '../../../types/product';
 import { sanityClient } from '../client';
+import { deepStegaClean } from '../stega';
 
 const PRODUCT_FIELDS = `
   _id,
   name,
   price,
   slug,
-  category->{ _id, title, slug, heading, caption, displayOrder },
+  category->{ _id, title, slug, heading, caption, displayOrder, anchorHref },
   image,
   description,
   subtitle,
   servingInfo,
+  seo,
   customOptions
 `;
 
 export async function getAllProducts(): Promise<Product[]> {
-  return sanityClient.fetch<Product[]>(
+  const products = await sanityClient.fetch<Product[]>(
     `*[_type == "product" && defined(slug.current)]{ ${PRODUCT_FIELDS} }`
   );
+  return deepStegaClean(products);
 }
 
 export async function getProductsByCategorySlug(categorySlug: string): Promise<Product[]> {
-  return sanityClient.fetch<Product[]>(
+  const products = await sanityClient.fetch<Product[]>(
     `*[_type == "product" && category->slug.current == $categorySlug && defined(slug.current)]{ ${PRODUCT_FIELDS} }`,
     { categorySlug }
   );
+  return deepStegaClean(products);
 }
 
 export async function getRequiredProductBySlug(productSlug: string): Promise<Product> {
@@ -43,7 +47,7 @@ export async function getRequiredProductBySlug(productSlug: string): Promise<Pro
     );
   }
 
-  return product;
+  return deepStegaClean(product);
 }
 
 export async function getRequiredProductPriceBySlug(productSlug: string): Promise<number> {
@@ -62,7 +66,8 @@ export async function getRequiredProductPriceBySlug(productSlug: string): Promis
 }
 
 export async function getAllProductCategories(): Promise<ProductCategory[]> {
-  return sanityClient.fetch<ProductCategory[]>(
-    `*[_type == "productCategory"] | order(displayOrder == null asc, displayOrder asc) { _id, title, slug, heading, caption, displayOrder }`
+  const categories = await sanityClient.fetch<ProductCategory[]>(
+    `*[_type == "productCategory"] | order(displayOrder asc) { _id, title, slug, heading, caption, displayOrder, anchorHref }`
   );
+  return deepStegaClean(categories);
 }

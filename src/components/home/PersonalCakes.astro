@@ -10,6 +10,10 @@ interface Props {
   chocolateLabel: string;
   vanillaHref: string;
   vanillaLabel: string;
+  flavorLinks?: { label: string; href: string }[];
+  ampImageSrc?: string;
+  logoSrc?: string;
+  photoSrc?: string;
 }
 
 const {
@@ -21,9 +25,21 @@ const {
   chocolateLabel,
   vanillaHref,
   vanillaLabel,
+  flavorLinks,
+  ampImageSrc = "/assets/personal-cakes-amp.svg",
+  logoSrc = "/assets/personal-cakes-logo.svg",
+  photoSrc = "/assets/personal-cake.png",
 } = Astro.props;
 
 const formattedPrice = formatProductPrice(price);
+const resolvedFlavorLinks =
+  flavorLinks && flavorLinks.length >= 2
+    ? flavorLinks
+    : [
+        { label: chocolateLabel, href: chocolateHref },
+        { label: vanillaLabel, href: vanillaHref },
+      ];
+const [firstFlavor, secondFlavor] = resolvedFlavorLinks;
 ---
 
 <section
@@ -42,7 +58,7 @@ const formattedPrice = formatProductPrice(price);
       <img
         alt=""
         aria-hidden="true"
-        src="/assets/personal-cakes-amp.svg"
+        src={ampImageSrc}
         class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
                object-contain shrink-0 pointer-events-none"
         data-node-id="3311:1617"
@@ -58,7 +74,7 @@ const formattedPrice = formatProductPrice(price);
       <img
         alt=""
         aria-hidden="true"
-        src="/assets/personal-cakes-amp.svg"
+        src={ampImageSrc}
         class="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14 aspect-[55/51]
                object-contain shrink-0 pointer-events-none"
         data-node-id="3311:1618"
@@ -83,7 +99,7 @@ const formattedPrice = formatProductPrice(price);
       <img
         alt=""
         aria-hidden="true"
-        src="/assets/personal-cakes-logo.svg"
+        src={logoSrc}
         class="absolute inset-0 m-auto -z-0
                w-3/4 max-w-3xl aspect-[1100/1023]
                object-contain pointer-events-none opacity-90"
@@ -105,7 +121,7 @@ const formattedPrice = formatProductPrice(price);
         >{flavorHeadline}</h3>
 
         <a
-          href={chocolateHref}
+          href={firstFlavor.href}
           class="order-3 md:order-2
                  inline-flex items-center justify-center
                  w-full max-w-xs mx-auto md:mx-0
@@ -119,14 +135,14 @@ const formattedPrice = formatProductPrice(price);
                  focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
           data-node-id="3311:1702"
           data-name="Chocolate flavor pill"
-        ><span>{chocolateLabel}</span></a>
+        ><span>{firstFlavor.label}</span></a>
 
         <div class="order-2 md:order-3 flex flex-col items-center
                     gap-4 sm:gap-6 md:gap-8">
           <img
             alt=""
             aria-hidden="true"
-            src="/assets/personal-cake.png"
+            src={photoSrc}
             class="w-full max-w-md aspect-[815/638]
                    object-contain drop-shadow-lg pointer-events-none"
             data-node-id="3311:1715"
@@ -140,7 +156,7 @@ const formattedPrice = formatProductPrice(price);
         </div>
 
         <a
-          href={vanillaHref}
+          href={secondFlavor.href}
           class="order-4
                  inline-flex items-center justify-center
                  w-full max-w-xs mx-auto md:mx-0
@@ -154,7 +170,7 @@ const formattedPrice = formatProductPrice(price);
                  focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
           data-node-id="3311:1714"
           data-name="Vanilla flavor pill"
-        ><span>{vanillaLabel}</span></a>
+        ><span>{secondFlavor.label}</span></a>
       </div>
     </div>
   </div>

@@ -4,20 +4,22 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/home/Navbar.astro";
 import Footer from "../../components/home/Footer.astro";
 import PersonalCakeProduct from "../../components/product/PersonalCakeProduct.astro";
-import { loadHomeContent } from "../../lib/content/home";
+import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { formatProductPrice } from "../../lib/format/productPrice";
 import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
 
-const { navbar, footer, followUs } = await loadHomeContent();
+const { navbar, footer, followUs, addToCartLabel, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
 ---
 
-<Layout title="Personal Cake — Cups & Cakes">
+<Layout title={`Personal Cake — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
       breadcrumbHrefProducts={navbar.productsHref}
+      breadcrumbHomeLabel={navbar.homeLabel}
+      breadcrumbProductsLabel={navbar.productsLabel}
       breadcrumbLabel="Personal Cakes"
       title="Personal Cake"
       subtitle="Small in size but big in bringing joy to each bite!"
@@ -37,7 +39,8 @@ const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
         { name: "Occasion", inputType: "radio", options: ["Regular", "Birthday", "Wedding", "Holiday", "Other"].map((label) => ({ label })) },
       ]}
       price={formatProductPrice(personalCakePrice)}
+      addToCartLabel={addToCartLabel}
     />
-    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Footer {...footer} />
   </div>
 </Layout>

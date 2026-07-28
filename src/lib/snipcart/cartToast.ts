@@ -95,7 +95,7 @@ function lockButton(button: HTMLButtonElement): void {
     lockedButton = button;
     button.dataset.addLock = 'true';
     button.dataset.addLockLabel = button.textContent ?? '';
-    button.textContent = 'ADDING…';
+    button.textContent = document.getElementById('cart-toast')?.dataset.addingMessage ?? '';
     button.disabled = true;
     button.classList.add('add-feedback-pulse');
     clearTimeout(restoreTimer);
@@ -108,7 +108,7 @@ function restoreButton(): void {
   lockedButton = null;
   if (!button) return;
   delete button.dataset.addLock;
-  button.textContent = button.dataset.addLockLabel ?? 'ADD TO CART';
+  button.textContent = button.dataset.addLockLabel ?? '';
   delete button.dataset.addLockLabel;
   button.classList.remove('add-feedback-pulse');
   button.disabled = false;
@@ -143,7 +143,9 @@ export function initCartToastStore(): void {
           .cart.items.items.some((item) => item.name === pending!.name)
       ) {
         showToast(pending);
-        if (lockedButton === pending.button) lockedButton.textContent = 'ADDED!';
+        if (lockedButton === pending.button) {
+          lockedButton.textContent = document.getElementById('cart-toast')?.dataset.addedMessage ?? '';
+        }
       }
       pending = null;
     }

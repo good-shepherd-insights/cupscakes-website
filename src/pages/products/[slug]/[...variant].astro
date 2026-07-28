@@ -32,7 +32,7 @@ export async function getStaticPaths() {
 
 const { slug, variant } = Astro.params;
 const { product } = Astro.props;
-const { navbar, footer, followUs, addToCartLabel, siteName } = await loadHomePageContent();
+const { navbar, footer, followUs, addToCartLabel, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 
 const routeGroup = product.customOptions?.find((g) => g.definesVariantRoute);
 const defaultOption = routeGroup?.options.find((o) => o.slug);
@@ -72,12 +72,16 @@ const seoImageUrl = seoImageAsset
   description={seoDescription}
   image={seoImageUrl}
   canonicalUrl={canonicalUrl}
+  addedToCartMessage={addedToCartMessage}
+  addingToCartMessage={addingToCartMessage}
 >
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
       breadcrumbHrefProducts={navbar.productsHref}
+      breadcrumbHomeLabel={navbar.homeLabel}
+      breadcrumbProductsLabel={navbar.productsLabel}
       breadcrumbLabel={product.name}
       title={product.name}
       subtitle={product.subtitle ?? ""}
@@ -90,7 +94,7 @@ const seoImageUrl = seoImageAsset
       price={`$${product.price.toFixed(2)}`}
       addToCartLabel={addToCartLabel}
     />
-    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Footer {...footer} />
   </div>
 </Layout>
 

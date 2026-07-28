@@ -78,6 +78,8 @@ import { routes } from "../../lib/routes";
 interface Props {
   breadcrumbHrefHome: string;
   breadcrumbHrefProducts: string;
+  breadcrumbHomeLabel: string;
+  breadcrumbProductsLabel: string;
   breadcrumbLabel: string;
   title: string;
   subtitle: string;
@@ -101,6 +103,8 @@ interface Props {
 const {
   breadcrumbHrefHome,
   breadcrumbHrefProducts,
+  breadcrumbHomeLabel,
+  breadcrumbProductsLabel,
   breadcrumbLabel,
   title,
   subtitle,
@@ -241,8 +245,8 @@ const selectionBtn = [
     {/* Breadcrumb (3311:2297) — reusable component. */}
     <Breadcrumb
       items={[
-        { label: "Home", href: breadcrumbHrefHome },
-        { label: "Products", href: breadcrumbHrefProducts },
+        { label: breadcrumbHomeLabel, href: breadcrumbHrefHome },
+        { label: breadcrumbProductsLabel, href: breadcrumbHrefProducts },
         { label: breadcrumbLabel },
       ]}
       class="mb-[18px] sm:mb-[23px] md:mb-[29px] lg:mb-[34px] xl:mb-[58px]

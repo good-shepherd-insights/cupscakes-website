@@ -8,16 +8,18 @@ import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { formatProductPrice } from "../../lib/format/productPrice";
 import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
 
-const { navbar, footer, followUs, addToCartLabel, siteName } = await loadHomePageContent();
+const { navbar, footer, followUs, addToCartLabel, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
 ---
 
-<Layout title={`Personal Cake — ${siteName}`}>
+<Layout title={`Personal Cake — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
     <PersonalCakeProduct
       breadcrumbHrefHome={navbar.homeHref}
       breadcrumbHrefProducts={navbar.productsHref}
+      breadcrumbHomeLabel={navbar.homeLabel}
+      breadcrumbProductsLabel={navbar.productsLabel}
       breadcrumbLabel="Personal Cakes"
       title="Personal Cake"
       subtitle="Small in size but big in bringing joy to each bite!"
@@ -39,6 +41,6 @@ const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
       price={formatProductPrice(personalCakePrice)}
       addToCartLabel={addToCartLabel}
     />
-    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Footer {...footer} />
   </div>
 </Layout>

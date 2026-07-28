@@ -34,6 +34,9 @@ const {
   seo,
   cssImageVars,
   faviconUrl,
+  addedToCartMessage,
+  addingToCartMessage,
+  flavorBandAccessibleLabel,
 } = homeContent;
 const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDTHS.card);
 
@@ -56,6 +59,8 @@ const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
   image={seo.metaImage}
   faviconUrl={faviconUrl}
   cssImageVars={cssImageVars}
+  addedToCartMessage={addedToCartMessage}
+  addingToCartMessage={addingToCartMessage}
 >
   <Navbar
     homeHref={navbar.homeHref}
@@ -68,17 +73,24 @@ const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
     orderLabel={navbar.orderLabel}
     productsLabel={navbar.productsLabel}
     shopLabel={navbar.shopLabel}
-    facebookHref={followUs.facebookHref}
-    instagramHref={followUs.instagramHref}
+    logoTextBefore={navbar.logoTextBefore}
+    logoTextAfter={navbar.logoTextAfter}
+    siteName={navbar.siteName}
+    cartAccessibleLabel={navbar.cartAccessibleLabel}
+    openMenuLabel={navbar.openMenuLabel}
+    closeMenuLabel={navbar.closeMenuLabel}
     socialLinks={navbar.socialLinks}
     mobileMenuLogoSrc={navbar.mobileMenuLogoSrc}
   />
   <Hero
     headline={hero.headline}
     ctaLabel={hero.ctaLabel}
+    ctaAriaLabel={hero.ctaAriaLabel}
     orderHref={hero.orderHref}
+    siteName={navbar.siteName}
+    scrollAriaLabel={hero.scrollAriaLabel}
   />
-  <SmallBanner />
+  <SmallBanner accessibleLabel={flavorBandAccessibleLabel} />
   <OurStory
     heading={ourStory.heading}
     paragraphs={ourStory.paragraphs}
@@ -111,8 +123,6 @@ const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
   />
   <FollowUs
     heading={followUs.heading}
-    facebookHref={followUs.facebookHref}
-    instagramHref={followUs.instagramHref}
     socialLinks={followUs.socialLinks}
   />
   <Footer
@@ -123,8 +133,6 @@ const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
     orderLabel={footer.orderLabel}
     topLabel={footer.topLabel}
     copyright={footer.copyright}
-    facebookHref={followUs.facebookHref}
-    instagramHref={followUs.instagramHref}
     socialLinks={footer.socialLinks}
   />
 </Layout>

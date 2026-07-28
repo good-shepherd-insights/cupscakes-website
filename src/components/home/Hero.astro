@@ -2,10 +2,13 @@
 interface Props {
   headline: string;
   ctaLabel: string;
+  ctaAriaLabel: string;
   orderHref: string;
+  siteName: string;
+  scrollAriaLabel: string;
 }
 
-const { headline, ctaLabel, orderHref } = Astro.props;
+const { headline, ctaLabel, ctaAriaLabel, orderHref, siteName, scrollAriaLabel } = Astro.props;
 ---
 
 <section
@@ -29,7 +32,7 @@ const { headline, ctaLabel, orderHref } = Astro.props;
     data-node-id="3311:1460"
     data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_14"
     role="img"
-    aria-label="Cups & Cakes"
+    aria-label={siteName}
   ></span>
 
   <h1
@@ -54,7 +57,7 @@ const { headline, ctaLabel, orderHref } = Astro.props;
            focus-visible:brightness-110 focus-visible:-translate-y-px focus-visible:outline-hidden"
     data-node-id="3311:1450"
     data-name="Rectangle 5 + ORDER NOW"
-    aria-label="Order cupcakes now"
+    aria-label={ctaAriaLabel}
   ><span>{ctaLabel}</span></a>
 
   <span
@@ -66,6 +69,6 @@ const { headline, ctaLabel, orderHref } = Astro.props;
     data-node-id="3311:1444"
     data-name="Group 3"
     role="img"
-    aria-label="Scroll for more"
+    aria-label={scrollAriaLabel}
   ></span>
 </section>

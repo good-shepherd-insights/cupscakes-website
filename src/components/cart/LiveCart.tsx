@@ -161,6 +161,7 @@ interface Props {
   saveLabel: string;
   cancelLabel: string;
   removeLabel: string;
+  removingLabel: string;
   subtotalLabel: string;
   checkoutLabel: string;
   emptyMessage: string;
@@ -178,6 +179,7 @@ export default function LiveCart({
   saveLabel,
   cancelLabel,
   removeLabel,
+  removingLabel,
   subtotalLabel,
   checkoutLabel,
   emptyMessage,
@@ -537,7 +539,7 @@ export default function LiveCart({
                                     disabled={removing.has(item.uniqueId)}
                                     className={actionBtnClass}
                                   >
-                                    {removing.has(item.uniqueId) ? '...' : removeLabel}
+                                    {removing.has(item.uniqueId) ? removingLabel : removeLabel}
                                   </button>
                                 </>
                               )}

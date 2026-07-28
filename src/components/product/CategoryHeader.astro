@@ -27,6 +27,7 @@ interface Props {
   logoLargeAlt: string;
   ampSrc: string;
   ampAlt: string;
+  accessibleHeading: string;
 }
 
 const {
@@ -38,6 +39,7 @@ const {
   logoLargeAlt,
   ampSrc,
   ampAlt,
+  accessibleHeading,
 } = Astro.props;
 
 const pinkBg = "bg-brand-pink";
@@ -50,7 +52,7 @@ const blueBg = "bg-brand-blue";
   data-node-id="3311:2985"
   data-name="Category header band"
 >
-  <h2 id="products-category-header" class="sr-only">Browse our menu</h2>
+  <h2 id="products-category-header" class="sr-only">{accessibleHeading}</h2>
 
   <div class="relative mx-auto max-w-screen-2xl grid grid-cols-1 md:grid-cols-2">
     {/* Left panel — pink. CUPCAKES heading only. */}

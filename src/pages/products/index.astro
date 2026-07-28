@@ -41,7 +41,7 @@ function buildGridItems(product: Product) {
   });
 }
 
-const { navbar, footer, followUs, decorativeMarks, hero, siteName } = await loadHomePageContent();
+const { navbar, footer, followUs, decorativeMarks, hero, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const [cupcakeProduct, personalCakeProduct, categories] = await Promise.all([
   getRequiredProductBySlug("cupcakes"),
   getRequiredProductBySlug("personal-cakes"),
@@ -63,15 +63,16 @@ const categoryHeader = {
 const cupcakeFlavors = buildGridItems(cupcakeProduct);
 const personalCakeItems = buildGridItems(personalCakeProduct);
 ---
-<Layout title={`${cupcakesCategory.title} & ${personalCakesCategory.title} — ${siteName}`}>
+<Layout title={`${cupcakesCategory.title} & ${personalCakesCategory.title} — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
     <CategoryHeader
       {...categoryHeader}
       logoLargeSrc={decorativeMarks.largeSrc}
       logoLargeAlt={decorativeMarks.largeAlt}
       ampSrc={decorativeMarks.categoryHeaderAmpSrc}
       ampAlt={decorativeMarks.categoryHeaderAmpAlt}
+      accessibleHeading={decorativeMarks.categoryHeaderAccessibleHeading}
     />
     <CupcakeGrid
       heading={cupcakesCategory.heading ?? cupcakesCategory.title}
@@ -87,6 +88,6 @@ const personalCakeItems = buildGridItems(personalCakeProduct);
       price={personalCakeProduct.price}
       ctaLabel={hero.ctaLabel}
     />
-    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Footer {...footer} />
   </div>
 </Layout>

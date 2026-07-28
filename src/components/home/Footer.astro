@@ -7,9 +7,8 @@ interface Props {
   orderLabel: string;
   topLabel: string;
   copyright: string;
-  facebookHref?: string;
-  instagramHref?: string;
-  socialLinks?: { platform: string; href: string; iconUrl: string; iconAlt?: string }[];
+  /** Always Sanity-sourced (siteSettings.socialLinks), never empty. */
+  socialLinks: { platform: string; href: string; iconUrl: string; iconAlt?: string }[];
 }
 
 const {
@@ -20,17 +19,8 @@ const {
   orderLabel,
   topLabel,
   copyright,
-  facebookHref = "#",
-  instagramHref = "#",
-  socialLinks,
+  socialLinks: links,
 } = Astro.props;
-const links =
-  socialLinks && socialLinks.length > 0
-    ? socialLinks
-    : [
-        { platform: "Facebook", href: facebookHref, iconUrl: "/assets/facebook.svg" },
-        { platform: "Instagram", href: instagramHref, iconUrl: "/assets/instagram.svg" },
-      ];
 
 function maskStyle(url: string) {
   const escapedUrl = url.replace(/["\\]/g, "\\$&");

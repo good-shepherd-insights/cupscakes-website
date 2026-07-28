@@ -40,9 +40,19 @@ export const siteSettings = defineType({
     defineField({ name: 'decorativeMarkSmallAlt', title: 'Small Decorative Mark Alt Text', type: 'string', validation: (Rule) => Rule.required() }),
     defineField({ name: 'categoryHeaderAmpSrc', title: 'Category Header Ampersand URL', type: 'string', validation: (Rule) => Rule.required() }),
     defineField({ name: 'categoryHeaderAmpAlt', title: 'Category Header Ampersand Alt Text', type: 'string', validation: (Rule) => Rule.required() }),
+    // sr-only <h2> on the /products CategoryHeader section (not visible, but read by screen readers).
+    defineField({ name: 'categoryHeaderAccessibleHeading', title: 'Category Header Accessible Heading', type: 'string', validation: (Rule) => Rule.required() }),
     // Same label on every product's detail page — one site-wide value
     // rather than per-product content.
     defineField({ name: 'addToCartLabel', title: 'Add To Cart Button Label', type: 'string', validation: (Rule) => Rule.required() }),
+    // Transient label shown on the Add to Cart button while the request is in flight.
+    defineField({ name: 'addingToCartMessage', title: 'Adding To Cart Button Label (in progress)', type: 'string', validation: (Rule) => Rule.required() }),
+    // Shown in the confirmation toast on every page (via Layout.astro),
+    // not just the product/cart pages.
+    defineField({ name: 'addedToCartMessage', title: 'Added To Cart Toast Message', type: 'string', validation: (Rule) => Rule.required() }),
+    // Base accessible name for the cart icon/link (Navbar). Item-count
+    // pluralization ("(3 items)") stays in code — this is just the noun phrase.
+    defineField({ name: 'cartAccessibleLabel', title: 'Cart Icon Accessible Label', type: 'string', validation: (Rule) => Rule.required() }),
     // Site-wide social links — shared by Navbar, Footer, and the Follow Us
     // section, so they live here rather than nested in a single homepage
     // section.

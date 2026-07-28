@@ -7,16 +7,16 @@ import Loading from "../../components/order/Loading.astro";
 import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs, decorativeMarks, siteName } = await loadHomePageContent();
+const { navbar, followUs, decorativeMarks, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const { loading } = await loadOrderFlowContent();
 ---
-<Layout title={`Loading [WIP] — ${siteName}`}>
+<Layout title={`Loading [WIP] — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} activeLink="order" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} activeLink="order" />
     <Loading {...loading} logoSmallSrc={decorativeMarks.smallSrc} logoSmallAlt={decorativeMarks.smallAlt} />
     <noscript>
       <p class="px-4 py-3 text-center text-sm text-black">
-        Loading… <a class="underline text-brand-blue-dark" href={loading.redirectHref}>Continue</a>
+        {loading.loadingLabel} <a class="underline text-brand-blue-dark" href={loading.redirectHref}>{loading.continueLabel}</a>
       </p>
     </noscript>
   </div>

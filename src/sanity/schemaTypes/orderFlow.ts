@@ -96,6 +96,27 @@ export const orderFlow = defineType({
       description: 'Number of date pill options shown (plus one "Other Date" cell).',
       validation: (R) => R.required().integer().positive(),
     }),
+    defineField({
+      name: 'otherDateLabel',
+      title: 'Other Date Pill Label',
+      type: 'string',
+      description: 'Screen-reader label for the "Other Date" pill on both the pick-up-date and delivery-date screens.',
+      validation: (R) => R.required(),
+    }),
+    defineField({
+      name: 'otherDateInputAriaLabel',
+      title: 'Other Date Input Accessible Name',
+      type: 'string',
+      description: 'aria-label on the date `<input>` revealed by the "Other Date" pill.',
+      validation: (R) => R.required(),
+    }),
+    defineField({
+      name: 'otherDateRequiredMessage',
+      title: 'Other Date Required Validation Message',
+      type: 'string',
+      description: 'Native browser validation message shown when the "Other Date" pill is selected but left blank.',
+      validation: (R) => R.required(),
+    }),
 
     defineField({
       name: 'pickup',
@@ -115,6 +136,7 @@ export const orderFlow = defineType({
           title: 'Contact Info Screen',
           type: 'object',
           fields: [
+            defineField({ name: 'accessibleHeading', title: 'Accessible Heading (sr-only)', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'dateFieldLabel', title: 'Date Field Label', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'timeFieldLabel', title: 'Time Field Label', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'nextHref', title: 'Next URL', type: 'string', validation: (R) => R.required() }),
@@ -125,6 +147,7 @@ export const orderFlow = defineType({
           title: 'Date Selection Screen',
           type: 'object',
           fields: [
+            defineField({ name: 'accessibleHeading', title: 'Accessible Heading (sr-only)', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'dateSectionHeading', title: 'Date Section Heading', type: 'string', validation: (R) => R.required() }),
           ],
         }),
@@ -143,6 +166,7 @@ export const orderFlow = defineType({
           title: 'Contact Info Screen',
           type: 'object',
           fields: [
+            defineField({ name: 'accessibleHeading', title: 'Accessible Heading (sr-only)', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'addressHeading', title: 'Address Section Heading', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'dateFieldLabel', title: 'Date Field Label', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'timeFieldLabel', title: 'Time Field Label', type: 'string', validation: (R) => R.required() }),
@@ -162,6 +186,7 @@ export const orderFlow = defineType({
           title: 'Date Selection Screen',
           type: 'object',
           fields: [
+            defineField({ name: 'accessibleHeading', title: 'Accessible Heading (sr-only)', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'dateSectionHeading', title: 'Date Section Heading', type: 'string', validation: (R) => R.required() }),
           ],
         }),
@@ -224,6 +249,7 @@ export const orderFlow = defineType({
       options: { collapsible: true, collapsed: true },
       fields: [
         defineField({ name: 'loadingLabel', title: 'Loading Label', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'continueLabel', title: 'No-JS Continue Link Label', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'redirectHref', title: 'Redirect URL', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'redirectAfterMs', title: 'Redirect Delay (ms)', type: 'number', validation: (R) => R.required().positive() }),
       ],
@@ -264,6 +290,7 @@ export const orderFlow = defineType({
             defineField({ name: 'saveLabel', title: 'Save', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'cancelLabel', title: 'Cancel', type: 'string', validation: (R) => R.required() }),
             defineField({ name: 'removeLabel', title: 'Remove', type: 'string', validation: (R) => R.required() }),
+            defineField({ name: 'removingLabel', title: 'Removing (in progress)', type: 'string', validation: (R) => R.required() }),
           ],
         }),
         defineField({ name: 'subtotalLabel', title: 'Subtotal Label', type: 'string', validation: (R) => R.required() }),

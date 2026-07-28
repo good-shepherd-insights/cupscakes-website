@@ -7,6 +7,10 @@ export const homePage = defineType({
   title: 'Home Page',
   type: 'document',
   fields: [
+    // sr-only accessible label on the flavor-icon band (SmallBanner.astro),
+    // not tied to any other section on the page.
+    defineField({ name: 'flavorBandAccessibleLabel', title: 'Flavor Band Accessible Label', type: 'string', validation: (R) => R.required() }),
+
     // ---------- HERO ----------
     defineField({
       name: 'hero',
@@ -16,12 +20,14 @@ export const homePage = defineType({
       fields: [
         defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'ctaLabel', title: 'CTA Label', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'ctaAriaLabel', title: 'CTA Accessible Name', type: 'string', validation: (R) => R.required() }),
         // TODO: plain string, no format validation — see the same TODO on
         // navigation.ts's hrefs.
         defineField({ name: 'orderHref', title: 'CTA URL', type: 'string', validation: (R) => R.required() }),
         imageField('backgroundImage', 'Background Image', { required: true }),
         imageField('logo', 'Logo', { required: true }),
         imageField('scrollIndicator', 'Scroll Indicator'),
+        defineField({ name: 'scrollAriaLabel', title: 'Scroll Indicator Accessible Name', type: 'string', validation: (R) => R.required() }),
       ],
     }),
 

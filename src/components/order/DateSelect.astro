@@ -30,6 +30,9 @@ interface Props {
   /** Passed through to the dynamic-date generator when `options` isn't provided. */
   leadDays: number;
   dateCount: number;
+  otherDateLabel: string;
+  otherDateInputAriaLabel: string;
+  otherDateRequiredMessage: string;
   /** Used for `data-node-id` traceability ("3311:6708" / "3311:6423"). */
   cardNodeId?: string;
   /** Used for `data-node-id` traceability on the heading. */
@@ -49,6 +52,9 @@ const {
   nextHref,
   leadDays,
   dateCount,
+  otherDateLabel,
+  otherDateInputAriaLabel,
+  otherDateRequiredMessage,
   cardNodeId,
   headingNodeId,
   dateHeadingNodeId,
@@ -143,7 +149,7 @@ const minimumDate = options?.find((option) => !option.other)?.value;
                   data-other={option.other ? "true" : undefined}
                 />
                 <label for={id} class={pillBase} data-other-date-label={option.other ? "true" : undefined}>
-                  {option.other ? <span class="sr-only">Other date</span> : option.label}
+                  {option.other ? <span class="sr-only">{otherDateLabel}</span> : option.label}
                 </label>
                 {option.other && (
                   <input
@@ -151,7 +157,8 @@ const minimumDate = options?.find((option) => !option.other)?.value;
                     name="otherDate"
                     min={minimumDate}
                     data-other-date
-                    aria-label="Choose another date"
+                    data-required-message={otherDateRequiredMessage}
+                    aria-label={otherDateInputAriaLabel}
                     class={otherDateInputClass}
                   />
                 )}
@@ -190,8 +197,8 @@ const minimumDate = options?.find((option) => !option.other)?.value;
 <template id="other-date-pill-template">
   <div class="relative">
     <input type="radio" name="date" id="" value="other" required class="peer sr-only" data-other="true" />
-    <label for="" data-other-date-label="true" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"><span class="sr-only">Other date</span></label>
-    <input type="date" name="otherDate" data-other-date aria-label="Choose another date" class="absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark" />
+    <label for="" data-other-date-label="true" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"><span class="sr-only">{otherDateLabel}</span></label>
+    <input type="date" name="otherDate" data-other-date data-required-message={otherDateRequiredMessage} aria-label={otherDateInputAriaLabel} class="absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark" />
   </div>
 </template>
 
@@ -242,7 +249,7 @@ const minimumDate = options?.find((option) => !option.other)?.value;
 
     const syncRequiredState = () => {
       otherDate.required = otherRadio.checked;
-      otherDate.setCustomValidity(otherRadio.checked && !otherDate.value ? 'Choose a date.' : '');
+      otherDate.setCustomValidity(otherRadio.checked && !otherDate.value ? (otherDate.dataset.requiredMessage ?? '') : '');
     };
 
     const selectOtherDate = () => {

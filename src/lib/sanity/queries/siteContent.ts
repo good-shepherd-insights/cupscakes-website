@@ -15,13 +15,16 @@ type SanitySocialLink = {
 };
 
 type SanityHomePage = {
+  flavorBandAccessibleLabel?: string;
   hero?: {
     headline?: string;
     ctaLabel?: string;
+    ctaAriaLabel?: string;
     orderHref?: string;
     backgroundImage?: SanityImage;
     logo?: SanityImage;
     scrollIndicator?: SanityImage;
+    scrollAriaLabel?: string;
   };
   ourStory?: {
     heading?: string;
@@ -70,8 +73,13 @@ type SanityNavigation = {
   productsHref?: string;
   cartHref?: string;
   shopHref?: string;
+  homeLabel?: string;
   productsLabel?: string;
   shopLabel?: string;
+  logoTextBefore?: string;
+  logoTextAfter?: string;
+  openMenuLabel?: string;
+  closeMenuLabel?: string;
   cupsIcon?: SanityImage;
   cartIcon?: SanityImage;
   mobileMenuLogo?: SanityImage;
@@ -99,7 +107,11 @@ type SanitySiteSettings = {
   decorativeMarkSmallAlt?: string;
   categoryHeaderAmpSrc?: string;
   categoryHeaderAmpAlt?: string;
+  categoryHeaderAccessibleHeading?: string;
   addToCartLabel?: string;
+  addingToCartMessage?: string;
+  addedToCartMessage?: string;
+  cartAccessibleLabel?: string;
   socialLinks?: SanitySocialLink[];
 };
 
@@ -201,6 +213,9 @@ export async function loadHomePageContent() {
     siteName: siteSettings?.siteName ?? 'Cups & Cakes',
     faviconUrl: optionalImageUrl(siteSettings?.favicon) ?? LOCAL_ASSETS.cupsIcon,
     addToCartLabel: siteSettings?.addToCartLabel,
+    addingToCartMessage: siteSettings?.addingToCartMessage,
+    addedToCartMessage: siteSettings?.addedToCartMessage,
+    cartAccessibleLabel: siteSettings?.cartAccessibleLabel,
     seo: {
       metaTitle,
       metaDescription,
@@ -226,6 +241,8 @@ export async function loadHomePageContent() {
       '--background-image-banner-amp-small': cssUrl(imageUrl(homePage?.cupcakesBanner?.ampImageSmall, LOCAL_ASSETS.bannerAmpSmall)),
     },
     navbar: {
+      siteName: siteSettings?.siteName ?? 'Cups & Cakes',
+      cartAccessibleLabel: siteSettings?.cartAccessibleLabel,
       homeHref: navigation?.homeHref,
       whoHref: navigation?.whoHref,
       orderHref: navigation?.orderHref,
@@ -234,8 +251,13 @@ export async function loadHomePageContent() {
       shopHref: navigation?.shopHref,
       whoLabel: homePage?.ourStory?.heading,
       orderLabel: homePage?.hero?.ctaLabel,
+      homeLabel: navigation?.homeLabel,
       productsLabel: navigation?.productsLabel,
       shopLabel: navigation?.shopLabel,
+      logoTextBefore: navigation?.logoTextBefore,
+      logoTextAfter: navigation?.logoTextAfter,
+      openMenuLabel: navigation?.openMenuLabel,
+      closeMenuLabel: navigation?.closeMenuLabel,
       facebookHref: resolvedSocialLinks[0]?.href,
       instagramHref: resolvedSocialLinks[1]?.href,
       socialLinks: resolvedSocialLinks,
@@ -248,12 +270,16 @@ export async function loadHomePageContent() {
       smallAlt: siteSettings?.decorativeMarkSmallAlt,
       categoryHeaderAmpSrc: siteSettings?.categoryHeaderAmpSrc,
       categoryHeaderAmpAlt: siteSettings?.categoryHeaderAmpAlt,
+      categoryHeaderAccessibleHeading: siteSettings?.categoryHeaderAccessibleHeading,
     },
     hero: {
       headline: homePage?.hero?.headline,
       ctaLabel: homePage?.hero?.ctaLabel,
+      ctaAriaLabel: homePage?.hero?.ctaAriaLabel,
       orderHref: homePage?.hero?.orderHref,
+      scrollAriaLabel: homePage?.hero?.scrollAriaLabel,
     },
+    flavorBandAccessibleLabel: homePage?.flavorBandAccessibleLabel,
     ourStory: {
       heading: homePage?.ourStory?.heading,
       paragraphs: homePage?.ourStory?.paragraphs ?? [],

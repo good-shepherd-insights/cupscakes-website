@@ -29,14 +29,18 @@ type SanityOrderFlow = {
   dateSelectionNextHref?: string;
   dateSelectionLeadDays?: number;
   dateSelectionCount?: number;
+  otherDateLabel?: string;
+  otherDateInputAriaLabel?: string;
+  otherDateRequiredMessage?: string;
   pickup?: {
     heading?: string;
-    contactInfo?: { dateFieldLabel?: string; timeFieldLabel?: string; nextHref?: string };
-    dateSelection?: { dateSectionHeading?: string };
+    contactInfo?: { accessibleHeading?: string; dateFieldLabel?: string; timeFieldLabel?: string; nextHref?: string };
+    dateSelection?: { accessibleHeading?: string; dateSectionHeading?: string };
   };
   delivery?: {
     heading?: string;
     contactInfo?: {
+      accessibleHeading?: string;
       addressHeading?: string;
       dateFieldLabel?: string;
       timeFieldLabel?: string;
@@ -44,10 +48,11 @@ type SanityOrderFlow = {
       addressFields?: SanityContactField[];
       nextHref?: string;
     };
-    dateSelection?: { dateSectionHeading?: string };
+    dateSelection?: { accessibleHeading?: string; dateSectionHeading?: string };
   };
   loading?: {
     loadingLabel?: string;
+    continueLabel?: string;
     redirectHref?: string;
     redirectAfterMs?: number;
   };
@@ -66,6 +71,7 @@ type SanityOrderFlow = {
       saveLabel?: string;
       cancelLabel?: string;
       removeLabel?: string;
+      removingLabel?: string;
     };
     subtotalLabel?: string;
     checkoutLabel?: string;
@@ -105,6 +111,7 @@ export async function loadOrderFlowContent() {
     },
     pickup: {
       heading: orderFlow?.pickup?.heading,
+      accessibleHeading: orderFlow?.pickup?.contactInfo?.accessibleHeading,
       changeLabel,
       changeHref,
       contactHeading: orderFlow?.contactHeading,
@@ -117,6 +124,7 @@ export async function loadOrderFlowContent() {
     },
     delivery: {
       heading: orderFlow?.delivery?.heading,
+      accessibleHeading: orderFlow?.delivery?.contactInfo?.accessibleHeading,
       changeLabel,
       changeHref,
       contactHeading: orderFlow?.contactHeading,
@@ -132,6 +140,7 @@ export async function loadOrderFlowContent() {
     },
     pickupDate: {
       heading: orderFlow?.pickup?.heading,
+      accessibleHeading: orderFlow?.pickup?.dateSelection?.accessibleHeading,
       changeLabel,
       changeHref,
       dateHeading: orderFlow?.pickup?.dateSelection?.dateSectionHeading,
@@ -140,9 +149,13 @@ export async function loadOrderFlowContent() {
       nextHref: orderFlow?.dateSelectionNextHref,
       leadDays: orderFlow?.dateSelectionLeadDays,
       dateCount: orderFlow?.dateSelectionCount,
+      otherDateLabel: orderFlow?.otherDateLabel,
+      otherDateInputAriaLabel: orderFlow?.otherDateInputAriaLabel,
+      otherDateRequiredMessage: orderFlow?.otherDateRequiredMessage,
     },
     deliveryDate: {
       heading: orderFlow?.delivery?.heading,
+      accessibleHeading: orderFlow?.delivery?.dateSelection?.accessibleHeading,
       changeLabel,
       changeHref,
       dateHeading: orderFlow?.delivery?.dateSelection?.dateSectionHeading,
@@ -151,9 +164,13 @@ export async function loadOrderFlowContent() {
       nextHref: orderFlow?.dateSelectionNextHref,
       leadDays: orderFlow?.dateSelectionLeadDays,
       dateCount: orderFlow?.dateSelectionCount,
+      otherDateLabel: orderFlow?.otherDateLabel,
+      otherDateInputAriaLabel: orderFlow?.otherDateInputAriaLabel,
+      otherDateRequiredMessage: orderFlow?.otherDateRequiredMessage,
     },
     loading: {
       loadingLabel: orderFlow?.loading?.loadingLabel,
+      continueLabel: orderFlow?.loading?.continueLabel,
       redirectHref: orderFlow?.loading?.redirectHref,
       redirectAfterMs: orderFlow?.loading?.redirectAfterMs,
     },
@@ -169,6 +186,7 @@ export async function loadOrderFlowContent() {
       saveLabel: orderFlow?.cart?.actions?.saveLabel,
       cancelLabel: orderFlow?.cart?.actions?.cancelLabel,
       removeLabel: orderFlow?.cart?.actions?.removeLabel,
+      removingLabel: orderFlow?.cart?.actions?.removingLabel,
       subtotalLabel: orderFlow?.cart?.subtotalLabel,
       checkoutLabel: orderFlow?.cart?.checkoutLabel,
       emptyMessage: orderFlow?.cart?.emptyMessage,

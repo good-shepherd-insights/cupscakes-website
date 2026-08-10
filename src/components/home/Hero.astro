@@ -1,57 +1,86 @@
 ---
 interface Props {
   headline: string;
+  headlinePrefix?: string;
+  headlineEmphasis?: string;
+  headlineSuffix?: string;
   ctaLabel: string;
   ctaAriaLabel: string;
   orderHref: string;
   siteName: string;
+  puertoRicoIconSrc?: string;
+  puertoRicoIconAccessibleLabel?: string;
   scrollAriaLabel: string;
 }
 
-const { headline, ctaLabel, ctaAriaLabel, orderHref, siteName, scrollAriaLabel } = Astro.props;
+const {
+  headline,
+  headlinePrefix,
+  headlineEmphasis,
+  headlineSuffix,
+  ctaLabel,
+  ctaAriaLabel,
+  orderHref,
+  siteName,
+  puertoRicoIconSrc,
+  puertoRicoIconAccessibleLabel,
+  scrollAriaLabel,
+} = Astro.props;
+const hasSplitHeadline = Boolean(headlinePrefix && headlineEmphasis && headlineSuffix);
 ---
 
 <section
   class="relative w-full bg-hero-cupcakes bg-cover bg-center
-         min-h-[300px] sm:min-h-0 sm:aspect-[1920/960]
+         min-h-[360px] sm:min-h-[420px] lg:min-h-[470px] xl:min-h-[500px]
          flex flex-col items-center justify-center"
   data-node-id="3311:1437"
   data-name="Mask Group 1"
 >
   <div
-    class="absolute inset-0 bg-brand-pink/20 pointer-events-none"
+    class="absolute inset-0 bg-brand-pink/25 pointer-events-none"
     data-node-id="3311:1445"
     data-name="Rectangle 4 (tint)"
     aria-hidden="true"
   ></div>
 
-  <span
-    class="relative bg-hero-logo bg-no-repeat bg-contain bg-center
-           h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20 aspect-[117/86]
-           mb-4 sm:mb-5 md:mb-6 drop-shadow-md"
-    data-node-id="3311:1460"
-    data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_14"
-    role="img"
-    aria-label={siteName}
-  ></span>
+  {puertoRicoIconSrc && (
+    <span
+      class="relative mb-4 sm:mb-5 md:mb-6
+             h-16 sm:h-[72px] md:h-20 lg:h-24 xl:h-28 aspect-square
+             bg-no-repeat bg-contain bg-center drop-shadow-md"
+      style={`background-image: url("${puertoRicoIconSrc.replace(/["\\]/g, '\\$&')}")`}
+      role={puertoRicoIconAccessibleLabel ? "img" : undefined}
+      aria-label={puertoRicoIconAccessibleLabel}
+      aria-hidden={puertoRicoIconAccessibleLabel ? undefined : "true"}
+      data-name="Puerto Rico icon"
+    ></span>
+  )}
 
   <h1
-    class="relative text-white font-medium text-center
-           text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
-           leading-tight drop-shadow-md
-           m-0 px-4"
+    class="relative m-0 px-4 text-center text-white font-semibold leading-none drop-shadow-md"
     data-node-id="3311:1446"
-  >{headline}</h1>
+    aria-label={headline}
+  >
+    {hasSplitHeadline ? (
+      <span aria-hidden="true" class="inline-flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1">
+        <span class="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">{headlinePrefix}</span>
+        <span class="text-6xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-9xl">{headlineEmphasis}</span>
+        <span class="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">{headlineSuffix}</span>
+      </span>
+    ) : (
+      <span class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl">{headline}</span>
+    )}
+  </h1>
 
   <a
     href={orderHref}
-    class="relative mt-6 sm:mt-8 md:mt-10 lg:mt-12
+    class="relative mt-8 sm:mt-9 md:mt-10
            inline-flex items-center justify-center
            bg-brand-blue text-white font-medium no-underline
            border border-brand-border
-           h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20
-           w-48 sm:w-56 md:w-64 lg:w-72 xl:w-80
-           text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
+           h-12 md:h-14
+           w-48 sm:w-56 md:w-60
+           text-lg sm:text-xl md:text-2xl
            transition-[transform,filter] duration-150 ease-out
            hover:brightness-110 hover:-translate-y-px
            focus-visible:brightness-110 focus-visible:-translate-y-px focus-visible:outline-hidden"
@@ -61,14 +90,14 @@ const { headline, ctaLabel, ctaAriaLabel, orderHref, siteName, scrollAriaLabel }
   ><span>{ctaLabel}</span></a>
 
   <span
-    class="absolute bottom-3 sm:bottom-4 md:bottom-5 lg:bottom-6
+    class="absolute bottom-5 sm:bottom-6
            left-1/2 -translate-x-1/2
            bg-hero-scroll bg-no-repeat bg-contain bg-center
-           w-20 sm:w-24 md:w-28 lg:w-32 aspect-[137/18]
+           w-20 sm:w-24 aspect-[137/18]
            opacity-90"
     data-node-id="3311:1444"
     data-name="Group 3"
     role="img"
-    aria-label={scrollAriaLabel}
+    aria-label={scrollAriaLabel ?? siteName}
   ></span>
 </section>

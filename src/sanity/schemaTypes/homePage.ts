@@ -11,6 +11,23 @@ export const homePage = defineType({
     // not tied to any other section on the page.
     defineField({ name: 'flavorBandAccessibleLabel', title: 'Flavor Band Accessible Label', type: 'string', validation: (R) => R.required() }),
 
+    // ---------- PROMO STRIP ----------
+    defineField({
+      name: 'promoStrip',
+      title: 'Promo Strip',
+      type: 'object',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'text', title: 'Text', type: 'string', validation: (R) => R.required() }),
+        defineField({
+          name: 'accessibleLabel',
+          title: 'Accessible Label',
+          type: 'string',
+          description: 'Optional screen-reader label when the visible strip text is highly promotional.',
+        }),
+      ],
+    }),
+
     // ---------- HERO ----------
     defineField({
       name: 'hero',
@@ -19,6 +36,24 @@ export const homePage = defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({ name: 'headline', title: 'Headline', type: 'string', validation: (R) => R.required() }),
+        defineField({
+          name: 'headlinePrefix',
+          title: 'Headline Prefix',
+          type: 'string',
+          description: 'Small text before the emphasized phrase.',
+        }),
+        defineField({
+          name: 'headlineEmphasis',
+          title: 'Headline Emphasis',
+          type: 'string',
+          description: 'Large emphasized phrase.',
+        }),
+        defineField({
+          name: 'headlineSuffix',
+          title: 'Headline Suffix',
+          type: 'string',
+          description: 'Small text after the emphasized phrase.',
+        }),
         defineField({ name: 'ctaLabel', title: 'CTA Label', type: 'string', validation: (R) => R.required() }),
         defineField({ name: 'ctaAriaLabel', title: 'CTA Accessible Name', type: 'string', validation: (R) => R.required() }),
         // TODO: plain string, no format validation — see the same TODO on
@@ -26,8 +61,55 @@ export const homePage = defineType({
         defineField({ name: 'orderHref', title: 'CTA URL', type: 'string', validation: (R) => R.required() }),
         imageField('backgroundImage', 'Background Image', { required: true }),
         imageField('logo', 'Logo', { required: true }),
+        imageField('puertoRicoIcon', 'Puerto Rico Icon'),
+        defineField({
+          name: 'puertoRicoIconAccessibleLabel',
+          title: 'Puerto Rico Icon Accessible Label',
+          type: 'string',
+          description: 'Optional label for the Puerto Rico icon. Leave blank if decorative.',
+        }),
         imageField('scrollIndicator', 'Scroll Indicator'),
         defineField({ name: 'scrollAriaLabel', title: 'Scroll Indicator Accessible Name', type: 'string', validation: (R) => R.required() }),
+      ],
+    }),
+
+    // ---------- INTRO ----------
+    defineField({
+      name: 'intro',
+      title: 'Intro',
+      type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'subheading', title: 'Subheading', type: 'string', validation: (R) => R.required() }),
+      ],
+    }),
+
+    // ---------- TESTIMONIAL ----------
+    defineField({
+      name: 'testimonial',
+      title: 'Testimonial',
+      type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({ name: 'accessibleHeading', title: 'Accessible Heading', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'quote', title: 'Quote', type: 'text', rows: 2, validation: (R) => R.required() }),
+        defineField({ name: 'attribution', title: 'Attribution', type: 'string', validation: (R) => R.required() }),
+        imageField('avatar', 'Avatar'),
+      ],
+    }),
+
+    // ---------- REVIEW CTA ----------
+    defineField({
+      name: 'reviewCta',
+      title: 'Review CTA',
+      type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'ctaLabel', title: 'CTA Label', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'ctaHref', title: 'CTA URL', type: 'url', validation: (R) => R.required() }),
+        defineField({ name: 'ctaAriaLabel', title: 'CTA Accessible Name', type: 'string', validation: (R) => R.required() }),
       ],
     }),
 

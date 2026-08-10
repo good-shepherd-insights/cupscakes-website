@@ -16,15 +16,40 @@ type SanitySocialLink = {
 
 type SanityHomePage = {
   flavorBandAccessibleLabel?: string;
+  promoStrip?: {
+    text?: string;
+    accessibleLabel?: string;
+  };
   hero?: {
     headline?: string;
+    headlinePrefix?: string;
+    headlineEmphasis?: string;
+    headlineSuffix?: string;
     ctaLabel?: string;
     ctaAriaLabel?: string;
     orderHref?: string;
     backgroundImage?: SanityImage;
     logo?: SanityImage;
+    puertoRicoIcon?: SanityImage;
+    puertoRicoIconAccessibleLabel?: string;
     scrollIndicator?: SanityImage;
     scrollAriaLabel?: string;
+  };
+  intro?: {
+    heading?: string;
+    subheading?: string;
+  };
+  testimonial?: {
+    accessibleHeading?: string;
+    quote?: string;
+    attribution?: string;
+    avatar?: SanityImage;
+  };
+  reviewCta?: {
+    heading?: string;
+    ctaLabel?: string;
+    ctaHref?: string;
+    ctaAriaLabel?: string;
   };
   ourStory?: {
     heading?: string;
@@ -272,14 +297,39 @@ export async function loadHomePageContent() {
       categoryHeaderAmpAlt: siteSettings?.categoryHeaderAmpAlt,
       categoryHeaderAccessibleHeading: siteSettings?.categoryHeaderAccessibleHeading,
     },
+    promoStrip: {
+      text: homePage?.promoStrip?.text,
+      accessibleLabel: homePage?.promoStrip?.accessibleLabel,
+    },
     hero: {
       headline: homePage?.hero?.headline,
+      headlinePrefix: homePage?.hero?.headlinePrefix,
+      headlineEmphasis: homePage?.hero?.headlineEmphasis,
+      headlineSuffix: homePage?.hero?.headlineSuffix,
       ctaLabel: homePage?.hero?.ctaLabel,
       ctaAriaLabel: homePage?.hero?.ctaAriaLabel,
       orderHref: homePage?.hero?.orderHref,
+      puertoRicoIconSrc: optionalImageUrl(homePage?.hero?.puertoRicoIcon),
+      puertoRicoIconAccessibleLabel: homePage?.hero?.puertoRicoIconAccessibleLabel,
       scrollAriaLabel: homePage?.hero?.scrollAriaLabel,
     },
     flavorBandAccessibleLabel: homePage?.flavorBandAccessibleLabel,
+    intro: {
+      heading: homePage?.intro?.heading,
+      subheading: homePage?.intro?.subheading,
+    },
+    testimonial: {
+      accessibleHeading: homePage?.testimonial?.accessibleHeading,
+      quote: homePage?.testimonial?.quote,
+      attribution: homePage?.testimonial?.attribution,
+      avatarSrc: optionalImageUrl(homePage?.testimonial?.avatar),
+    },
+    reviewCta: {
+      heading: homePage?.reviewCta?.heading,
+      ctaLabel: homePage?.reviewCta?.ctaLabel,
+      ctaHref: homePage?.reviewCta?.ctaHref,
+      ctaAriaLabel: homePage?.reviewCta?.ctaAriaLabel,
+    },
     ourStory: {
       heading: homePage?.ourStory?.heading,
       paragraphs: homePage?.ourStory?.paragraphs ?? [],

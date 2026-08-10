@@ -46,7 +46,7 @@ const hasSplitHeadline = Boolean(headlinePrefix && headlineEmphasis && headlineS
   {puertoRicoIconSrc && (
     <span
       class="relative mb-4 sm:mb-5 md:mb-6
-             h-16 sm:h-[72px] md:h-20 lg:h-24 xl:h-28 aspect-square
+             mx-auto block h-16 sm:h-[72px] md:h-20 lg:h-24 xl:h-28 aspect-square
              bg-no-repeat bg-contain bg-center drop-shadow-md"
       style={`background-image: url("${puertoRicoIconSrc.replace(/["\\]/g, '\\$&')}")`}
       role={puertoRicoIconAccessibleLabel ? "img" : undefined}
@@ -62,10 +62,13 @@ const hasSplitHeadline = Boolean(headlinePrefix && headlineEmphasis && headlineS
     aria-label={headline}
   >
     {hasSplitHeadline ? (
-      <span aria-hidden="true" class="inline-flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1">
-        <span class="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">{headlinePrefix}</span>
-        <span class="text-6xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-9xl">{headlineEmphasis}</span>
-        <span class="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">{headlineSuffix}</span>
+      <span
+        aria-hidden="true"
+        class="grid w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-baseline gap-x-3 sm:gap-x-4 md:gap-x-5"
+      >
+        <span class="justify-self-end text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">{headlinePrefix}</span>
+        <span class="justify-self-center text-6xl sm:text-7xl md:text-8xl lg:text-8xl xl:text-9xl">{headlineEmphasis}</span>
+        <span class="justify-self-start text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl">{headlineSuffix}</span>
       </span>
     ) : (
       <span class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl">{headline}</span>

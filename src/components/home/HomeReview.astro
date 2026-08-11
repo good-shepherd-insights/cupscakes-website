@@ -26,16 +26,12 @@ const { accessibleHeading, quote, attribution, avatarSrc } = Astro.props;
 
   <div class="relative mx-auto flex max-w-4xl flex-col items-center">
     {avatarSrc && (
-      <div
-        class="mb-6 flex h-16 w-16 items-center justify-center rounded-full border-4 border-white"
+      <img
+        src={avatarSrc}
+        alt=""
         aria-hidden="true"
-      >
-        <img
-          src={avatarSrc}
-          alt=""
-          class="h-[3.75rem] w-[3.75rem] rounded-full object-cover"
-        />
-      </div>
+        class="mb-6 h-[4.5rem] w-[4.5rem] rounded-full border-4 border-white object-cover"
+      />
     )}
 
     <blockquote class="m-0">

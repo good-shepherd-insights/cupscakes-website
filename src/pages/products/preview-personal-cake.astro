@@ -7,12 +7,20 @@ import PersonalCakeProduct from "../../components/product/PersonalCakeProduct.as
 import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { formatProductPrice } from "../../lib/format/productPrice";
 import { getRequiredProductPriceBySlug } from "../../lib/sanity/queries/products";
+import { resolveSeo } from "../../lib/seo/resolveSeo";
 
 const { navbar, footer, followUs, addToCartLabel, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const personalCakePrice = await getRequiredProductPriceBySlug("personal-cakes");
+const resolvedSeo = resolveSeo({
+  pageKind: 'utility',
+  site: Astro.site,
+  pathname: Astro.url.pathname,
+  siteName,
+  fallbackTitle: `Personal Cake — ${siteName}`,
+});
 ---
 
-<Layout title={`Personal Cake — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
+<Layout seo={resolvedSeo} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} mode="store" activeLink="products" />
     <PersonalCakeProduct

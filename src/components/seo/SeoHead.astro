@@ -1,0 +1,14 @@
+---
+import { SEO } from 'astro-seo';
+import { Schema } from 'astro-seo-schema';
+import type { ResolvedSeo } from '../../types/seo';
+
+interface Props {
+  seo: ResolvedSeo;
+}
+
+const { seo } = Astro.props;
+---
+
+<SEO {...seo.meta} />
+{seo.schema.map((item) => <Schema item={item} />)}

@@ -7,12 +7,13 @@ const PRODUCT_FIELDS = `
   name,
   price,
   slug,
-  category->{ _id, title, slug, heading, caption, displayOrder, anchorHref },
+  category->{ _id, title, slug, heading, caption, displayOrder, anchorHref, seo },
   image,
   description,
   subtitle,
   servingInfo,
   seo,
+  structuredData,
   customOptions
 `;
 
@@ -67,7 +68,7 @@ export async function getRequiredProductPriceBySlug(productSlug: string): Promis
 
 export async function getAllProductCategories(): Promise<ProductCategory[]> {
   const categories = await sanityClient.fetch<ProductCategory[]>(
-    `*[_type == "productCategory"] | order(displayOrder asc) { _id, title, slug, heading, caption, displayOrder, anchorHref }`
+    `*[_type == "productCategory"] | order(displayOrder asc) { _id, title, slug, heading, caption, displayOrder, anchorHref, seo }`
   );
   return deepStegaClean(categories);
 }

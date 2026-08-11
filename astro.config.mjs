@@ -1,7 +1,9 @@
 import { defineConfig, envField } from 'astro/config';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import { loadEnv } from 'vite';
+import { shouldIncludeInSitemap } from './src/lib/seo/routePolicy.ts';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -18,17 +20,31 @@ export default defineConfig({
       PUBLIC_SNIPCART_API_KEY: envField.string({ context: 'client', access: 'public' })
     }
   },
-  integrations: [sanity({
-    projectId: env.PUBLIC_SANITY_PROJECT_ID,
-    dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
-    apiVersion: '2026-05-01',
-    useCdn: false,
-    studioBasePath: '/admin',
-    stega: {
-      enabled: true,
-      studioUrl: '/admin',
-    },
-  }), react(), frontmanAi()],
+  integrations: [
+    sanity({
+      projectId: env.PUBLIC_SANITY_PROJECT_ID,
+      dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
+      apiVersion: '2026-05-01',
+      useCdn: false,
+      studioBasePath: '/admin',
+      stega: {
+        enabled: true,
+        studioUrl: '/admin',
+      },
+    }),
+    react(),
+    sitemap({
+      filter: shouldIncludeInSitemap,
+      serialize(item) {
+        const url = new URL(item.url);
+        if (url.pathname !== '/' && url.pathname.endsWith('/')) {
+          url.pathname = url.pathname.slice(0, -1);
+        }
+        return { ...item, url: url.toString() };
+      },
+    }),
+    frontmanAi(),
+  ],
   vite: {
     define: {
       'process.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.PUBLIC_SANITY_PROJECT_ID),

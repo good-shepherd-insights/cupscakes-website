@@ -1,5 +1,4 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { SeoCharCountInput } from '../components/SeoCharCountInput';
 import { imageField } from '../lib/imageField';
 
 export const homePage = defineType({
@@ -233,31 +232,7 @@ export const homePage = defineType({
     }),
 
     // ---------- SEO ----------
-    defineField({
-      name: 'seo',
-      title: 'SEO',
-      type: 'object',
-      options: { collapsible: true, collapsed: true },
-      fields: [
-        defineField({
-          name: 'metaTitle',
-          title: 'Meta Title',
-          type: 'string',
-          description: 'Optional. Falls back to site name.',
-        }),
-        defineField({
-          name: 'metaDescription',
-          title: 'Meta Description',
-          type: 'text',
-          rows: 3,
-          description: 'Required, 70–160 characters.',
-          components: { input: SeoCharCountInput },
-          validation: (R) =>
-            R.required().min(70).max(160).error('Meta description must be between 70 and 160 characters.'),
-        }),
-        imageField('metaImage', 'Meta Image'),
-      ],
-    }),
+    defineField({ name: 'seo', title: 'SEO', type: 'seo', options: { collapsible: true, collapsed: true } }),
   ],
   preview: { prepare: () => ({ title: 'Home Page' }) },
 });

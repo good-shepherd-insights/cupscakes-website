@@ -1,4 +1,5 @@
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import type { SanityBusinessIdentity, SanitySeo } from '../../../types/seo';
 import { urlFor } from '../image';
 import { sanityClient } from '../client';
 import { deepStegaClean } from '../stega';
@@ -89,11 +90,7 @@ type SanityHomePage = {
   followUs?: {
     heading?: string;
   };
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    metaImage?: SanityImage;
-  };
+  seo?: SanitySeo;
 };
 
 type SanityNavigation = {
@@ -125,11 +122,9 @@ type SanityFooter = {
 
 type SanitySiteSettings = {
   siteName?: string;
-  defaultSeo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    metaImage?: SanityImage;
-  };
+  defaultSeo?: SanitySeo;
+  productsSeo?: SanitySeo;
+  businessIdentity?: SanityBusinessIdentity;
   favicon?: SanityImage;
   decorativeMarkLargeSrc?: string;
   decorativeMarkLargeAlt?: string;
@@ -247,28 +242,17 @@ export async function loadHomePageContent() {
     });
   }
 
-  const metaTitle =
-    homePage?.seo?.metaTitle ??
-    siteSettings?.defaultSeo?.metaTitle ??
-    siteSettings?.siteName ??
-    'Cups & Cakes';
-  const metaDescription =
-    homePage?.seo?.metaDescription ?? siteSettings?.defaultSeo?.metaDescription;
-  const metaImage =
-    optionalImageUrl(homePage?.seo?.metaImage) ?? optionalImageUrl(siteSettings?.defaultSeo?.metaImage);
-
   return deepStegaClean({
     siteName: siteSettings?.siteName ?? 'Cups & Cakes',
+    businessIdentity: siteSettings?.businessIdentity,
+    defaultSeo: siteSettings?.defaultSeo,
+    productsSeo: siteSettings?.productsSeo,
     faviconUrl: optionalImageUrl(siteSettings?.favicon) ?? LOCAL_ASSETS.cupsIcon,
     addToCartLabel: siteSettings?.addToCartLabel,
     addingToCartMessage: siteSettings?.addingToCartMessage,
     addedToCartMessage: siteSettings?.addedToCartMessage,
     cartAccessibleLabel: siteSettings?.cartAccessibleLabel,
-    seo: {
-      metaTitle,
-      metaDescription,
-      metaImage,
-    },
+    seo: homePage?.seo,
     cssImageVars: {
       '--background-image-cups-icon': cssUrl(imageUrl(navigation?.cupsIcon, LOCAL_ASSETS.cupsIcon)),
       '--background-image-cart-icon': cssUrl(imageUrl(navigation?.cartIcon, LOCAL_ASSETS.cartIcon)),

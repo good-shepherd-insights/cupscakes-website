@@ -72,7 +72,7 @@ import { stegaClean } from "@sanity/client/stega";
 import Breadcrumb from "../ui/Breadcrumb.astro";
 import AddToCartButton from "../snipcart/AddToCartButton.astro";
 import { buildProductCartAttributes } from "../../lib/snipcart/cartItem";
-import type { CustomOption } from "../../types/product";
+import type { CustomOptionWithImageUrl } from "../../types/product";
 import { routes } from "../../lib/routes";
 
 interface Props {
@@ -91,7 +91,7 @@ interface Props {
   /** Form submission endpoint (defaults to "#"). */
   addToCartHref?: string;
   /** Selection groups rendered in order, e.g. Flavor, Frosting Color, Quantity, Occasion. */
-  customOptions: CustomOption[];
+  customOptions: CustomOptionWithImageUrl[];
   /** Required only when a group has definesVariantRoute — used to build that group's variant links. */
   productSlug?: string;
   /** The currently selected variant slug, if any, for active-state styling. */
@@ -249,6 +249,7 @@ const selectionBtn = [
         { label: breadcrumbProductsLabel, href: breadcrumbHrefProducts },
         { label: breadcrumbLabel },
       ]}
+      jsonLd={false}
       class="mb-[18px] sm:mb-[23px] md:mb-[29px] lg:mb-[34px] xl:mb-[58px]
              text-[11px]! sm:text-[11px]! md:text-[11px]! lg:text-[13px]! xl:text-[19px]!"
     />

@@ -4,11 +4,19 @@ import Navbar from "../../../components/home/Navbar.astro";
 import DateSelect from "../../../components/order/DateSelect.astro";
 import { loadHomePageContent } from "../../../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../../../lib/sanity/queries/orderFlow";
+import { resolveSeo } from "../../../lib/seo/resolveSeo";
 
 const { navbar, followUs, decorativeMarks, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const { deliveryDate } = await loadOrderFlowContent();
+const resolvedSeo = resolveSeo({
+  pageKind: 'orderStep',
+  site: Astro.site,
+  pathname: Astro.url.pathname,
+  siteName,
+  fallbackTitle: `${deliveryDate.heading} Date — ${siteName}`,
+});
 ---
-<Layout title={`${deliveryDate.heading} Date — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
+<Layout seo={resolvedSeo} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} activeLink="order" />
 

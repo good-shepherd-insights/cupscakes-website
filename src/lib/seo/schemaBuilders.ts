@@ -14,13 +14,17 @@ import type { CustomOptionValue, Product } from '../../types/product';
 import type { SanityBusinessIdentity, SchemaItem } from '../../types/seo';
 
 function compact<T extends Record<string, unknown>>(value: T): T {
-  return Object.fromEntries(
-    Object.entries(value).filter(([, item]) => {
-      if (Array.isArray(item)) return item.length > 0;
-      if (item && typeof item === 'object') return Object.keys(item).length > 0;
-      return item !== undefined && item !== null && item !== '';
+  const filtered = Object.fromEntries(
+    Object.entries(value).flatMap(([key, item]) => {
+      if (Array.isArray(item)) return item.length > 0 ? [[key, item]] : [];
+      if (item && typeof item === 'object') {
+        const nested = compact(item as Record<string, unknown>);
+        return Object.keys(nested).length > 0 ? [[key, nested]] : [];
+      }
+      return item !== undefined && item !== null && item !== '' ? [[key, item]] : [];
     }),
-  ) as T;
+  );
+  return filtered as T;
 }
 
 function buildThings(items: { name?: string; url?: string }[] | undefined): Thing[] | undefined {
@@ -61,7 +65,14 @@ export function buildBusiness(
   imageUrl?: string,
 ): Organization | undefined {
   if (!business?.name || !business.url) return undefined;
-  const address = business.address
+  const hasAddress = Boolean(
+    business.address?.streetAddress ||
+      business.address?.addressLocality ||
+      business.address?.addressRegion ||
+      business.address?.postalCode ||
+      business.address?.addressCountry,
+  );
+  const address = hasAddress
     ? compact({
         '@type': 'PostalAddress',
         streetAddress: business.address.streetAddress,

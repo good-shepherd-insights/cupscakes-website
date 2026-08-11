@@ -11,8 +11,14 @@ export function isJsonLdNode(value: unknown): value is JsonLdNode {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
+function schemaTypeValues(value: unknown): string[] {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === 'string');
+  return [];
+}
+
 export function nodesByType(jsonLd: JsonLdNode[], type: string): JsonLdNode[] {
-  return graphNodes(jsonLd).filter((node) => node['@type'] === type);
+  return graphNodes(jsonLd).filter((node) => schemaTypeValues(node['@type']).includes(type));
 }
 
 export function firstNodeByType(jsonLd: JsonLdNode[], type: string): JsonLdNode | undefined {

@@ -37,6 +37,21 @@ function content($: cheerio.CheerioAPI, selector: string): string | undefined {
   return $(selector).attr('content')?.trim() || undefined;
 }
 
+function isJsonLdNode(value: unknown): value is JsonLdNode {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function jsonLdNodes(value: unknown): JsonLdNode[] {
+  if (Array.isArray(value)) return value.filter(isJsonLdNode);
+  return isJsonLdNode(value) ? [value] : [];
+}
+
+function schemaTypeValues(value: unknown): string[] {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === 'string');
+  return [];
+}
+
 export function extractSeo(html: string): ExtractedSeo {
   const $ = cheerio.load(html);
   const jsonLd: JsonLdNode[] = [];
@@ -46,7 +61,12 @@ export function extractSeo(html: string): ExtractedSeo {
     const raw = $(element).html();
     if (!raw?.trim()) return;
     try {
-      jsonLd.push(JSON.parse(raw) as JsonLdNode);
+      const nodes = jsonLdNodes(JSON.parse(raw));
+      if (nodes.length) {
+        jsonLd.push(...nodes);
+      } else {
+        jsonLdParseErrors.push(`script ${index}: JSON-LD root must be an object or array of objects`);
+      }
     } catch (error) {
       jsonLdParseErrors.push(`script ${index}: ${(error as Error).message}`);
     }
@@ -55,12 +75,10 @@ export function extractSeo(html: string): ExtractedSeo {
   const schemaTypes = jsonLd.flatMap((schema) => {
     const graph = schema['@graph'];
     if (Array.isArray(graph)) {
-      return graph.map((node) =>
-        typeof node === 'object' && node ? String((node as JsonLdNode)['@type']) : undefined,
-      );
+      return graph.filter(isJsonLdNode).flatMap((node) => schemaTypeValues(node['@type']));
     }
-    return typeof schema['@type'] === 'string' ? schema['@type'] : undefined;
-  }).filter((value): value is string => Boolean(value));
+    return schemaTypeValues(schema['@type']);
+  });
 
   return {
     counts: {

@@ -48,7 +48,7 @@ function firstText(...values: (string | undefined | null)[]): string | undefined
 }
 
 function siteOrigin(site: URL): string {
-  return site.toString().replace(/\/$/, '/');
+  return site.toString().replace(/\/$/, '');
 }
 
 function absoluteBreadcrumbs(site: URL, breadcrumbs?: { name: string; url?: string }[]) {
@@ -79,7 +79,8 @@ export function resolveSeo(input: ResolveSeoInput): ResolvedSeo {
     imageUrlOrAbsolute(input.fallbackImage, site, { width: IMAGE_WIDTHS.detail }) ??
     sanityImageUrl(defaultSeo?.metaImage, { width: 1200, height: 630 });
   const socialImageAlt = firstText(seo?.metaImageAlt, input.fallbackImageAlt, defaultSeo?.metaImageAlt);
-  const robots = seo?.robots ?? (policy.indexable ? 'index, follow' : 'noindex, follow');
+  const robots = policy.indexable ? (seo?.robots ?? 'index, follow') : 'noindex, follow';
+  const effectiveIndexable = policy.indexable && !robots.includes('noindex');
   const dateModified = firstText(seo?.dateModified, defaultSeo?.dateModified);
   const keywords = seo?.keywords?.length ? seo.keywords : defaultSeo?.keywords;
   const about = seo?.about?.length ? seo.about : defaultSeo?.about;
@@ -91,7 +92,7 @@ export function resolveSeo(input: ResolveSeoInput): ResolvedSeo {
     hardFailures: [],
   };
 
-  if (policy.indexable) {
+  if (effectiveIndexable) {
     if (!description) diagnostics.missingRequiredSanityFields.push(`${input.pageKind}.seo.metaDescription`);
     if (socialImage && !socialImageAlt) diagnostics.missingRequiredSanityFields.push(`${input.pageKind}.seo.metaImageAlt`);
   }
@@ -206,12 +207,12 @@ export function resolveSeo(input: ResolveSeoInput): ResolvedSeo {
   return {
     pageKind: input.pageKind,
     canonicalUrl: canonical,
-    indexable: policy.indexable,
+    indexable: effectiveIndexable,
     meta,
     schema,
     sitemap: {
-      include: policy.sitemap,
-      canonicalUrl: policy.sitemap ? canonical : undefined,
+      include: policy.sitemap && effectiveIndexable,
+      canonicalUrl: policy.sitemap && effectiveIndexable ? canonical : undefined,
     },
     diagnostics,
   };

@@ -84,11 +84,14 @@ export const product = defineType({
         Rule.custom((groups) => {
           if (!groups) return true;
           const optionGroups = Array.isArray(groups)
-            ? (groups as { definesVariantRoute?: boolean; name?: string }[])
+            ? (groups as { definesVariantRoute?: boolean; inputType?: 'radio' | 'checkbox'; name?: string }[])
             : [];
           const routeGroups = optionGroups.filter((g) => g.definesVariantRoute);
           if (routeGroups.length > 1) {
             return 'Only one group may be used as the shareable variant URL.';
+          }
+          if (routeGroups.some((g) => g.inputType !== 'radio')) {
+            return 'A group used as a shareable variant URL must use single choice (radio buttons).';
           }
           const names = optionGroups
             .map((g) => g.name?.trim().toLowerCase())

@@ -23,8 +23,7 @@ export function sanityImageUrl(
   options?: { width?: number; height?: number },
 ): string | undefined {
   if (!image?.asset) return undefined;
-  if (image.asset.url) return image.asset.url;
-  if (!image.asset._ref) return undefined;
+  if (!image.asset._ref) return image.asset.url;
 
   let builder = urlFor(image as SanityImageSource);
   if (options?.width) builder = builder.width(options.width);
@@ -41,4 +40,3 @@ export function imageUrlOrAbsolute(
   if (typeof imageOrUrl === 'string') return toAbsoluteUrl(imageOrUrl, site);
   return sanityImageUrl(imageOrUrl, options);
 }
-

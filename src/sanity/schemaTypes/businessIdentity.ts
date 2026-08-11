@@ -109,8 +109,8 @@ export const businessIdentity = defineType({
       description: 'Optional exact latitude/longitude for the public business location.',
       fieldset: 'location',
       fields: [
-        defineField({ name: 'latitude', title: 'Latitude', type: 'number' }),
-        defineField({ name: 'longitude', title: 'Longitude', type: 'number' }),
+        defineField({ name: 'latitude', title: 'Latitude', type: 'number', validation: (Rule) => Rule.min(-90).max(90) }),
+        defineField({ name: 'longitude', title: 'Longitude', type: 'number', validation: (Rule) => Rule.min(-180).max(180) }),
       ],
     }),
     defineField({

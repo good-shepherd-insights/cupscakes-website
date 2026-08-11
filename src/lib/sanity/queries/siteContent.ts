@@ -44,6 +44,11 @@ type SanityHomePage = {
     quote?: string;
     attribution?: string;
     avatar?: SanityImage;
+    reviews?: {
+      quote?: string;
+      attribution?: string;
+      avatar?: SanityImage;
+    }[];
   };
   reviewCta?: {
     heading?: string;
@@ -223,6 +228,24 @@ export async function loadHomePageContent() {
       link?.label && link.href ? { label: link.label, href: link.href } : undefined,
     ) ?? [],
   );
+  const resolvedReviews = nonEmpty(
+    homePage?.testimonial?.reviews?.map((review) =>
+      review?.quote && review.attribution
+        ? {
+            quote: review.quote,
+            attribution: review.attribution,
+            avatarSrc: optionalImageUrl(review.avatar),
+          }
+        : undefined,
+    ) ?? [],
+  );
+  if (!resolvedReviews.length && homePage?.testimonial?.quote && homePage.testimonial.attribution) {
+    resolvedReviews.push({
+      quote: homePage.testimonial.quote,
+      attribution: homePage.testimonial.attribution,
+      avatarSrc: optionalImageUrl(homePage.testimonial.avatar),
+    });
+  }
 
   const metaTitle =
     homePage?.seo?.metaTitle ??
@@ -320,9 +343,7 @@ export async function loadHomePageContent() {
     },
     testimonial: {
       accessibleHeading: homePage?.testimonial?.accessibleHeading,
-      quote: homePage?.testimonial?.quote,
-      attribution: homePage?.testimonial?.attribution,
-      avatarSrc: optionalImageUrl(homePage?.testimonial?.avatar),
+      reviews: resolvedReviews,
     },
     reviewCta: {
       heading: homePage?.reviewCta?.heading,

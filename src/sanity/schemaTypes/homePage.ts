@@ -93,9 +93,23 @@ export const homePage = defineType({
       options: { collapsible: true, collapsed: true },
       fields: [
         defineField({ name: 'accessibleHeading', title: 'Accessible Heading', type: 'string', validation: (R) => R.required() }),
-        defineField({ name: 'quote', title: 'Quote', type: 'text', rows: 2, validation: (R) => R.required() }),
-        defineField({ name: 'attribution', title: 'Attribution', type: 'string', validation: (R) => R.required() }),
-        imageField('avatar', 'Avatar'),
+        defineField({
+          name: 'reviews',
+          title: 'Reviews',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              fields: [
+                defineField({ name: 'quote', title: 'Quote', type: 'text', rows: 2, validation: (R) => R.required() }),
+                defineField({ name: 'attribution', title: 'Attribution', type: 'string', validation: (R) => R.required() }),
+                imageField('avatar', 'Avatar'),
+              ],
+              preview: { select: { title: 'quote', subtitle: 'attribution' } },
+            }),
+          ],
+          validation: (R) => R.required().min(1),
+        }),
       ],
     }),
 

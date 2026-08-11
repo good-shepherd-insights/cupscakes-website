@@ -5,37 +5,89 @@ import Footer from "../../components/home/Footer.astro";
 import CategoryHeader from "../../components/product/CategoryHeader.astro";
 import CupcakeGrid from "../../components/product/CupcakeGrid.astro";
 import PersonalCakeGrid from "../../components/product/PersonalCakeGrid.astro";
-import { loadHomeContent } from "../../lib/content/home";
-import { loadProductsContent } from "../../lib/content/products";
+import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import {
   getRequiredProductBySlug,
-  getRequiredProductPriceBySlug,
+  getAllProductCategories,
 } from "../../lib/sanity/queries/products";
 import { resolveRequiredVariantImageUrls } from "../../lib/sanity/image";
+import { routes } from "../../lib/routes";
 import { IMAGE_WIDTHS } from "../../lib/constants";
+import type { Product } from "../../types/product";
 
-const { navbar, footer, followUs } = await loadHomeContent();
-const { categoryHeader, cupcakes, personalCakes } =
-  await loadProductsContent();
-const [cupcakeProduct, personalCakePrice] = await Promise.all([
-  getRequiredProductBySlug("cupcakes"),
-  getRequiredProductPriceBySlug("personal-cakes"),
-]);
-const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDTHS.card);
-const cupcakeFlavors = cupcakes.flavors.map((flavor) => {
-  const imageSrc = cupcakeImages.get(flavor.key);
-  if (!imageSrc) {
-    throw new Error(`Cupcake flavor "${flavor.key}" is missing its Sanity image.`);
+function buildGridItems(product: Product) {
+  const images = resolveRequiredVariantImageUrls(product, IMAGE_WIDTHS.card);
+  const variantGroup = product.customOptions?.find((g) => g.definesVariantRoute);
+  if (!variantGroup) {
+    throw new Error(`Product "${product.slug.current}" is missing its variant option group.`);
   }
-  return { ...flavor, imageSrc };
-});
+  return variantGroup.options.map((option) => {
+    const key = option.slug?.current;
+    if (!key) {
+      throw new Error(`Product "${product.slug.current}" has a variant option missing its slug.`);
+    }
+    const imageSrc = images.get(key);
+    if (!imageSrc) {
+      throw new Error(`Product "${product.slug.current}" option "${key}" is missing its Sanity image.`);
+    }
+    return {
+      key,
+      name: option.label,
+      description: option.description ?? "",
+      imageSrc,
+      imageAlt: option.image?.alt ?? `${option.label} ${product.name}`,
+      orderHref: routes.productVariant(product.slug.current, key),
+    };
+  });
+}
+
+const { navbar, footer, followUs, decorativeMarks, hero, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
+const [cupcakeProduct, personalCakeProduct, categories] = await Promise.all([
+  getRequiredProductBySlug("cupcakes"),
+  getRequiredProductBySlug("personal-cakes"),
+  getAllProductCategories(),
+]);
+
+const cupcakesCategory = categories.find((c) => c.slug.current === "cupcakes");
+const personalCakesCategory = categories.find((c) => c.slug.current === "personal-cakes");
+if (!cupcakesCategory || !personalCakesCategory) {
+  throw new Error("Missing cupcakes or personal-cakes productCategory in Sanity.");
+}
+
+const categoryHeader = {
+  cupcakesHeading: cupcakesCategory.heading ?? cupcakesCategory.title,
+  cupcakesHref: cupcakesCategory.anchorHref,
+  personalCakesHeading: personalCakesCategory.heading ?? personalCakesCategory.title,
+  personalCakesHref: personalCakesCategory.anchorHref,
+};
+const cupcakeFlavors = buildGridItems(cupcakeProduct);
+const personalCakeItems = buildGridItems(personalCakeProduct);
 ---
-<Layout title="Cupcakes & Personal Cakes — Cups & Cakes">
+<Layout title={`${cupcakesCategory.title} & ${personalCakesCategory.title} — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} mode="store" activeLink="products" facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
-    <CategoryHeader {...categoryHeader} />
-    <CupcakeGrid {...cupcakes} flavors={cupcakeFlavors} price={cupcakeProduct.price} />
-    <PersonalCakeGrid {...personalCakes} price={personalCakePrice} />
-    <Footer {...footer} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} mode="store" activeLink="products" />
+    <CategoryHeader
+      {...categoryHeader}
+      logoLargeSrc={decorativeMarks.largeSrc}
+      logoLargeAlt={decorativeMarks.largeAlt}
+      ampSrc={decorativeMarks.categoryHeaderAmpSrc}
+      ampAlt={decorativeMarks.categoryHeaderAmpAlt}
+      accessibleHeading={decorativeMarks.categoryHeaderAccessibleHeading}
+    />
+    <CupcakeGrid
+      heading={cupcakesCategory.heading ?? cupcakesCategory.title}
+      caption={cupcakesCategory.caption ?? ""}
+      flavors={cupcakeFlavors}
+      price={cupcakeProduct.price}
+      ctaLabel={hero.ctaLabel}
+    />
+    <PersonalCakeGrid
+      heading={personalCakesCategory.heading ?? personalCakesCategory.title}
+      caption={personalCakesCategory.caption ?? ""}
+      items={personalCakeItems}
+      price={personalCakeProduct.price}
+      ctaLabel={hero.ctaLabel}
+    />
+    <Footer {...footer} />
   </div>
 </Layout>

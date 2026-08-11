@@ -5,6 +5,7 @@ export interface ProductCategory {
   heading?: string;
   caption?: string;
   displayOrder?: number;
+  anchorHref: string;
 }
 
 export interface SanityImage {
@@ -15,6 +16,7 @@ export interface SanityImage {
 
 export interface CustomOptionValue {
   label: string;
+  description?: string;
   /** Added to the product's base price when this option is selected, e.g. 3 for +$3.00. */
   priceModifier?: number;
   slug?: { current: string };
@@ -29,6 +31,12 @@ export interface CustomOption {
   options: CustomOptionValue[];
 }
 
+export interface ProductSeo {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaImage?: SanityImage;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -39,6 +47,7 @@ export interface Product {
   description?: string;
   subtitle?: string;
   servingInfo?: string;
+  seo?: ProductSeo;
   /** Selection groups shown on the order page, e.g. Flavor, Frosting Color. Absence renders no sections. */
   customOptions?: CustomOption[];
 }

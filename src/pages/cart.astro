@@ -2,15 +2,15 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/home/Navbar.astro";
 import LiveCart from "../components/cart/LiveCart.tsx";
-import { loadHomeContent } from "../lib/content/home";
-import { loadCartContent } from "../lib/content/cart";
+import { loadHomePageContent } from "../lib/sanity/queries/siteContent";
+import { loadOrderFlowContent } from "../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomeContent();
-const { cart } = await loadCartContent();
+const { navbar, followUs, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
+const { cart } = await loadOrderFlowContent();
 ---
-<Layout title="Shopping Cart — Cups & Cakes">
+<Layout title={`${cart.heading} — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
+    <Navbar {...navbar} />
     <LiveCart
       client:only="react"
       heading={cart.heading}
@@ -19,10 +19,12 @@ const { cart } = await loadCartContent();
       occasionHeading={cart.occasionHeading}
       priceHeading={cart.priceHeading}
       qtyHeading={cart.qtyHeading}
+      quantityOptionLabel={cart.quantityOptionLabel}
       editLabel={cart.editLabel}
       saveLabel={cart.saveLabel}
       cancelLabel={cart.cancelLabel}
       removeLabel={cart.removeLabel}
+      removingLabel={cart.removingLabel}
       subtotalLabel={cart.subtotalLabel}
       checkoutLabel={cart.checkoutLabel}
       emptyMessage={cart.emptyMessage}

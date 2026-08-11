@@ -1,9 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/home/Navbar.astro';
+import PromoStrip from '../components/home/PromoStrip.astro';
 import Hero from '../components/home/Hero.astro';
 import SmallBanner from '../components/home/SmallBanner.astro';
+import HomeIntro from '../components/home/HomeIntro.astro';
+import HomeReview from '../components/home/HomeReview.astro';
+import ReviewCta from '../components/home/ReviewCta.astro';
 import OurStory from '../components/home/OurStory.astro';
 import CupcakesBanner from '../components/home/CupcakesBanner.astro';
 import CupcakeCarousel from '../components/home/CupcakeCarousel.astro';
@@ -14,73 +17,126 @@ import {
   getRequiredProductBySlug,
   getRequiredProductPriceBySlug,
 } from '../lib/sanity/queries/products';
+import { loadHomePageContent } from '../lib/sanity/queries/siteContent';
 import { resolveRequiredVariantImageUrls } from '../lib/sanity/image';
 import { IMAGE_WIDTHS } from '../lib/constants';
 
-// Load the whole home collection and index by section discriminator.
-// Each component's Props are required, so the JSON under
-// src/content/home/ is the single source of truth for marketing copy.
-const entries = await getCollection('home');
-const bySection = new Map(entries.map((e) => [e.data.section, e]));
-
-function requireSection<S extends string>(section: S) {
-  const entry = bySection.get(section);
-  if (!entry) {
-    throw new Error(
-      `Missing home content entry for section "${section}". Add src/content/home/${section}.json.`
-    );
-  }
-  if (entry.data.section !== section) {
-    throw new Error(
-      `home content entry id mismatch: expected section "${section}" but got "${entry.data.section}".`
-    );
-  }
-  return entry.data as Extract<typeof entry.data, { section: S }>;
-}
-
-const navbar = requireSection('navbar');
-const hero = requireSection('hero');
-const ourStory = requireSection('our-story');
-const cupcakesBanner = requireSection('cupcakes-banner');
-const cupcakeCarousel = requireSection('cupcake-carousel');
-const personalCakes = requireSection('personal-cakes');
-const followUs = requireSection('follow-us');
-const footer = requireSection('footer');
-const [cupcakeProduct, personalCakePrice] = await Promise.all([
+const [homeContent, cupcakeProduct, personalCakePrice] = await Promise.all([
+  loadHomePageContent(),
   getRequiredProductBySlug('cupcakes'),
   getRequiredProductPriceBySlug('personal-cakes'),
 ]);
+const {
+  navbar,
+  promoStrip,
+  hero,
+  intro,
+  testimonial,
+  reviewCta,
+  ourStory,
+  cupcakesBanner,
+  cupcakeCarousel,
+  personalCakes,
+  followUs,
+  footer,
+  seo,
+  cssImageVars,
+  faviconUrl,
+  addedToCartMessage,
+  addingToCartMessage,
+  flavorBandAccessibleLabel,
+} = homeContent;
 const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDTHS.card);
+
+const FEATURED_CUPCAKE_FLAVORS = ["chocolate", "butter-pecan", "carrot"];
+const cupcakeFlavorGroup = cupcakeProduct.customOptions?.find((g) => g.definesVariantRoute);
+const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
+  const option = cupcakeFlavorGroup?.options.find((o) => o.slug?.current === key);
+  if (!option) {
+    throw new Error(`Homepage cupcake carousel expects a "${key}" flavor option on the cupcakes product.`);
+  }
+  if (!option.description) {
+    throw new Error(`Cupcake flavor "${key}" is missing its Sanity description.`);
+  }
+  return { key, name: option.label, description: option.description };
+});
 ---
-<Layout title="Cups & Cakes">
+<Layout
+  title={seo.metaTitle}
+  description={seo.metaDescription}
+  image={seo.metaImage}
+  faviconUrl={faviconUrl}
+  cssImageVars={cssImageVars}
+  addedToCartMessage={addedToCartMessage}
+  addingToCartMessage={addingToCartMessage}
+>
   <Navbar
     homeHref={navbar.homeHref}
     whoHref={navbar.whoHref}
     orderHref={navbar.orderHref}
+    productsHref={navbar.productsHref}
     cartHref={navbar.cartHref}
     shopHref={navbar.shopHref}
-    facebookHref={followUs.facebookHref}
-    instagramHref={followUs.instagramHref}
+    whoLabel={navbar.whoLabel}
+    orderLabel={navbar.orderLabel}
+    productsLabel={navbar.productsLabel}
+    shopLabel={navbar.shopLabel}
+    logoTextBefore={navbar.logoTextBefore}
+    logoTextAfter={navbar.logoTextAfter}
+    siteName={navbar.siteName}
+    cartAccessibleLabel={navbar.cartAccessibleLabel}
+    openMenuLabel={navbar.openMenuLabel}
+    closeMenuLabel={navbar.closeMenuLabel}
+    socialLinks={navbar.socialLinks}
+    mobileMenuLogoSrc={navbar.mobileMenuLogoSrc}
+  />
+  <PromoStrip
+    text={promoStrip.text}
+    accessibleLabel={promoStrip.accessibleLabel}
   />
   <Hero
     headline={hero.headline}
+    headlinePrefix={hero.headlinePrefix}
+    headlineEmphasis={hero.headlineEmphasis}
+    headlineSuffix={hero.headlineSuffix}
     ctaLabel={hero.ctaLabel}
+    ctaAriaLabel={hero.ctaAriaLabel}
     orderHref={hero.orderHref}
+    siteName={navbar.siteName}
+    puertoRicoIconSrc={hero.puertoRicoIconSrc}
+    puertoRicoIconAccessibleLabel={hero.puertoRicoIconAccessibleLabel}
+    scrollAriaLabel={hero.scrollAriaLabel}
   />
-  <SmallBanner />
+  <SmallBanner accessibleLabel={flavorBandAccessibleLabel} />
+  <HomeIntro
+    heading={intro.heading}
+    subheading={intro.subheading}
+  />
+  <HomeReview
+    accessibleHeading={testimonial.accessibleHeading}
+    reviews={testimonial.reviews}
+  />
+  <ReviewCta
+    heading={reviewCta.heading}
+    ctaLabel={reviewCta.ctaLabel}
+    ctaHref={reviewCta.ctaHref}
+    ctaAriaLabel={reviewCta.ctaAriaLabel}
+  />
   <OurStory
     heading={ourStory.heading}
-    paragraph1={ourStory.paragraph1}
-    paragraph2={ourStory.paragraph2}
-    paragraph3={ourStory.paragraph3}
+    paragraphs={ourStory.paragraphs}
+    photoSrc={ourStory.photoSrc}
+    logoSrc={ourStory.logoSrc}
   />
   <CupcakesBanner headline={cupcakesBanner.headline} />
   <CupcakeCarousel
     caption={cupcakeCarousel.caption}
     otherOptionsHref={cupcakeCarousel.otherOptionsHref}
     otherOptionsLabel={cupcakeCarousel.otherOptionsLabel}
+    ctaLabel={hero.ctaLabel}
     price={cupcakeProduct.price}
     images={cupcakeImages}
+    flavors={featuredCupcakeFlavors}
   />
   <PersonalCakes
     heading={personalCakes.heading}
@@ -91,18 +147,23 @@ const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDT
     chocolateLabel={personalCakes.chocolateLabel}
     vanillaHref={personalCakes.vanillaHref}
     vanillaLabel={personalCakes.vanillaLabel}
+    flavorLinks={personalCakes.flavorLinks}
+    ampImageSrc={personalCakes.ampImageSrc}
+    logoSrc={personalCakes.logoSrc}
+    photoSrc={personalCakes.photoSrc}
   />
   <FollowUs
     heading={followUs.heading}
-    facebookHref={followUs.facebookHref}
-    instagramHref={followUs.instagramHref}
+    socialLinks={followUs.socialLinks}
   />
   <Footer
     whoHref={footer.whoHref}
     orderHref={footer.orderHref}
     topHref={footer.topHref}
+    whoLabel={footer.whoLabel}
+    orderLabel={footer.orderLabel}
+    topLabel={footer.topLabel}
     copyright={footer.copyright}
-    facebookHref={followUs.facebookHref}
-    instagramHref={followUs.instagramHref}
+    socialLinks={footer.socialLinks}
   />
 </Layout>

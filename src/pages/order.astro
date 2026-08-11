@@ -2,15 +2,21 @@
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/home/Navbar.astro";
 import PickupOrDelivery from "../components/order/PickupOrDelivery.astro";
-import { loadHomeContent } from "../lib/content/home";
-import { loadOrderContent } from "../lib/content/order";
+import { loadHomePageContent } from "../lib/sanity/queries/siteContent";
+import { loadOrderFlowContent } from "../lib/sanity/queries/orderFlow";
 
-const { navbar, followUs } = await loadHomeContent();
-const { pickupOrDelivery } = await loadOrderContent();
+const { navbar, followUs, decorativeMarks, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
+const { pickupOrDelivery } = await loadOrderFlowContent();
 ---
-<Layout title="Order — Cups & Cakes">
+<Layout title={`${pickupOrDelivery.pageTitle} — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
-    <Navbar {...navbar} facebookHref={followUs.facebookHref} instagramHref={followUs.instagramHref} />
-    <PickupOrDelivery {...pickupOrDelivery} />
+    <Navbar {...navbar} />
+    <PickupOrDelivery
+      {...pickupOrDelivery}
+      logoLargeSrc={decorativeMarks.largeSrc}
+      logoLargeAlt={decorativeMarks.largeAlt}
+      logoSmallSrc={decorativeMarks.smallSrc}
+      logoSmallAlt={decorativeMarks.smallAlt}
+    />
   </div>
 </Layout>

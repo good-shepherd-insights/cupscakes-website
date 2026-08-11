@@ -33,9 +33,10 @@ interface Props {
   caption: string;
   flavors: ReadonlyArray<Flavor>;
   price: number;
+  ctaLabel: string;
 }
 
-const { heading, caption, flavors, price } = Astro.props;
+const { heading, caption, flavors, price, ctaLabel } = Astro.props;
 const formattedPrice = formatProductPriceEach(price);
 ---
 
@@ -80,6 +81,7 @@ const formattedPrice = formatProductPriceEach(price);
           imageSrc={f.imageSrc}
           imageAlt={f.imageAlt}
           orderHref={f.orderHref}
+          ctaLabel={ctaLabel}
         />
       ))}
     </div>

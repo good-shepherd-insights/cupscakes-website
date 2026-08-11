@@ -7,12 +7,25 @@ import '../styles/global.css';
 import '../styles/snipcart-overrides.css';
 
 interface Props {
-  title?: string;
+  title: string;
   description?: string;
   image?: string;
   canonicalUrl?: string;
+  faviconUrl?: string;
+  cssImageVars?: Record<string, string>;
+  addedToCartMessage: string;
+  addingToCartMessage: string;
 }
-const { title = 'Cupcakes', description, image, canonicalUrl } = Astro.props;
+const {
+  title,
+  description,
+  image,
+  canonicalUrl,
+  faviconUrl = '/assets/cups-icon.svg',
+  cssImageVars = {},
+  addedToCartMessage,
+  addingToCartMessage,
+} = Astro.props;
 // Sanity's stega visual-editing encoding injects invisible Unicode into every
 // GROQ string so the Presentation tool can map rendered text back to its
 // source field. <title>/<meta> are never visible/clickable DOM, so the
@@ -20,6 +33,9 @@ const { title = 'Cupcakes', description, image, canonicalUrl } = Astro.props;
 // tab title and og/meta tags with thousands of invisible characters.
 const cleanTitle = stegaClean(title);
 const cleanDescription = description ? stegaClean(description) : undefined;
+const bodyStyle = Object.entries(cssImageVars)
+  .map(([name, value]) => `${name}: ${value}`)
+  .join('; ');
 ---
 <!doctype html>
 <html lang="en">
@@ -36,13 +52,13 @@ const cleanDescription = description ? stegaClean(description) : undefined;
     <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
     {/* Jubilat font (matches the --font-sans token). */}
     <link rel="stylesheet" href="https://use.typekit.net/ezr1eax.css" />
-    <link rel="icon" href="/assets/cups-icon.svg" type="image/svg+xml" />
+    <link rel="icon" href={faviconUrl} type="image/svg+xml" />
     <ClientRouter />
     <Snipcart addProductBehavior="none" loadStrategy="manual" />
   </head>
-  <body class="m-0 p-0 bg-white font-sans antialiased">
+  <body class="m-0 p-0 bg-white font-sans antialiased" style={bodyStyle || undefined}>
     <slot />
-    <CartToast />
+    <CartToast addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage} />
     {/* Snipcart's loader (lib/snipcart/loader.ts) reuses this div if it
         already exists rather than creating its own. transition:persist
         keeps this exact node alive across Astro ClientRouter navigations

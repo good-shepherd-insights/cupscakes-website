@@ -1,6 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { validateUniqueSlug } from '../lib/uniqueSlug';
-import { SeoCharCountInput } from '../components/SeoCharCountInput';
 
 export const product = defineType({
   name: 'product',
@@ -67,45 +66,13 @@ export const product = defineType({
       type: 'string',
       description: 'Italic line below subtitle, e.g. "Serves 3-4 people." Leave blank for cupcakes.',
     }),
+    defineField({ name: 'seo', title: 'SEO', type: 'seo', options: { collapsible: true, collapsed: true } }),
     defineField({
-      name: 'seo',
-      title: 'SEO',
-      type: 'object',
-      description:
-        'Search/social preview fields. metaTitle falls back to the product name; metaDescription has no fallback and is required.',
-      fields: [
-        defineField({
-          name: 'metaTitle',
-          title: 'Meta Title',
-          type: 'string',
-          description:
-            'Optional. Overrides the page <title> for this product. Leave blank to use the product name.',
-        }),
-        defineField({
-          name: 'metaDescription',
-          title: 'Meta Description',
-          type: 'text',
-          rows: 3,
-          description:
-            'Required, 70–160 characters. Used for the page meta description and social link previews.',
-          components: {
-            input: SeoCharCountInput,
-          },
-          validation: (Rule) =>
-            Rule.required()
-              .min(70)
-              .max(160)
-              .error('Meta description must be between 70 and 160 characters.'),
-        }),
-        defineField({
-          name: 'metaImage',
-          title: 'Meta Image',
-          type: 'image',
-          options: { hotspot: true },
-          description:
-            'Optional. Social link preview image (OG/Twitter). Falls back to the product image if blank.',
-        }),
-      ],
+      name: 'structuredData',
+      title: 'Product JSON-LD',
+      type: 'productStructuredData',
+      description: 'Optional product/offer facts for schema.org Product JSON-LD. Leave fields blank unless they are real product facts.',
+      options: { collapsible: true, collapsed: true },
     }),
     defineField({
       name: 'customOptions',
@@ -116,14 +83,18 @@ export const product = defineType({
       validation: (Rule) =>
         Rule.custom((groups) => {
           if (!groups) return true;
-          const routeGroups = groups.filter(
-            (g: { definesVariantRoute?: boolean }) => g.definesVariantRoute
-          );
+          const optionGroups = Array.isArray(groups)
+            ? (groups as { definesVariantRoute?: boolean; inputType?: 'radio' | 'checkbox'; name?: string }[])
+            : [];
+          const routeGroups = optionGroups.filter((g) => g.definesVariantRoute);
           if (routeGroups.length > 1) {
             return 'Only one group may be used as the shareable variant URL.';
           }
-          const names = groups
-            .map((g: { name?: string }) => g.name?.trim().toLowerCase())
+          if (routeGroups.some((g) => g.inputType !== 'radio')) {
+            return 'A group used as a shareable variant URL must use single choice (radio buttons).';
+          }
+          const names = optionGroups
+            .map((g) => g.name?.trim().toLowerCase())
             .filter(Boolean);
           const hasDuplicate = names.length !== new Set(names).size;
           return hasDuplicate ? 'Group names must be unique within a product.' : true;
@@ -218,6 +189,20 @@ export const product = defineType({
                         }),
                       ],
                     }),
+                    defineField({
+                      name: 'seo',
+                      title: 'Variant SEO',
+                      type: 'seo',
+                      options: { collapsible: true, collapsed: true },
+                      description: 'Optional SEO override for this shareable variant URL.',
+                    }),
+                    defineField({
+                      name: 'structuredData',
+                      title: 'Variant JSON-LD',
+                      type: 'productStructuredData',
+                      options: { collapsible: true, collapsed: true },
+                      description: 'Optional Product/Offer JSON-LD overrides for this variant URL, such as a variant SKU or availability.',
+                    }),
                   ],
                   preview: {
                     select: { title: 'label', subtitle: 'priceModifier' },
@@ -229,8 +214,11 @@ export const product = defineType({
                   .min(1)
                   .custom((options) => {
                     if (!options) return true;
-                    const labels = options
-                      .map((o: { label?: string }) => o.label?.trim().toLowerCase())
+                    const optionValues = Array.isArray(options)
+                      ? (options as { label?: string }[])
+                      : [];
+                    const labels = optionValues
+                      .map((o) => o.label?.trim().toLowerCase())
                       .filter(Boolean);
                     const hasDuplicate = labels.length !== new Set(labels).size;
                     return hasDuplicate ? 'Option labels must be unique within a group.' : true;

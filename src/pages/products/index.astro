@@ -13,6 +13,7 @@ import {
 import { resolveRequiredVariantImageUrls } from "../../lib/sanity/image";
 import { routes } from "../../lib/routes";
 import { IMAGE_WIDTHS } from "../../lib/constants";
+import { resolveSeo } from "../../lib/seo/resolveSeo";
 import type { Product } from "../../types/product";
 
 function buildGridItems(product: Product) {
@@ -41,7 +42,19 @@ function buildGridItems(product: Product) {
   });
 }
 
-const { navbar, footer, followUs, decorativeMarks, hero, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
+const {
+  navbar,
+  footer,
+  followUs,
+  decorativeMarks,
+  hero,
+  siteName,
+  businessIdentity,
+  productsSeo,
+  defaultSeo,
+  addedToCartMessage,
+  addingToCartMessage,
+} = await loadHomePageContent();
 const [cupcakeProduct, personalCakeProduct, categories] = await Promise.all([
   getRequiredProductBySlug("cupcakes"),
   getRequiredProductBySlug("personal-cakes"),
@@ -62,8 +75,27 @@ const categoryHeader = {
 };
 const cupcakeFlavors = buildGridItems(cupcakeProduct);
 const personalCakeItems = buildGridItems(personalCakeProduct);
+const resolvedSeo = resolveSeo({
+  pageKind: 'productsIndex',
+  site: Astro.site,
+  pathname: routes.products,
+  siteName,
+  pageSeo: productsSeo,
+  defaultSeo,
+  fallbackTitle: `${cupcakesCategory.title} & ${personalCakesCategory.title} — ${siteName}`,
+  fallbackDescription: [cupcakesCategory.caption, personalCakesCategory.caption].filter(Boolean).join(' '),
+  fallbackImage: cupcakeProduct.image,
+  fallbackImageAlt: cupcakeProduct.image?.alt,
+  businessIdentity,
+  collectionItems: [...cupcakeFlavors, ...personalCakeItems].map((item) => ({
+    name: item.name,
+    url: routes.productVariant(item.orderHref.split('/')[2] ?? '', item.key),
+    image: item.imageSrc,
+    description: item.description,
+  })),
+});
 ---
-<Layout title={`${cupcakesCategory.title} & ${personalCakesCategory.title} — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
+<Layout seo={resolvedSeo} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} mode="store" activeLink="products" />
     <CategoryHeader

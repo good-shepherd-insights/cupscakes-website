@@ -4,11 +4,19 @@ import Navbar from "../components/home/Navbar.astro";
 import PickupOrDelivery from "../components/order/PickupOrDelivery.astro";
 import { loadHomePageContent } from "../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../lib/sanity/queries/orderFlow";
+import { resolveSeo } from "../lib/seo/resolveSeo";
 
 const { navbar, followUs, decorativeMarks, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const { pickupOrDelivery } = await loadOrderFlowContent();
+const resolvedSeo = resolveSeo({
+  pageKind: 'order',
+  site: Astro.site,
+  pathname: Astro.url.pathname,
+  siteName,
+  fallbackTitle: `${pickupOrDelivery.pageTitle} — ${siteName}`,
+});
 ---
-<Layout title={`${pickupOrDelivery.pageTitle} — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
+<Layout seo={resolvedSeo} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} />
     <PickupOrDelivery

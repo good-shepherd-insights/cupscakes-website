@@ -45,5 +45,6 @@ export const productCategory = defineType({
       description: 'Jump-nav target on /products, e.g. "#cupcakes".',
       validation: (Rule) => Rule.required(),
     }),
+    defineField({ name: 'seo', title: 'SEO', type: 'seo', options: { collapsible: true, collapsed: true } }),
   ],
 });

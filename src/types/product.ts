@@ -1,3 +1,5 @@
+import type { SanitySeo } from './seo';
+
 export interface ProductCategory {
   _id: string;
   title: string;
@@ -6,6 +8,7 @@ export interface ProductCategory {
   caption?: string;
   displayOrder?: number;
   anchorHref: string;
+  seo?: SanitySeo;
 }
 
 export interface SanityImage {
@@ -21,6 +24,8 @@ export interface CustomOptionValue {
   priceModifier?: number;
   slug?: { current: string };
   image?: SanityImage;
+  seo?: SanitySeo;
+  structuredData?: ProductStructuredData;
 }
 
 export interface CustomOption {
@@ -31,10 +36,23 @@ export interface CustomOption {
   options: CustomOptionValue[];
 }
 
-export interface ProductSeo {
-  metaTitle?: string;
-  metaDescription?: string;
-  metaImage?: SanityImage;
+export type CustomOptionValueWithImageUrl = Omit<CustomOptionValue, 'image'> & {
+  image?: string;
+};
+
+export type CustomOptionWithImageUrl = Omit<CustomOption, 'options'> & {
+  options: CustomOptionValueWithImageUrl[];
+};
+
+export type ProductSeo = SanitySeo;
+
+export interface ProductStructuredData {
+  sku?: string;
+  mpn?: string;
+  gtin?: string;
+  availability?: string;
+  itemCondition?: string;
+  priceValidUntil?: string;
 }
 
 export interface Product {
@@ -48,6 +66,7 @@ export interface Product {
   subtitle?: string;
   servingInfo?: string;
   seo?: ProductSeo;
+  structuredData?: ProductStructuredData;
   /** Selection groups shown on the order page, e.g. Flavor, Frosting Color. Absence renders no sections. */
   customOptions?: CustomOption[];
 }

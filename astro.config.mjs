@@ -16,6 +16,12 @@ const cmsNoindexPathnames = loadCmsNoindexPathnames({
   projectId: env.PUBLIC_SANITY_PROJECT_ID,
   dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
   apiVersion: '2026-05-01',
+}).catch((error) => {
+  console.warn(
+    '[seo] Failed to load CMS noindex pathnames, sitemap will not apply CMS-driven exclusions:',
+    error,
+  );
+  return new Set();
 });
 
 export default defineConfig({

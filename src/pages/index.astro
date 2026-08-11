@@ -1,8 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Navbar from '../components/home/Navbar.astro';
+import PromoStrip from '../components/home/PromoStrip.astro';
 import Hero from '../components/home/Hero.astro';
 import SmallBanner from '../components/home/SmallBanner.astro';
+import HomeIntro from '../components/home/HomeIntro.astro';
+import HomeReview from '../components/home/HomeReview.astro';
+import ReviewCta from '../components/home/ReviewCta.astro';
 import OurStory from '../components/home/OurStory.astro';
 import CupcakesBanner from '../components/home/CupcakesBanner.astro';
 import CupcakeCarousel from '../components/home/CupcakeCarousel.astro';
@@ -24,7 +28,11 @@ const [homeContent, cupcakeProduct, personalCakePrice] = await Promise.all([
 ]);
 const {
   navbar,
+  promoStrip,
   hero,
+  intro,
+  testimonial,
+  reviewCta,
   ourStory,
   cupcakesBanner,
   cupcakeCarousel,
@@ -82,15 +90,38 @@ const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
     socialLinks={navbar.socialLinks}
     mobileMenuLogoSrc={navbar.mobileMenuLogoSrc}
   />
+  <PromoStrip
+    text={promoStrip.text}
+    accessibleLabel={promoStrip.accessibleLabel}
+  />
   <Hero
     headline={hero.headline}
+    headlinePrefix={hero.headlinePrefix}
+    headlineEmphasis={hero.headlineEmphasis}
+    headlineSuffix={hero.headlineSuffix}
     ctaLabel={hero.ctaLabel}
     ctaAriaLabel={hero.ctaAriaLabel}
     orderHref={hero.orderHref}
     siteName={navbar.siteName}
+    puertoRicoIconSrc={hero.puertoRicoIconSrc}
+    puertoRicoIconAccessibleLabel={hero.puertoRicoIconAccessibleLabel}
     scrollAriaLabel={hero.scrollAriaLabel}
   />
   <SmallBanner accessibleLabel={flavorBandAccessibleLabel} />
+  <HomeIntro
+    heading={intro.heading}
+    subheading={intro.subheading}
+  />
+  <HomeReview
+    accessibleHeading={testimonial.accessibleHeading}
+    reviews={testimonial.reviews}
+  />
+  <ReviewCta
+    heading={reviewCta.heading}
+    ctaLabel={reviewCta.ctaLabel}
+    ctaHref={reviewCta.ctaHref}
+    ctaAriaLabel={reviewCta.ctaAriaLabel}
+  />
   <OurStory
     heading={ourStory.heading}
     paragraphs={ourStory.paragraphs}

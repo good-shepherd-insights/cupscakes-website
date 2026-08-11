@@ -3,12 +3,29 @@ interface Props {
   whoHref: string;
   orderHref: string;
   topHref: string;
+  whoLabel: string;
+  orderLabel: string;
+  topLabel: string;
   copyright: string;
-  facebookHref: string;
-  instagramHref: string;
+  /** Always Sanity-sourced (siteSettings.socialLinks), never empty. */
+  socialLinks: { platform: string; href: string; iconUrl: string; iconAlt?: string }[];
 }
 
-const { whoHref, orderHref, topHref, copyright, facebookHref, instagramHref } = Astro.props;
+const {
+  whoHref,
+  orderHref,
+  topHref,
+  whoLabel,
+  orderLabel,
+  topLabel,
+  copyright,
+  socialLinks: links,
+} = Astro.props;
+
+function maskStyle(url: string) {
+  const escapedUrl = url.replace(/["\\]/g, "\\$&");
+  return `mask-image: url("${escapedUrl}"); -webkit-mask-image: url("${escapedUrl}")`;
+}
 ---
 
 <footer
@@ -35,7 +52,7 @@ const { whoHref, orderHref, topHref, copyright, facebookHref, instagramHref } = 
              hover:brightness-90 hover:-translate-y-px
              focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
       data-node-id="3311:1635"
-    >WHO WE ARE</a>
+    >{whoLabel}</a>
     <span
       aria-hidden="true"
       class="inline-block bg-white shrink-0 w-px sm:w-0.5
@@ -52,7 +69,7 @@ const { whoHref, orderHref, topHref, copyright, facebookHref, instagramHref } = 
              hover:brightness-90 hover:-translate-y-px
              focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
       data-node-id="3311:1631"
-    >ORDER NOW</a>
+    >{orderLabel}</a>
     <span
       aria-hidden="true"
       class="inline-block bg-white shrink-0 w-px sm:w-0.5
@@ -69,24 +86,20 @@ const { whoHref, orderHref, topHref, copyright, facebookHref, instagramHref } = 
              hover:brightness-90 hover:-translate-y-px
              focus-visible:brightness-90 focus-visible:-translate-y-px focus-visible:outline-hidden"
       data-node-id="3311:1639"
-    >BACK TO TOP</a>
+    >{topLabel}</a>
   </nav>
 
   <div class="flex items-center justify-center gap-4 sm:gap-5 md:gap-6">
-    <a
-      href={facebookHref}
-      class="footer-social bg-facebook"
-      aria-label="Follow us on Facebook"
-      target="_blank"
-      rel="noopener noreferrer"
-    ></a>
-    <a
-      href={instagramHref}
-      class="footer-social bg-instagram"
-      aria-label="Follow us on Instagram"
-      target="_blank"
-      rel="noopener noreferrer"
-    ></a>
+    {links.map((link) => (
+      <a
+        href={link.href}
+        class="footer-social"
+        style={maskStyle(link.iconUrl)}
+        aria-label={`Follow us on ${link.platform}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      ></a>
+    ))}
   </div>
 
   <p

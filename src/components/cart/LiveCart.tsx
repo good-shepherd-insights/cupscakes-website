@@ -156,10 +156,12 @@ interface Props {
   occasionHeading: string;
   priceHeading: string;
   qtyHeading: string;
+  quantityOptionLabel: string;
   editLabel: string;
   saveLabel: string;
   cancelLabel: string;
   removeLabel: string;
+  removingLabel: string;
   subtotalLabel: string;
   checkoutLabel: string;
   emptyMessage: string;
@@ -172,10 +174,12 @@ export default function LiveCart({
   occasionHeading,
   priceHeading,
   qtyHeading,
+  quantityOptionLabel,
   editLabel,
   saveLabel,
   cancelLabel,
   removeLabel,
+  removingLabel,
   subtotalLabel,
   checkoutLabel,
   emptyMessage,
@@ -447,7 +451,7 @@ export default function LiveCart({
 
                               {item.quantityValue && (
                                 <div>
-                                  <span className={labelClass}>Quantity</span>
+                                  <span className={labelClass}>{quantityOptionLabel}</span>
                                   {isEditing && quantityGroup ? (
                                     <select
                                       className={selectClass}
@@ -535,7 +539,7 @@ export default function LiveCart({
                                     disabled={removing.has(item.uniqueId)}
                                     className={actionBtnClass}
                                   >
-                                    {removing.has(item.uniqueId) ? '...' : removeLabel}
+                                    {removing.has(item.uniqueId) ? removingLabel : removeLabel}
                                   </button>
                                 </>
                               )}

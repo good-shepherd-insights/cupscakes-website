@@ -34,9 +34,10 @@ interface Props {
   imageSrc: string;
   imageAlt: string;
   orderHref: string;
+  ctaLabel: string;
 }
 
-const { name, description, price, imageSrc, imageAlt, orderHref } = Astro.props;
+const { name, description, price, imageSrc, imageAlt, orderHref, ctaLabel } = Astro.props;
 ---
 
 <article
@@ -89,5 +90,5 @@ const { name, description, price, imageSrc, imageAlt, orderHref } = Astro.props;
            focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
     data-node-id="3311:3126"
     aria-label={`Order ${name} personal cake now`}
-  ><span>ORDER NOW</span></a>
+  ><span>{ctaLabel}</span></a>
 </article>

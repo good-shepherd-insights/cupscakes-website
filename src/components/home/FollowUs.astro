@@ -1,11 +1,11 @@
 ---
 interface Props {
   heading: string;
-  facebookHref: string;
-  instagramHref: string;
+  /** Always Sanity-sourced (siteSettings.socialLinks), never empty. */
+  socialLinks: { platform: string; href: string; iconUrl: string; iconAlt?: string }[];
 }
 
-const { heading, facebookHref, instagramHref } = Astro.props;
+const { heading, socialLinks: links } = Astro.props;
 ---
 
 <section
@@ -32,46 +32,26 @@ const { heading, facebookHref, instagramHref } = Astro.props;
       data-node-id="3311:1626"
       data-name="Group 47"
     >
-      <a
-        href={facebookHref}
-        class="inline-flex items-center justify-center shrink-0
-               h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 aspect-square
-               transition-[transform,filter] duration-150 ease-out
-               hover:scale-105 hover:brightness-90
-               focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden"
-        aria-label="Follow us on Facebook"
-        target="_blank"
-        rel="noopener noreferrer"
-        data-node-id="3311:1625"
-        data-name="Path 18 (Facebook)"
-      >
-        <img
-          alt=""
-          aria-hidden="true"
-          class="block size-full object-contain pointer-events-none"
-          src="/assets/facebook.svg"
-        />
-      </a>
-      <a
-        href={instagramHref}
-        class="inline-flex items-center justify-center shrink-0
-               h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 aspect-square
-               transition-[transform,filter] duration-150 ease-out
-               hover:scale-105 hover:brightness-90
-               focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden"
-        aria-label="Follow us on Instagram"
-        target="_blank"
-        rel="noopener noreferrer"
-        data-node-id="3311:1624"
-        data-name="Group 46 (Instagram)"
-      >
-        <img
-          alt=""
-          aria-hidden="true"
-          class="block size-full object-contain pointer-events-none"
-          src="/assets/instagram.svg"
-        />
-      </a>
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class="inline-flex items-center justify-center shrink-0
+                 h-8 sm:h-10 md:h-12 lg:h-14 xl:h-16 aspect-square
+                 transition-[transform,filter] duration-150 ease-out
+                 hover:scale-105 hover:brightness-90
+                 focus-visible:scale-105 focus-visible:brightness-90 focus-visible:outline-hidden"
+          aria-label={`Follow us on ${link.platform}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            alt={link.iconAlt ?? ""}
+            aria-hidden={link.iconAlt ? undefined : "true"}
+            class="block size-full object-contain pointer-events-none"
+            src={link.iconUrl}
+          />
+        </a>
+      ))}
     </div>
   </div>
 </section>

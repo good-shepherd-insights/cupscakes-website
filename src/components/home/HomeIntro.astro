@@ -1,0 +1,25 @@
+---
+interface Props {
+  heading: string;
+  subheading: string;
+}
+
+const { heading, subheading } = Astro.props;
+---
+
+<section
+  aria-labelledby="home-intro-heading"
+  class="w-full bg-white px-4 py-12 text-center sm:px-6 md:py-14 lg:py-16"
+>
+  <div class="mx-auto max-w-5xl">
+    <h2
+      id="home-intro-heading"
+      class="m-0 text-4xl font-semibold leading-tight text-brand-blue sm:text-5xl lg:text-6xl"
+    >
+      {heading}
+    </h2>
+    <p class="mt-3 mb-0 text-2xl leading-snug text-brand-blue sm:text-3xl lg:text-4xl">
+      {subheading}
+    </p>
+  </div>
+</section>

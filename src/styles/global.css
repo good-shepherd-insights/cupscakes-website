@@ -54,8 +54,8 @@
   /* Our Story section (Figma 3311:1652, Mask Group 15) */
   --background-image-path-19: url("/assets/path-19.svg");
   --background-image-story-photo: url("/assets/story-photo.jpg");
-  --background-image-story-mask-1: url("/assets/story-mask-1.svg");
-  --background-image-story-mask-2: url("/assets/story-mask-2.svg");
+  --background-image-story-mask-primary: url("/assets/story-mask-1.svg");
+  --background-image-story-mask-secondary: url("/assets/story-mask-2.svg");
   --background-image-story-logo: url("/assets/story-logo.svg");
 
   /* Cupcake carousel — shared silhouette mask */
@@ -208,14 +208,14 @@
   CSS `mask-image` is outside Tailwind v4's primitive coverage: there is no
   first-class mask utility and expressing it in `@utility` requires arbitrary
   values. These classes still consume `@theme`-declared CSS variables
-  (`--background-image-story-mask-*`, `--background-image-cupcake-mask`).
+  (`--background-image-story-mask-primary`/`-secondary`, `--background-image-cupcake-mask`).
 */
 /* Our Story — soft masked photo overlay at 5% opacity. */
 .story-photo {
-  mask-image: var(--background-image-story-mask-1),
-    var(--background-image-story-mask-2);
-  -webkit-mask-image: var(--background-image-story-mask-1),
-    var(--background-image-story-mask-2);
+  mask-image: var(--background-image-story-mask-primary),
+    var(--background-image-story-mask-secondary);
+  -webkit-mask-image: var(--background-image-story-mask-primary),
+    var(--background-image-story-mask-secondary);
   mask-repeat: no-repeat, no-repeat;
   -webkit-mask-repeat: no-repeat, no-repeat;
   mask-size: contain, contain;

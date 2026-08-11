@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
 import { validateUniqueSlug } from '../lib/uniqueSlug';
+import { SeoCharCountInput } from '../components/SeoCharCountInput';
 
 export const product = defineType({
   name: 'product',
@@ -65,6 +66,46 @@ export const product = defineType({
       title: 'Serving Info',
       type: 'string',
       description: 'Italic line below subtitle, e.g. "Serves 3-4 people." Leave blank for cupcakes.',
+    }),
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'object',
+      description:
+        'Search/social preview fields. metaTitle falls back to the product name; metaDescription has no fallback and is required.',
+      fields: [
+        defineField({
+          name: 'metaTitle',
+          title: 'Meta Title',
+          type: 'string',
+          description:
+            'Optional. Overrides the page <title> for this product. Leave blank to use the product name.',
+        }),
+        defineField({
+          name: 'metaDescription',
+          title: 'Meta Description',
+          type: 'text',
+          rows: 3,
+          description:
+            'Required, 70–160 characters. Used for the page meta description and social link previews.',
+          components: {
+            input: SeoCharCountInput,
+          },
+          validation: (Rule) =>
+            Rule.required()
+              .min(70)
+              .max(160)
+              .error('Meta description must be between 70 and 160 characters.'),
+        }),
+        defineField({
+          name: 'metaImage',
+          title: 'Meta Image',
+          type: 'image',
+          options: { hotspot: true },
+          description:
+            'Optional. Social link preview image (OG/Twitter). Falls back to the product image if blank.',
+        }),
+      ],
     }),
     defineField({
       name: 'customOptions',
@@ -140,6 +181,12 @@ export const product = defineType({
                       type: 'string',
                       description: 'e.g. "Custom".',
                       validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'description',
+                      title: 'Description',
+                      type: 'text',
+                      description: 'e.g. "Rich and indulgent with a smooth, chocolatey finish." Shown on the /products grid card for this option.',
                     }),
                     defineField({
                       name: 'priceModifier',

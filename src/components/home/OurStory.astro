@@ -1,12 +1,24 @@
 ---
 interface Props {
   heading: string;
-  paragraph1: string;
-  paragraph2: string;
-  paragraph3: string;
+  paragraph1?: string;
+  paragraph2?: string;
+  paragraph3?: string;
+  paragraphs?: string[];
+  photoSrc?: string;
+  logoSrc?: string;
 }
 
-const { heading, paragraph1, paragraph2, paragraph3 } = Astro.props;
+const {
+  heading,
+  paragraph1,
+  paragraph2,
+  paragraph3,
+  paragraphs,
+  photoSrc = "/assets/story-photo.jpg",
+  logoSrc = "/assets/story-logo.svg",
+} = Astro.props;
+const storyParagraphs = paragraphs ?? [paragraph1, paragraph2, paragraph3].filter(Boolean);
 ---
 
 <section
@@ -36,14 +48,14 @@ const { heading, paragraph1, paragraph2, paragraph3 } = Astro.props;
       alt=""
       aria-hidden="true"
       class="block size-full object-cover pointer-events-none"
-      src="/assets/story-photo.jpg"
+      src={photoSrc}
     />
   </div>
 
   <img
     alt=""
     aria-hidden="true"
-    src="/assets/story-logo.svg"
+    src={logoSrc}
     class="absolute inset-0 m-auto -z-10
            w-2/3 max-w-3xl aspect-[929/864]
            object-contain pointer-events-none opacity-90"
@@ -69,9 +81,7 @@ const { heading, paragraph1, paragraph2, paragraph3 } = Astro.props;
              flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-10"
       data-node-id="3311:1657"
     >
-      <p class="m-0">{paragraph1}</p>
-      <p class="m-0">{paragraph2}</p>
-      <p class="m-0">{paragraph3}</p>
+      {storyParagraphs.map((paragraph) => <p class="m-0">{paragraph}</p>)}
     </div>
   </div>
 </section>

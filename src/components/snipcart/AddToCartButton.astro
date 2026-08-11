@@ -11,5 +11,5 @@ interface Props {
 const { attrs, class: extraClass = '', disabled = false } = Astro.props;
 ---
 <button type="button" class={`snipcart-add-item ${extraClass}`} disabled={disabled} {...attrs}>
-  <slot>Add to Cart</slot>
+  <slot />
 </button>

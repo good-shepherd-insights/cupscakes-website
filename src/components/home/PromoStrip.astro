@@ -1,0 +1,17 @@
+---
+interface Props {
+  text: string;
+  accessibleLabel?: string;
+}
+
+const { text, accessibleLabel } = Astro.props;
+---
+
+<section
+  class="flex min-h-12 w-full items-center justify-center border-b border-brand-border bg-brand-pink px-4 py-3 text-center"
+  aria-label={accessibleLabel}
+>
+  <p class="m-0 text-base font-semibold uppercase leading-snug text-white sm:text-lg lg:text-xl">
+    {text}
+  </p>
+</section>

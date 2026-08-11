@@ -2,15 +2,24 @@
 import { routes } from "../../lib/routes";
 import { formatProductPriceEach } from "../../lib/format/productPrice";
 
+interface FeaturedFlavor {
+  key: string;
+  name: string;
+  description: string;
+}
+
 interface Props {
   caption: string;
   otherOptionsHref: string;
   otherOptionsLabel: string;
+  ctaLabel: string;
   price: number;
   images: ReadonlyMap<string, string>;
+  /** The 3 flavors featured here, in display order — content (name/description) comes from Sanity. */
+  flavors: ReadonlyArray<FeaturedFlavor>;
 }
 
-const { caption, otherOptionsHref, otherOptionsLabel, price, images } = Astro.props;
+const { caption, otherOptionsHref, otherOptionsLabel, ctaLabel, price, images, flavors } = Astro.props;
 
 function requireFlavorImage(flavorKey: string): string {
   const image = images.get(flavorKey);
@@ -24,45 +33,29 @@ function requireFlavorImage(flavorKey: string): string {
 // scanner can statically see `bg-flavor-chocolate`,
 // `bg-flavor-butter-pecan`, and `bg-flavor-carrot` and emit them into
 // the production CSS. Concatenating the bg token at runtime would risk
-// the class being purged.
+// the class being purged. This is presentation/Figma-trace structure, not
+// content, so it stays local rather than coming from Sanity.
 const CARD_CLASS_BASE = `flex flex-col items-center text-center text-white
                         border border-brand-border
                         rounded-2xl sm:rounded-3xl
                         p-6 sm:p-8 md:p-10
                         gap-4 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-10`;
 
-const flavors = [
-  {
-    key: "chocolate",
-    name: "Chocolate",
-    description: "Rich and indulgent with a smooth, chocolatey finish.",
-    cardClass: `bg-flavor-chocolate ${CARD_CLASS_BASE}`,
-    nodeCard: "3311:1477",
-    nodePhoto: "3311:1521",
-    photoSrc: requireFlavorImage("chocolate"),
-  },
-  {
-    key: "butter-pecan",
-    name: "Butter Pecan",
-    description: "Warm and buttery with toasted pecans, finished with a rich, nutty crunch.",
-    cardClass: `bg-flavor-butter-pecan ${CARD_CLASS_BASE}`,
-    nodeCard: "3311:1476",
-    nodePhoto: "3311:1517",
-    photoSrc: requireFlavorImage("butter-pecan"),
-  },
-  {
-    key: "carrot",
-    name: "Carrot",
-    description: "Sweetened just right and finished with a smooth, indulgent touch.",
-    cardClass: `bg-flavor-carrot ${CARD_CLASS_BASE}`,
-    nodeCard: "3311:1475",
-    nodePhoto: "3311:1513",
-    photoSrc: requireFlavorImage("carrot"),
-  },
-];
+const STRUCTURE: Record<string, { cardClass: string; nodeCard: string; nodePhoto: string }> = {
+  chocolate: { cardClass: `bg-flavor-chocolate ${CARD_CLASS_BASE}`, nodeCard: "3311:1477", nodePhoto: "3311:1521" },
+  "butter-pecan": { cardClass: `bg-flavor-butter-pecan ${CARD_CLASS_BASE}`, nodeCard: "3311:1476", nodePhoto: "3311:1517" },
+  carrot: { cardClass: `bg-flavor-carrot ${CARD_CLASS_BASE}`, nodeCard: "3311:1475", nodePhoto: "3311:1513" },
+};
+
+const cards = flavors.map((f) => {
+  const structure = STRUCTURE[f.key];
+  if (!structure) {
+    throw new Error(`Homepage cupcake carousel has no card styling defined for flavor "${f.key}".`);
+  }
+  return { ...f, ...structure, photoSrc: requireFlavorImage(f.key) };
+});
 
 const formattedPrice = formatProductPriceEach(price);
-const orderLabel = "ORDER NOW";
 ---
 
 <section
@@ -84,7 +77,7 @@ const orderLabel = "ORDER NOW";
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
                 gap-6 sm:gap-8 md:gap-10 w-full">
-      {flavors.map((f) => (
+      {cards.map((f) => (
         <article
           class={f.cardClass}
           data-node-id={f.nodeCard}
@@ -125,7 +118,7 @@ const orderLabel = "ORDER NOW";
             data-product-slug="cupcakes"
             data-variant-slug={f.key}
             aria-label={`Order ${f.name} cupcakes now`}
-          ><span>{orderLabel}</span></a>
+          ><span>{ctaLabel}</span></a>
         </article>
       ))}
     </div>

@@ -22,9 +22,19 @@ interface Props {
    * "site" so every other page's navbar is unchanged.
    */
   mode?: "site" | "store";
-  /** Social links surfaced at the bottom of the mobile popout menu. */
-  facebookHref?: string;
-  instagramHref?: string;
+  whoLabel: string;
+  orderLabel: string;
+  productsLabel: string;
+  shopLabel: string;
+  logoTextBefore: string;
+  logoTextAfter: string;
+  siteName: string;
+  cartAccessibleLabel: string;
+  openMenuLabel: string;
+  closeMenuLabel: string;
+  /** Social links surfaced at the bottom of the mobile popout menu. Always Sanity-sourced (siteSettings.socialLinks), never empty. */
+  socialLinks: { platform: string; href: string; iconUrl: string; iconAlt?: string }[];
+  mobileMenuLogoSrc?: string;
 }
 
 const {
@@ -36,8 +46,18 @@ const {
   shopHref,
   activeLink,
   mode = "site",
-  facebookHref = "#",
-  instagramHref = "#",
+  whoLabel,
+  orderLabel,
+  productsLabel,
+  shopLabel,
+  logoTextBefore,
+  logoTextAfter,
+  siteName,
+  cartAccessibleLabel,
+  openMenuLabel,
+  closeMenuLabel,
+  socialLinks,
+  mobileMenuLogoSrc = "/assets/order-logo-small.svg",
 } = Astro.props;
 
 // Active-link underline shared classes. Absolutely positioned below the
@@ -49,20 +69,22 @@ const activeUnderlineClass =
 
 <header
   class="sticky top-0 z-50 w-full bg-white border-b border-brand-border
-         h-14 sm:h-16 md:h-20 lg:h-24 xl:h-32"
+         h-14 sm:h-16 md:h-20 lg:h-[86px]"
   data-node-id="3311:1430"
   data-name="Navbar / Rectangle 1"
 >
-  <div class="flex h-full w-full items-center justify-between px-3 sm:px-4 md:px-6 lg:px-10">
+  <div class="grid h-full w-full grid-cols-[auto_1fr_auto] items-center gap-3 px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10">
     <button
       type="button"
       id="mobile-menu-toggle"
       class="mobile-menu-toggle md:hidden inline-flex flex-col items-center justify-center gap-1.5
              shrink-0 mr-2 p-1.5 -ml-1.5 bg-transparent border-0 cursor-pointer
              focus-visible:outline-hidden"
-      aria-label="Open menu"
+      aria-label={openMenuLabel}
       aria-controls="mobile-menu"
       aria-expanded="false"
+      data-open-label={openMenuLabel}
+      data-close-label={closeMenuLabel}
     >
       <span class="block h-0.5 w-6 rounded-full bg-brand-blue transition-transform duration-200"></span>
       <span class="block h-0.5 w-6 rounded-full bg-brand-blue transition-opacity duration-200"></span>
@@ -73,14 +95,14 @@ const activeUnderlineClass =
       href={homeHref}
       class="inline-flex items-center gap-1.5 sm:gap-2 md:gap-2.5
              font-medium text-brand-blue no-underline whitespace-nowrap
-             text-base sm:text-lg md:text-xl lg:text-2xl xl:text-4xl
+             text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl
              leading-relaxed
              transition-opacity duration-150 hover:opacity-90 focus-visible:opacity-90 focus-visible:outline-hidden"
       data-node-id="3311:1569"
       data-name="CUPS_&_CAKES_LOGO_2026_UPDATE_13-17"
-      aria-label="Cups & Cakes — home"
+      aria-label={`${siteName} — home`}
     >
-      <span data-node-id="3311:1557">CUPS</span>
+      <span data-node-id="3311:1557">{logoTextBefore}</span>
       <span
         class="inline-block bg-cups-icon bg-no-repeat bg-contain bg-center shrink-0
                h-[1.2em] aspect-[75.694/55.796]"
@@ -89,21 +111,21 @@ const activeUnderlineClass =
         role="img"
         aria-label=""
       ></span>
-      <span data-node-id="3311:1561">CAKES</span>
+      <span data-node-id="3311:1561">{logoTextAfter}</span>
     </a>
 
     <nav
-      class="flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-10"
+      class="hidden md:flex items-center justify-center gap-6 lg:gap-9 xl:gap-12"
       aria-label="Primary"
     >
       {mode === "store" ? (
         <a
           href={productsHref}
-          class="nav-link relative hidden md:inline-block"
+          class="nav-link relative"
           data-name="Products"
           aria-current={activeLink === "products" ? "page" : undefined}
         >
-          <span>PRODUCTS</span>
+          <span>{productsLabel}</span>
           {activeLink === "products" && (
             <span
               aria-hidden="true"
@@ -117,11 +139,11 @@ const activeUnderlineClass =
         <>
           <a
             href={whoHref}
-            class="nav-link relative hidden md:inline-block"
+            class="nav-link relative"
             data-node-id="3311:1674"
             aria-current={activeLink === "who" ? "page" : undefined}
           >
-            <span>WHO WE ARE</span>
+            <span>{whoLabel}</span>
             {activeLink === "who" && (
               <span
                 aria-hidden="true"
@@ -133,59 +155,61 @@ const activeUnderlineClass =
           </a>
 
           <a
-            href={orderHref}
-            class="nav-link relative hidden md:inline-block"
-            data-node-id="3311:1678"
-            aria-current={activeLink === "order" ? "page" : undefined}
-          >
-            <span>ORDER NOW</span>
-            {activeLink === "order" && (
-              <span
-                aria-hidden="true"
-                class={activeUnderlineClass}
-                data-node-id="3311:3222"
-                data-name="Active link underline"
-              ></span>
-            )}
-          </a>
-
-          <a
             href={shopHref}
-            class="nav-link relative hidden md:inline-block"
+            class="nav-link relative"
             aria-current={activeLink === "shop" ? "page" : undefined}
           >
-            <span>OUR SHOP</span>
+            <span>{shopLabel}</span>
             {activeLink === "shop" && (
               <span aria-hidden="true" class={activeUnderlineClass}></span>
             )}
           </a>
         </>
       )}
+    </nav>
 
-      <a
-        href={facebookHref}
-        class="nav-icon bg-facebook-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
-        aria-label="Facebook"
-        target="_blank"
-        rel="noopener noreferrer"
-      ></a>
+    <div class="flex items-center justify-end gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+      {mode !== "store" && (
+        <a
+          href={orderHref}
+          class="hidden md:inline-flex h-10 lg:h-12 w-36 items-center justify-center
+                 border border-brand-blue bg-brand-blue px-4 text-center font-medium
+                 text-sm lg:text-base text-white no-underline
+                 transition-[transform,filter] duration-150 ease-out
+                 hover:brightness-110 hover:-translate-y-px
+                 focus-visible:brightness-110 focus-visible:-translate-y-px focus-visible:outline-hidden"
+          data-node-id="3311:1678"
+          aria-current={activeLink === "order" ? "page" : undefined}
+        >
+          <span>{orderLabel}</span>
+        </a>
+      )}
 
-      <a
-        href={instagramHref}
-        class="nav-icon bg-instagram-icon h-4 sm:h-5 md:h-7 lg:h-8 aspect-square"
-        aria-label="Instagram"
-        target="_blank"
-        rel="noopener noreferrer"
-      ></a>
+      {socialLinks.map((link) => (
+        <a
+          href={link.href}
+          class="nav-icon hidden md:inline-block h-5 lg:h-6 aspect-square"
+          aria-label={link.platform}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            alt={link.iconAlt ?? ""}
+            aria-hidden={link.iconAlt ? undefined : "true"}
+            class="block size-full object-contain pointer-events-none"
+            src={link.iconUrl}
+          />
+        </a>
+      ))}
 
-      <div class="cart-container relative inline-flex shrink-0">
+      <div class="cart-container relative inline-flex shrink-0" data-cart-accessible-label={cartAccessibleLabel}>
         <a
           href={cartHref}
           data-astro-reload
-          class="cart-link nav-icon bg-cart-icon h-5 sm:h-6 md:h-7 lg:h-8 aspect-[41.479/46.541]"
+          class="cart-link nav-icon bg-cart-icon h-6 md:h-7 lg:h-8 aspect-[41.479/46.541]"
           data-node-id="3311:1695"
           data-name="C&C_CART_ICON"
-          aria-label="Shopping cart"
+          aria-label={cartAccessibleLabel}
         ></a>
         <span
           class="snipcart-items-count pointer-events-none absolute -top-1.5 -right-1.5 flex min-w-4 h-4 items-center justify-center rounded-full px-0.5 bg-brand-pink text-white text-[10px] font-bold leading-none"
@@ -193,7 +217,7 @@ const activeUnderlineClass =
           hidden
         ></span>
       </div>
-    </nav>
+    </div>
   </div>
 
   {/* Mobile popout menu (md:hidden). Slides in from the left; mirrors the
@@ -218,15 +242,15 @@ const activeUnderlineClass =
           class="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center
                  rounded-full bg-white/0 text-2xl leading-none text-white
                  transition-colors duration-150 hover:bg-white/20 focus-visible:outline-hidden"
-          aria-label="Close menu"
+          aria-label={closeMenuLabel}
         >&times;</button>
         <a
           href={homeHref}
           class="block h-20 w-24"
-          aria-label="Cups & Cakes — home"
+          aria-label={`${siteName} — home`}
         >
           <img
-            src="/assets/order-logo-small.svg"
+            src={mobileMenuLogoSrc}
             alt=""
             aria-hidden="true"
             class="h-full w-full object-contain"
@@ -238,12 +262,12 @@ const activeUnderlineClass =
       <div class="flex flex-1 flex-col items-center bg-brand-pink px-6 py-12 text-center">
         <nav class="flex flex-1 flex-col items-center justify-center gap-12" aria-label="Mobile">
           {mode === "store" ? (
-            <a href={productsHref} class="mobile-menu-link">PRODUCTS</a>
+            <a href={productsHref} class="mobile-menu-link">{productsLabel}</a>
           ) : (
             <>
-              <a href={whoHref} class="mobile-menu-link">WHO WE ARE</a>
-              <a href={orderHref} class="mobile-menu-link">ORDER NOW</a>
-              <a href={shopHref} class="mobile-menu-link">OUR SHOP</a>
+              <a href={whoHref} class="mobile-menu-link">{whoLabel}</a>
+              <a href={orderHref} class="mobile-menu-link">{orderLabel}</a>
+              <a href={shopHref} class="mobile-menu-link">{shopLabel}</a>
             </>
           )}
         </nav>
@@ -274,7 +298,7 @@ const activeUnderlineClass =
       menu.classList.add("is-open");
       menu.setAttribute("aria-hidden", "false");
       toggle.setAttribute("aria-expanded", "true");
-      toggle.setAttribute("aria-label", "Close menu");
+      toggle.setAttribute("aria-label", toggle.dataset.closeLabel ?? "");
       document.body.style.overflow = "hidden";
     };
 
@@ -282,7 +306,7 @@ const activeUnderlineClass =
       menu.classList.remove("is-open");
       menu.setAttribute("aria-hidden", "true");
       toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Open menu");
+      toggle.setAttribute("aria-label", toggle.dataset.openLabel ?? "");
       document.body.style.overflow = "";
     };
 
@@ -302,4 +326,3 @@ const activeUnderlineClass =
   document.addEventListener("snipcart.ready", initCartShakeAnimation);
   document.addEventListener("astro:page-load", applyCartBadge);
 </script>
-

@@ -78,6 +78,8 @@ import { routes } from "../../lib/routes";
 interface Props {
   breadcrumbHrefHome: string;
   breadcrumbHrefProducts: string;
+  breadcrumbHomeLabel: string;
+  breadcrumbProductsLabel: string;
   breadcrumbLabel: string;
   title: string;
   subtitle: string;
@@ -95,11 +97,14 @@ interface Props {
   /** The currently selected variant slug, if any, for active-state styling. */
   currentVariantSlug?: string;
   price: string;
+  addToCartLabel: string;
 }
 
 const {
   breadcrumbHrefHome,
   breadcrumbHrefProducts,
+  breadcrumbHomeLabel,
+  breadcrumbProductsLabel,
   breadcrumbLabel,
   title,
   subtitle,
@@ -111,6 +116,7 @@ const {
   productSlug,
   currentVariantSlug,
   price,
+  addToCartLabel,
 } = Astro.props;
 
 // The one piece of Astro-specific context buildProductCartAttributes()
@@ -239,8 +245,8 @@ const selectionBtn = [
     {/* Breadcrumb (3311:2297) — reusable component. */}
     <Breadcrumb
       items={[
-        { label: "Home", href: breadcrumbHrefHome },
-        { label: "Products", href: breadcrumbHrefProducts },
+        { label: breadcrumbHomeLabel, href: breadcrumbHrefHome },
+        { label: breadcrumbProductsLabel, href: breadcrumbHrefProducts },
         { label: breadcrumbLabel },
       ]}
       class="mb-[18px] sm:mb-[23px] md:mb-[29px] lg:mb-[34px] xl:mb-[58px]
@@ -427,7 +433,7 @@ const selectionBtn = [
                  w-[138px] sm:w-[161px] md:w-[175px] lg:w-[195px] xl:w-[233px]
                  mt-[23px] sm:mt-[29px] md:mt-[34px] lg:mt-[46px] xl:mt-[54px]
                  text-[11px] sm:text-[12px] md:text-[14px] lg:text-[19px]"
-        >ADD TO CART</AddToCartButton>
+        >{addToCartLabel}</AddToCartButton>
 
         {/* Price (3311:2224) — Inter Medium 85px black, Figma y=1730
             → 51px below ADD TO CART (1569+110=1679; 1730-1679=51). */}

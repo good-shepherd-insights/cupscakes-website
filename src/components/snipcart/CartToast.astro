@@ -10,6 +10,11 @@
  * role="status" + aria-live="polite": the name/text swap on show is
  * announced by screen readers without stealing focus.
  */
+interface Props {
+  addedToCartMessage: string;
+  addingToCartMessage: string;
+}
+const { addedToCartMessage, addingToCartMessage } = Astro.props;
 ---
 <div
   id="cart-toast"
@@ -20,11 +25,13 @@
          max-w-[calc(100vw-36px)]"
   role="status"
   aria-live="polite"
+  data-adding-message={addingToCartMessage}
+  data-added-message={addedToCartMessage}
 >
   <img class="cart-toast-image block w-[80px] h-[80px] object-cover rounded-sm" alt="" hidden />
   <div class="min-w-0">
     <p class="cart-toast-name m-0 text-black font-medium leading-[1.2] text-[20px] truncate"></p>
-    <p class="m-0 text-black font-light leading-[1.2] text-[16px]">Added to your cart</p>
+    <p class="m-0 text-black font-light leading-[1.2] text-[16px]">{addedToCartMessage}</p>
   </div>
 </div>
 

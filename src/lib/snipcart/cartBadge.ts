@@ -46,6 +46,7 @@ export function applyCartBadge(): void {
     if (!badge || !cartLink) return;
 
     const empty = itemCount === 0;
+    const accessibleLabel = container.dataset.cartAccessibleLabel ?? '';
     // Stamp the number ourselves: Snipcart's own snipcart-items-count
     // binding only writes to the DOM when the value *changes*, so a badge
     // element swapped in by a ClientRouter navigation stays blank until
@@ -57,7 +58,7 @@ export function applyCartBadge(): void {
     badge.setAttribute('aria-hidden', String(empty));
     cartLink.setAttribute(
       'aria-label',
-      empty ? 'Shopping cart' : `Shopping cart (${itemCount} item${itemCount === 1 ? '' : 's'})`
+      empty ? accessibleLabel : `${accessibleLabel} (${itemCount} item${itemCount === 1 ? '' : 's'})`
     );
   });
 }

@@ -31,6 +31,7 @@ import { collectSanitySchemaNames } from './lib/sanitySchema';
 import { firstNodeByType, hasSchemaType, nodeId, productOffer, referenceId } from './lib/schemaGraph';
 
 const HEAD_TAG_PATTERN = /<title>|rel=["']canonical["']|property=["']og:|name=["']twitter:|application\/ld\+json/;
+const HTML_ENTITY_PATTERN = /&(amp|lt|gt|quot|apos);/;
 
 function sourceIncludesAll(source: string, values: readonly string[]): string[] {
   return values.filter((value) => !source.includes(value));
@@ -97,6 +98,9 @@ describe('project SEO infrastructure contract', () => {
         blockers.push(`${url}: invalid JSON-LD: ${seo.jsonLdParseErrors.join('; ')}`);
       }
       if (!seo.jsonLd.length) blockers.push(`${url}: missing JSON-LD`);
+      if (HTML_ENTITY_PATTERN.test(JSON.stringify(seo.jsonLd))) {
+        blockers.push(`${url}: JSON-LD contains HTML entity-escaped values`);
+      }
 
       for (const schemaType of expectedSchemaTypes(kind)) {
         if (!hasSchemaType(seo.jsonLd, schemaType)) {
@@ -198,7 +202,7 @@ describe('project SEO infrastructure contract', () => {
       dependencies?: Record<string, string>;
       devDependencies?: Record<string, string>;
     };
-    for (const dependency of ['astro-seo', 'astro-seo-schema', 'schema-dts', '@astrojs/sitemap']) {
+    for (const dependency of ['astro-seo', 'schema-dts', '@astrojs/sitemap']) {
       if (!packageJson.dependencies?.[dependency] && !packageJson.devDependencies?.[dependency]) {
         blockers.push(`missing package dependency ${dependency}`);
       }
@@ -214,7 +218,7 @@ describe('project SEO infrastructure contract', () => {
 
     const seoHead = readProjectFile('src/components/seo/SeoHead.astro');
     if (!seoHead.includes("from 'astro-seo'")) blockers.push('SeoHead does not use astro-seo');
-    if (!seoHead.includes("from 'astro-seo-schema'")) blockers.push('SeoHead does not use astro-seo-schema');
+    if (!seoHead.includes('serializeJsonLd')) blockers.push('SeoHead does not use centralized JSON-LD serialization');
 
     for (const file of SEO_SOURCE_PAGES) {
       const source = readProjectFile(file);

@@ -1,63 +1,19 @@
 ---
-interface PromoTextSpan {
-  _type: 'span';
-  _key: string;
-  text: string;
-  marks?: string[];
-}
-
-interface PromoTextBlock {
-  _type: 'block';
-  _key: string;
-  style?: string;
-  children: PromoTextSpan[];
-}
-
 interface Props {
-  richText?: PromoTextBlock[];
   text?: string;
   accessibleLabel?: string;
 }
 
-const { richText, text, accessibleLabel } = Astro.props;
-
-interface TextSegment {
-  content: string;
-  bold: boolean;
-}
-
-function parseSegments(blocks: PromoTextBlock[]): TextSegment[] {
-  const segments: TextSegment[] = [];
-  for (const block of blocks) {
-    if (block._type !== 'block') continue;
-    for (const child of block.children ?? []) {
-      if (child._type !== 'span') continue;
-      segments.push({
-        content: child.text ?? '',
-        bold: (child.marks ?? []).includes('strong'),
-      });
-    }
-  }
-  return segments;
-}
-
-const segments = richText ? parseSegments(richText) : [];
-const hasContent = segments.length > 0 || Boolean(text);
+const { text, accessibleLabel } = Astro.props;
 ---
 
-{hasContent && (
+{text && (
   <section
     class="flex min-h-12 w-full items-center justify-center bg-brand-pink px-4 py-3 text-center"
     aria-label={accessibleLabel}
   >
     <p class="m-0 text-base font-normal uppercase leading-snug text-white sm:text-lg lg:text-xl">
-      {segments.length > 0
-        ? segments.map((seg) =>
-            seg.bold
-              ? <strong class="font-semibold">{seg.content}</strong>
-              : <span>{seg.content}</span>
-          )
-        : text}
+      {text}
     </p>
   </section>
 )}

@@ -15,22 +15,9 @@ type SanitySocialLink = {
   icon?: SanityImage;
 };
 
-type SanityPromoStripBlock = {
-  _type: 'block';
-  _key: string;
-  style?: string;
-  children: {
-    _type: 'span';
-    _key: string;
-    text: string;
-    marks?: string[];
-  }[];
-};
-
 type SanityHomePage = {
   flavorBandAccessibleLabel?: string;
   promoStrip?: {
-    richText?: SanityPromoStripBlock[];
     text?: string;
     accessibleLabel?: string;
   };
@@ -318,7 +305,6 @@ export async function loadHomePageContent() {
       categoryHeaderAccessibleHeading: siteSettings?.categoryHeaderAccessibleHeading,
     },
     promoStrip: {
-      richText: homePage?.promoStrip?.richText,
       text: homePage?.promoStrip?.text,
       accessibleLabel: homePage?.promoStrip?.accessibleLabel,
     },

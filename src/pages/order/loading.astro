@@ -6,11 +6,19 @@ import Navbar from "../../components/home/Navbar.astro";
 import Loading from "../../components/order/Loading.astro";
 import { loadHomePageContent } from "../../lib/sanity/queries/siteContent";
 import { loadOrderFlowContent } from "../../lib/sanity/queries/orderFlow";
+import { resolveSeo } from "../../lib/seo/resolveSeo";
 
 const { navbar, followUs, decorativeMarks, siteName, addedToCartMessage, addingToCartMessage } = await loadHomePageContent();
 const { loading } = await loadOrderFlowContent();
+const resolvedSeo = resolveSeo({
+  pageKind: 'utility',
+  site: Astro.site,
+  pathname: Astro.url.pathname,
+  siteName,
+  fallbackTitle: `Loading [WIP] — ${siteName}`,
+});
 ---
-<Layout title={`Loading [WIP] — ${siteName}`} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
+<Layout seo={resolvedSeo} addedToCartMessage={addedToCartMessage} addingToCartMessage={addingToCartMessage}>
   <div class="flex min-h-dvh flex-col">
     <Navbar {...navbar} activeLink="order" />
     <Loading {...loading} logoSmallSrc={decorativeMarks.smallSrc} logoSmallAlt={decorativeMarks.smallAlt} />

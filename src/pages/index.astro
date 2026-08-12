@@ -20,6 +20,7 @@ import {
 import { loadHomePageContent } from '../lib/sanity/queries/siteContent';
 import { resolveRequiredVariantImageUrls } from '../lib/sanity/image';
 import { IMAGE_WIDTHS } from '../lib/constants';
+import { resolveSeo } from '../lib/seo/resolveSeo';
 
 const [homeContent, cupcakeProduct, personalCakePrice] = await Promise.all([
   loadHomePageContent(),
@@ -40,6 +41,9 @@ const {
   followUs,
   footer,
   seo,
+  defaultSeo,
+  siteName,
+  businessIdentity,
   cssImageVars,
   faviconUrl,
   addedToCartMessage,
@@ -47,6 +51,18 @@ const {
   flavorBandAccessibleLabel,
 } = homeContent;
 const cupcakeImages = resolveRequiredVariantImageUrls(cupcakeProduct, IMAGE_WIDTHS.card);
+const resolvedSeo = resolveSeo({
+  pageKind: 'home',
+  site: Astro.site,
+  pathname: Astro.url.pathname,
+  siteName,
+  pageSeo: seo,
+  defaultSeo,
+  fallbackTitle: siteName,
+  fallbackDescription: intro.subheading,
+  fallbackImage: hero?.backgroundImage,
+  businessIdentity,
+});
 
 const FEATURED_CUPCAKE_FLAVORS = ["chocolate", "butter-pecan", "carrot"];
 const cupcakeFlavorGroup = cupcakeProduct.customOptions?.find((g) => g.definesVariantRoute);
@@ -62,9 +78,7 @@ const featuredCupcakeFlavors = FEATURED_CUPCAKE_FLAVORS.map((key) => {
 });
 ---
 <Layout
-  title={seo.metaTitle}
-  description={seo.metaDescription}
-  image={seo.metaImage}
+  seo={resolvedSeo}
   faviconUrl={faviconUrl}
   cssImageVars={cssImageVars}
   addedToCartMessage={addedToCartMessage}

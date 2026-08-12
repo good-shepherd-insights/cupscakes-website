@@ -1,0 +1,16 @@
+---
+import { SEO } from 'astro-seo';
+import type { ResolvedSeo } from '../../types/seo';
+import { serializeJsonLd } from '../../lib/seo/jsonLd';
+
+interface Props {
+  seo: ResolvedSeo;
+}
+
+const { seo } = Astro.props;
+---
+
+<SEO {...seo.meta} />
+{seo.schema.map((item) => (
+  <script type="application/ld+json" set:html={serializeJsonLd(item)} />
+))}

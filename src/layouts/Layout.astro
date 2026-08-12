@@ -1,38 +1,26 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import { stegaClean } from '@sanity/client/stega';
+import type { ResolvedSeo } from '../types/seo';
+import SeoHead from '../components/seo/SeoHead.astro';
 import Snipcart from '../components/snipcart/Snipcart.astro';
 import CartToast from '../components/snipcart/CartToast.astro';
 import '../styles/global.css';
 import '../styles/snipcart-overrides.css';
 
 interface Props {
-  title: string;
-  description?: string;
-  image?: string;
-  canonicalUrl?: string;
+  seo: ResolvedSeo;
   faviconUrl?: string;
   cssImageVars?: Record<string, string>;
   addedToCartMessage: string;
   addingToCartMessage: string;
 }
 const {
-  title,
-  description,
-  image,
-  canonicalUrl,
+  seo,
   faviconUrl = '/assets/cups-icon.svg',
   cssImageVars = {},
   addedToCartMessage,
   addingToCartMessage,
 } = Astro.props;
-// Sanity's stega visual-editing encoding injects invisible Unicode into every
-// GROQ string so the Presentation tool can map rendered text back to its
-// source field. <title>/<meta> are never visible/clickable DOM, so the
-// overlay can't attach there anyway — strip it here to avoid bloating the
-// tab title and og/meta tags with thousands of invisible characters.
-const cleanTitle = stegaClean(title);
-const cleanDescription = description ? stegaClean(description) : undefined;
 const bodyStyle = Object.entries(cssImageVars)
   .map(([name, value]) => `${name}: ${value}`)
   .join('; ');
@@ -42,14 +30,7 @@ const bodyStyle = Object.entries(cssImageVars)
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{cleanTitle}</title>
-    {cleanDescription && <meta name="description" content={cleanDescription} />}
-    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-    <meta property="og:title" content={cleanTitle} />
-    {cleanDescription && <meta property="og:description" content={cleanDescription} />}
-    {image && <meta property="og:image" content={image} />}
-    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
-    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+    <SeoHead seo={seo} />
     {/* Jubilat font (matches the --font-sans token). */}
     <link rel="stylesheet" href="https://use.typekit.net/ezr1eax.css" />
     <link rel="icon" href={faviconUrl} type="image/svg+xml" />

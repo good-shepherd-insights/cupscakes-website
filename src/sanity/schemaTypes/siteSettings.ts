@@ -1,5 +1,4 @@
 import { defineArrayMember, defineField, defineType } from 'sanity';
-import { SeoCharCountInput } from '../components/SeoCharCountInput';
 import { imageField } from '../lib/imageField';
 
 // Favicon/meta image use the shared decorative imageField (no alt — they
@@ -15,20 +14,20 @@ export const siteSettings = defineType({
     defineField({
       name: 'defaultSeo',
       title: 'Default SEO',
-      type: 'object',
-      fields: [
-        defineField({ name: 'metaTitle', title: 'Meta Title', type: 'string' }),
-        defineField({
-          name: 'metaDescription',
-          title: 'Meta Description',
-          type: 'text',
-          rows: 3,
-          components: { input: SeoCharCountInput },
-          validation: (Rule) =>
-            Rule.min(70).max(160).error('Meta description must be between 70 and 160 characters.'),
-        }),
-        imageField('metaImage', 'Meta Image'),
-      ],
+      type: 'seo',
+      description: 'Fallback SEO values used when a specific indexable page has no SEO override.',
+    }),
+    defineField({
+      name: 'productsSeo',
+      title: 'Products Page SEO',
+      type: 'seo',
+      description: 'SEO and JSON-LD entity fields for the /products collection page.',
+    }),
+    defineField({
+      name: 'businessIdentity',
+      title: 'Business Identity',
+      type: 'businessIdentity',
+      description: 'Verified business facts used for Bakery/LocalBusiness JSON-LD. Empty fields are not emitted.',
     }),
     imageField('favicon', 'Favicon'),
     // Reused as decorative background marks across Loading, the products

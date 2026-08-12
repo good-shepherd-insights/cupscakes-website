@@ -1,16 +1,31 @@
 import { defineConfig, envField } from 'astro/config';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import { loadEnv } from 'vite';
+import { shouldIncludeInSitemap } from './src/lib/seo/routePolicy.ts';
+import { loadCmsNoindexPathnames, sitemapPathname } from './src/lib/seo/sitemapCms.ts';
 
 import tailwindcss from '@tailwindcss/vite';
 
 import frontmanAi from '@frontman-ai/astro';
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
+const siteUrl = 'https://cupscakes.com';
+const cmsNoindexPathnames = loadCmsNoindexPathnames({
+  projectId: env.PUBLIC_SANITY_PROJECT_ID,
+  dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
+  apiVersion: '2026-05-01',
+}).catch((error) => {
+  console.warn(
+    '[seo] Failed to load CMS noindex pathnames, sitemap will not apply CMS-driven exclusions:',
+    error,
+  );
+  return new Set();
+});
 
 export default defineConfig({
-  site: 'https://cupscakes.com',
+  site: siteUrl,
   env: {
     schema: {
       PUBLIC_SANITY_PROJECT_ID: envField.string({ context: 'client', access: 'public' }),
@@ -18,17 +33,34 @@ export default defineConfig({
       PUBLIC_SNIPCART_API_KEY: envField.string({ context: 'client', access: 'public' })
     }
   },
-  integrations: [sanity({
-    projectId: env.PUBLIC_SANITY_PROJECT_ID,
-    dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
-    apiVersion: '2026-05-01',
-    useCdn: false,
-    studioBasePath: '/admin',
-    stega: {
-      enabled: true,
-      studioUrl: '/admin',
-    },
-  }), react(), frontmanAi()],
+  integrations: [
+    sanity({
+      projectId: env.PUBLIC_SANITY_PROJECT_ID,
+      dataset: env.PUBLIC_SANITY_DATASET ?? 'production',
+      apiVersion: '2026-05-01',
+      useCdn: false,
+      studioBasePath: '/admin',
+      stega: {
+        enabled: true,
+        studioUrl: '/admin',
+      },
+    }),
+    react(),
+    sitemap({
+      filter: shouldIncludeInSitemap,
+      async serialize(item) {
+        const url = new URL(item.url);
+        if (url.pathname !== '/' && url.pathname.endsWith('/')) {
+          url.pathname = url.pathname.slice(0, -1);
+        }
+        if ((await cmsNoindexPathnames).has(sitemapPathname(url.toString()))) {
+          return undefined;
+        }
+        return { ...item, url: url.toString() };
+      },
+    }),
+    frontmanAi(),
+  ],
   vite: {
     define: {
       'process.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(env.PUBLIC_SANITY_PROJECT_ID),

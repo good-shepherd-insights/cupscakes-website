@@ -1,4 +1,9 @@
-import type { SlugValidationContext } from 'sanity';
+import type { SanityClient } from 'sanity';
+
+interface UniqueSlugValidationContext {
+  document?: { _id?: string };
+  getClient: (options: { apiVersion: string }) => SanityClient;
+}
 
 /**
  * Rejects publishing a document whose slug matches another document
@@ -6,7 +11,7 @@ import type { SlugValidationContext } from 'sanity';
  * constraint — this is the standard async-custom-validator pattern.
  */
 export function validateUniqueSlug(documentType: string) {
-  return async (slug: { current?: string } | undefined, context: SlugValidationContext) => {
+  return async (slug: { current?: string } | undefined, context: UniqueSlugValidationContext) => {
     if (!slug?.current) return true;
 
     const { document, getClient } = context;

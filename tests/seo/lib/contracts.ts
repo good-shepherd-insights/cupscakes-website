@@ -44,6 +44,7 @@ export const REQUIRED_SOURCE_FILES = [
   'src/lib/seo/resolveSeo.ts',
   'src/lib/seo/sitemapCms.ts',
   'src/lib/seo/schemaBuilders.ts',
+  'src/lib/seo/jsonLd.ts',
   'src/lib/seo/sanityImage.ts',
   'src/components/seo/SeoHead.astro',
   'src/sanity/schemaTypes/seo.ts',

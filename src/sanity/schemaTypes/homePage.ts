@@ -17,7 +17,24 @@ export const homePage = defineType({
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'text', title: 'Text', type: 'string', validation: (R) => R.required() }),
+        defineField({
+          name: 'richText',
+          title: 'Text',
+          type: 'array',
+          description: 'Use bold for phrases like "Free Delivery" and "$8 local delivery otherwise".',
+          of: [
+            defineArrayMember({
+              type: 'block',
+              styles: [{ title: 'Normal', value: 'normal' }],
+              lists: [],
+              marks: {
+                decorators: [{ title: 'Bold', value: 'strong' }],
+                annotations: [],
+              },
+            }),
+          ],
+        }),
+        defineField({ name: 'text', title: 'Text (legacy plain string)', type: 'string', hidden: true }),
         defineField({
           name: 'accessibleLabel',
           title: 'Accessible Label',

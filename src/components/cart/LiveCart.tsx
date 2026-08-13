@@ -341,12 +341,12 @@ export default function LiveCart({
     'block font-normal text-black leading-[normal] ' +
     'text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl';
   const selectClass =
-    'block font-normal text-black leading-[normal] border border-brand-border bg-white ' +
+    'block font-normal text-black leading-[normal] bg-white ' +
     'text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl';
   const actionBtnClass =
     'inline-flex items-center justify-center text-center ' +
     'font-medium text-brand-blue no-underline ' +
-    'bg-white border border-brand-border ' +
+    'bg-white ' +
     'h-10 sm:h-11 md:h-12 lg:h-12 xl:h-14 ' +
     'w-32 sm:w-36 md:w-40 lg:w-44 xl:w-52 ' +
     'text-sm sm:text-base md:text-base lg:text-lg xl:text-xl ' +
@@ -416,7 +416,6 @@ export default function LiveCart({
                         >
                           <span
                             className={`block self-stretch w-2 sm:w-2.5 md:w-3 lg:w-3.5 xl:w-4
-                            border border-brand-border
                             ${item.accent === 'blue' ? accentBlue : accentPink}`}
                             aria-hidden="true"
                           ></span>
@@ -567,7 +566,6 @@ export default function LiveCart({
                 type="button"
                 className="snipcart-checkout inline-flex items-center justify-center text-center no-underline
                bg-brand-blue text-white font-medium
-               border border-brand-border
                h-14 sm:h-16 md:h-20 lg:h-24 xl:h-28
                w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl
                text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl

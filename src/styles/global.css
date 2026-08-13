@@ -179,7 +179,7 @@
 @utility cupcake-cta {
   @apply inline-flex items-center justify-center;
   @apply bg-white text-brand-pink font-medium no-underline;
-  @apply border border-brand-border rounded-sm;
+  @apply rounded-sm;
   @apply text-xs sm:text-sm md:text-base lg:text-lg;
   @apply h-8 sm:h-10 md:h-12 lg:h-14;
   @apply w-32 sm:w-36 md:w-40 lg:w-44;
@@ -195,7 +195,7 @@
 @utility cupcake-other-options {
   @apply inline-flex items-center justify-center;
   @apply bg-white text-brand-blue font-medium no-underline text-center;
-  @apply border border-brand-border rounded-md;
+  @apply rounded-md;
   @apply text-sm sm:text-base;
   @apply px-6 py-3;
   @apply transition-[transform,filter] duration-150 ease-out;

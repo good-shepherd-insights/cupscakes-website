@@ -14,24 +14,24 @@ const { heading, ctaLabel, ctaHref, ctaAriaLabel } = Astro.props;
   class="relative w-full overflow-hidden bg-brand-blue px-4 py-12 text-center sm:px-6 md:py-14 lg:py-16"
 >
   <span
-    class="pointer-events-none absolute left-[8%] top-0 text-[12rem] font-semibold leading-none text-white/10 sm:text-[16rem]"
+    class="pointer-events-none absolute left-[8%] top-0 text-[12rem] font-normal leading-none text-white/10 sm:text-[16rem]"
     aria-hidden="true"
   >&amp;</span>
   <span
-    class="pointer-events-none absolute right-[8%] top-0 text-[12rem] font-semibold leading-none text-white/10 sm:text-[16rem]"
+    class="pointer-events-none absolute right-[8%] top-0 text-[12rem] font-normal leading-none text-white/10 sm:text-[16rem]"
     aria-hidden="true"
   >&amp;</span>
 
   <div class="relative mx-auto flex max-w-3xl flex-col items-center">
     <h2
       id="review-cta-heading"
-      class="m-0 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl"
+      class="m-0 text-4xl font-normal leading-tight text-white sm:text-5xl lg:text-6xl"
     >
       {heading}
     </h2>
     <a
       href={ctaHref}
-      class="mt-8 inline-flex h-16 w-64 items-center justify-center border border-brand-border bg-white px-6 text-center text-2xl font-semibold uppercase text-brand-pink no-underline transition-[transform,filter] duration-150 ease-out hover:brightness-95 hover:-translate-y-px focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
+      class="mt-8 inline-flex h-16 w-64 items-center justify-center bg-white px-6 text-center text-2xl font-semibold uppercase text-brand-pink no-underline transition-[transform,filter] duration-150 ease-out hover:brightness-95 hover:-translate-y-px focus-visible:brightness-95 focus-visible:-translate-y-px focus-visible:outline-hidden"
       aria-label={ctaAriaLabel}
       target="_blank"
       rel="noopener noreferrer"

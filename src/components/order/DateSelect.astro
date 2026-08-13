@@ -61,7 +61,7 @@ const {
 } = Astro.props;
 
 const pillBase =
-  "block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none " +
+  "block w-full bg-white rounded-full text-center cursor-pointer select-none " +
   "h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] " +
   "leading-[1] flex items-center justify-center " +
   "text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black " +
@@ -81,7 +81,7 @@ const minimumDate = options?.find((option) => !option.other)?.value;
 
 <article
   class="relative z-10 mx-auto w-full max-w-[854px]
-         bg-white border border-brand-border
+         bg-white
          px-5 sm:px-8 md:px-10 lg:px-12 xl:px-[42px]
          pt-6 sm:pt-8 md:pt-10 lg:pt-12 xl:pt-[31px]
          pb-8 sm:pb-10 md:pb-12 lg:pb-14 xl:pb-[60px]"
@@ -103,7 +103,7 @@ const minimumDate = options?.find((option) => !option.other)?.value;
       href={changeHref}
       class="inline-flex items-center justify-center text-center
              font-medium text-black no-underline
-             bg-white border border-brand-border
+             bg-white
              h-9 sm:h-10 md:h-12 lg:h-14 xl:h-[65px]
              w-24 sm:w-28 md:w-36 lg:w-44 xl:w-[238px]
              text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px]
@@ -175,7 +175,7 @@ const minimumDate = options?.find((option) => !option.other)?.value;
         type="submit"
         class="inline-flex items-center justify-center text-center
                bg-white text-brand-blue font-medium no-underline
-               border border-brand-border rounded-full
+               rounded-full
                h-12 sm:h-14 md:h-16 lg:h-20 xl:h-[101px]
                w-56 sm:w-64 md:w-80 lg:w-[320px] xl:w-[366px]
                text-2xl sm:text-3xl md:text-4xl lg:text-[40px]
@@ -190,14 +190,14 @@ const minimumDate = options?.find((option) => !option.other)?.value;
 <template id="date-pill-template">
   <div class="relative">
     <input type="radio" name="date" id="" value="" required class="peer sr-only" />
-    <label for="" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"></label>
+    <label for="" class="block w-full bg-white rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"></label>
   </div>
 </template>
 
 <template id="other-date-pill-template">
   <div class="relative">
     <input type="radio" name="date" id="" value="other" required class="peer sr-only" data-other="true" />
-    <label for="" data-other-date-label="true" class="block w-full bg-white border border-brand-border rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"><span class="sr-only">{otherDateLabel}</span></label>
+    <label for="" data-other-date-label="true" class="block w-full bg-white rounded-full text-center cursor-pointer select-none h-11 sm:h-12 md:h-14 lg:h-16 xl:h-[73px] leading-[1] flex items-center justify-center text-base sm:text-lg md:text-xl lg:text-2xl xl:text-[30px] text-black transition-[transform,filter,background-color,color,border-color] duration-150 ease-out hover:brightness-95 hover:-translate-y-px peer-checked:bg-brand-blue peer-checked:text-white peer-checked:border-brand-blue-dark peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue-dark"><span class="sr-only">{otherDateLabel}</span></label>
     <input type="date" name="otherDate" data-other-date data-required-message={otherDateRequiredMessage} aria-label={otherDateInputAriaLabel} class="absolute inset-0 z-10 w-[82%] h-full mx-auto bg-transparent border-0 p-0 text-center text-current [font-family:inherit] cursor-pointer text-sm sm:text-base md:text-lg lg:text-xl xl:text-[25px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-blue-dark" />
   </div>
 </template>

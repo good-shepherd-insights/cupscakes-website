@@ -17,7 +17,7 @@ export const homePage = defineType({
       type: 'object',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'text', title: 'Text', type: 'string', validation: (R) => R.required() }),
+        defineField({ name: 'text', title: 'Text', type: 'string' }),
         defineField({
           name: 'accessibleLabel',
           title: 'Accessible Label',

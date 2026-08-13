@@ -15,16 +15,16 @@ const carouselId = 'home-review-carousel';
 <section
   aria-labelledby="home-review-heading"
   data-review-carousel
-  class="relative w-full overflow-hidden border-y border-brand-border bg-brand-pink px-4 py-12 text-center sm:px-6 md:py-16 lg:py-20"
+  class="relative w-full overflow-hidden bg-brand-pink px-4 py-12 text-center sm:px-6 md:py-16 lg:py-20"
 >
   <h2 id="home-review-heading" class="sr-only">{accessibleHeading}</h2>
 
   <span
-    class="pointer-events-none absolute left-[16%] top-4 text-[10rem] font-semibold leading-none text-white/10 sm:text-[14rem]"
+    class="pointer-events-none absolute left-[16%] top-4 text-[10rem] font-normal leading-none text-white/10 sm:text-[14rem]"
     aria-hidden="true"
   >&ldquo;</span>
   <span
-    class="pointer-events-none absolute right-[14%] bottom-2 text-[10rem] font-semibold leading-none text-white/10 sm:text-[14rem]"
+    class="pointer-events-none absolute right-[14%] bottom-2 text-[10rem] font-normal leading-none text-white/10 sm:text-[14rem]"
     aria-hidden="true"
   >&rdquo;</span>
 
@@ -50,10 +50,10 @@ const carouselId = 'home-review-carousel';
           )}
 
           <blockquote class="m-0">
-            <p class="m-0 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+            <p class="m-0 text-4xl font-medium leading-tight text-white sm:text-5xl lg:text-6xl">
               {review.quote}
             </p>
-            <footer class="mt-6 text-right text-2xl font-semibold leading-tight text-white sm:text-3xl">
+            <footer class="mt-6 text-right text-2xl font-medium leading-tight text-white sm:text-3xl">
               <span aria-hidden="true">- </span>{review.attribution}
             </footer>
           </blockquote>
@@ -71,7 +71,7 @@ const carouselId = 'home-review-carousel';
         <button
           type="button"
           class:list={[
-            'size-3 rounded-full border border-brand-border',
+            'size-3 rounded-full border border-white',
             index === 0 ? 'bg-brand-blue' : 'bg-white',
           ]}
           data-review-dot

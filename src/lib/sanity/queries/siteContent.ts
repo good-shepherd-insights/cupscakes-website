@@ -265,7 +265,7 @@ export async function loadHomePageContent() {
       '--background-image-story-mask-primary': cssUrl(imageUrl(homePage?.ourStory?.photoMask?.primary, LOCAL_ASSETS.storyMaskPrimary)),
       '--background-image-story-mask-secondary': cssUrl(imageUrl(homePage?.ourStory?.photoMask?.secondary, LOCAL_ASSETS.storyMaskSecondary)),
       '--background-image-story-logo': cssUrl(imageUrl(homePage?.ourStory?.logo, LOCAL_ASSETS.storyLogo)),
-      '--background-image-cupcake-mask': cssUrl(imageUrl(homePage?.cupcakeCarousel?.cupcakeMask, LOCAL_ASSETS.cupcakeMask)),
+      '--background-image-cupcake-mask': cssUrl(LOCAL_ASSETS.cupcakeMask),
       '--background-image-personal-cake': cssUrl(imageUrl(homePage?.personalCakes?.photo, LOCAL_ASSETS.personalCake)),
       '--background-image-personal-cakes-logo': cssUrl(imageUrl(homePage?.personalCakes?.logo, LOCAL_ASSETS.personalCakesLogo)),
       '--background-image-personal-cakes-amp': cssUrl(imageUrl(homePage?.personalCakes?.ampImage, LOCAL_ASSETS.personalCakesAmp)),

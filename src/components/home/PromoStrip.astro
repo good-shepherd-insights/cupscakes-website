@@ -5,6 +5,17 @@ interface Props {
 }
 
 const { text, accessibleLabel } = Astro.props;
+
+const BOLD_PHRASES = ['Free Delivery', '$8 local delivery otherwise'];
+
+function splitWithBold(input: string): { content: string; bold: boolean }[] {
+  const pattern = new RegExp(`(${BOLD_PHRASES.map((p) => p.replace(/[$]/g, '\\$')).join('|')})`, 'gi');
+  const parts = input.split(pattern);
+  const boldSet = new Set(BOLD_PHRASES.map((p) => p.toLowerCase()));
+  return parts.map((part) => ({ content: part, bold: boldSet.has(part.toLowerCase()) }));
+}
+
+const segments = text ? splitWithBold(text) : [];
 ---
 
 {text && (
@@ -13,7 +24,11 @@ const { text, accessibleLabel } = Astro.props;
     aria-label={accessibleLabel}
   >
     <p class="m-0 text-base font-normal uppercase leading-snug text-white sm:text-lg lg:text-xl">
-      {text}
+      {segments.map((seg) =>
+        seg.bold
+          ? <strong class="font-semibold">{seg.content}</strong>
+          : <span>{seg.content}</span>
+      )}
     </p>
   </section>
 )}
